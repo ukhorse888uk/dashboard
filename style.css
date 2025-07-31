@@ -1,0 +1,150 @@
+body {
+  background-color: #ffffff;
+  /* Light blue */
+  font-family: Arial, sans-serif;
+  margin: 10px;
+}
+
+.tab-bar {
+  display: flex;
+  background-color: #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  user-select: none;
+}
+
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  color: #333;
+  font-weight: bold;
+  border-radius: 5px 5px 0 0;
+  transition: background-color 0.3s;
+}
+
+.tab.active {
+  background-color: #2196F3;
+  color: white;
+}
+
+#main-container {
+  display: flex;
+  gap: 10px;
+}
+
+/* Race list and details styling */
+#race-list {
+  width: 300px;
+  background: #1685f4;
+  padding: 10px;
+  border-radius: 5px;
+  height: 600px;
+  overflow-y: auto;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* New styling for course headers as grey rounded tabs */
+.course-header {
+  background-color: lab(84.71% 0.69 0.23);
+  /* light grey */
+  border-radius: 15px;
+  padding: 8px 15px;
+  margin: 10px 0 5px 0;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s;
+
+  display: block;
+  /* ensures vertical stacking */
+  width: fit-content;
+  /* shrink width to text size */
+  max-width: 100%;
+  /* prevent overflow */
+}
+
+
+.course-header:hover {
+  background-color: #c7c7c7;
+}
+
+.course-header.expanded {
+  background-color: #b0b0b0;
+  color: white;
+}
+
+/* Container for race buttons inside a course */
+.race-list-inner {
+  margin-left: 15px;
+  margin-bottom: 15px;
+}
+
+/* Race buttons inside the container */
+#race-list button {
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 5px;
+  border: none;
+  background-color: #eee;
+  cursor: pointer;
+  border-radius: 4px;
+  text-align: left;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+#race-list button.active,
+#race-list button:hover {
+  background-color: #2196F3;
+  color: white;
+}
+
+#race-details {
+  flex-grow: 1;
+  background: rgb(73, 184, 248);
+  padding: 10px;
+  border-radius: 5px;
+  height: 600px;
+  overflow-y: auto;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  font-size: 15px;
+}
+
+#race-details p {
+  margin: 6px 0;
+}
+
+/* Drop odds table styling */
+#drop-odds {
+  flex-grow: 1;
+  background-color: #52cef7;
+  padding: 10px;
+  border-radius: 5px;
+  height: 600px;
+  overflow-y: auto;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+#drop-odds-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#drop-odds-table th,
+#drop-odds-table td {
+  padding: 8px 10px;
+  text-align: center;
+  /* Removed border as per your request */
+  /* border: 1px solid #ccc; */
+  font-size: 14px;
+}
+
+#drop-odds-table th {
+  background-color: #2196F3;
+  color: white;
+}
+
+/* Green text for negative changes */
+.negative-change {
+  color: green;
+}
