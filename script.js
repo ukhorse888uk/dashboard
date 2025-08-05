@@ -2,13 +2,8 @@ let activeTab = 'races';  // Default active tab on page load
 
 // Load and display racecard CSV for 賽程列表 with courses grouped as expandable accordions
 function loadRacecard() {
-<<<<<<< HEAD
   Papa.parse("https://ges202507.github.io/dashboard/csv/racecard.csv", {
     download: true,
-=======
- Papa.parse("https://ges202507.github.io/dashboard/csv/racecard.csv", {
-  download: true,
->>>>>>> a89e83d8073fdeafae5a7d9b55ac47e8ff6be9f3
     complete: function (results) {
       const raceData = results.data.slice(1);
       const courseMap = {};
@@ -68,7 +63,6 @@ function loadRacecard() {
   });
 }
 
-
 // Display race details on the right side for 賽程列表
 function displayRace(raceRows, raceKey) {
   const raceDetails = document.getElementById('race-details');
@@ -91,11 +85,7 @@ function displayRace(raceRows, raceKey) {
 // Load and display DropOdds CSV for 落飛馬 tab
 function loadDropOdds() {
   Papa.parse("https://ges202507.github.io/dashboard/csv/dropodds.csv", {
-<<<<<<< HEAD
     download: true,
-=======
-  download: true,
->>>>>>> a89e83d8073fdeafae5a7d9b55ac47e8ff6be9f3
     complete: function (results) {
       const data = results.data;
       const tableHead = document.querySelector("#drop-odds-table thead");
@@ -108,7 +98,7 @@ function loadDropOdds() {
         const row = document.createElement("tr");
         const cell = document.createElement("td");
         cell.textContent = "沒有資料";
-        cell.colSpan = 10;  // updated for 10 columns
+        cell.colSpan = 10;
         row.appendChild(cell);
         tableBody.appendChild(row);
         return;
@@ -137,27 +127,25 @@ function loadDropOdds() {
       tableHead.appendChild(headerRow);
 
       data.slice(1).forEach(row => {
-        // Defensive check if row is complete enough
         if (row.length < 11) return;
 
         const tr = document.createElement("tr");
 
-        // Order: A,B,D,E,F,G,H,I,J,K → row[0], row[1], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10]
         [
           row[0],  // Time (A)
           row[1],  // Course (B)
           row[3],  // Horse Name (D)
           row[4],  // Original Odds (E)
           row[5],  // Now Odds (F)
-          row[6],  // Change (G) — add minus and green text
-          row[7],  // % Change (H) — add minus and green text
+          row[6],  // Change (G)
+          row[7],  // % Change (H)
           row[8],  // Odd Taken Time (I)
           row[9],  // Finish Position (J)
           row[10]  // SP Odds (K)
         ].forEach((text, index) => {
           const td = document.createElement("td");
 
-          if ((index === 5 || index === 6) && text !== "") {  // index 5 = change, index 6 = % change
+          if ((index === 5 || index === 6) && text !== "") {
             td.textContent = "-" + text;
             td.classList.add("negative-change");
           } else {
@@ -185,18 +173,15 @@ function refreshData() {
 // Handle tab clicks
 document.querySelectorAll('.tab-bar .tab').forEach(tab => {
   tab.addEventListener('click', () => {
-    // Remove active from all tabs and add to clicked
     document.querySelectorAll('.tab-bar .tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
 
     activeTab = tab.dataset.tab;
 
-    // Show/hide content accordingly
     document.getElementById('race-list').style.display = activeTab === 'races' ? 'block' : 'none';
     document.getElementById('race-details').style.display = activeTab === 'races' ? 'block' : 'none';
     document.getElementById('drop-odds').style.display = activeTab === 'drops' ? 'block' : 'none';
 
-    // Load the relevant CSV data for the selected tab
     if (activeTab === 'races') {
       loadRacecard();
     } else if (activeTab === 'drops') {
@@ -207,16 +192,13 @@ document.querySelectorAll('.tab-bar .tab').forEach(tab => {
 
 // On initial load, set UI to default tab and load data
 window.addEventListener('DOMContentLoaded', () => {
-  // Activate default tab visually
   const defaultTab = document.querySelector(`.tab-bar .tab[data-tab="${activeTab}"]`);
   if (defaultTab) defaultTab.classList.add('active');
 
-  // Show/hide containers accordingly
   document.getElementById('race-list').style.display = activeTab === 'races' ? 'block' : 'none';
   document.getElementById('race-details').style.display = activeTab === 'races' ? 'block' : 'none';
   document.getElementById('drop-odds').style.display = activeTab === 'drops' ? 'block' : 'none';
 
-  // Load initial data for default tab
   if (activeTab === 'races') {
     loadRacecard();
   } else if (activeTab === 'drops') {
@@ -226,6 +208,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // Auto-refresh every 30 seconds
 setInterval(refreshData, 30000);
+
+
 
 
 
