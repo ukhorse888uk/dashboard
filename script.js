@@ -2,8 +2,8 @@ let activeTab = 'races';  // Default active tab on page load
 
 // Load and display racecard CSV for 賽程列表 with courses grouped as expandable accordions
 function loadRacecard() {
-  Papa.parse("csv/racecard.csv", {
-    download: true,
+ Papa.parse("https://ges202507.github.io/dashboard/csv/racecard.csv", {
+  download: true,
     complete: function (results) {
       const raceData = results.data.slice(1);
       const courseMap = {};
@@ -85,8 +85,8 @@ function displayRace(raceRows, raceKey) {
 
 // Load and display DropOdds CSV for 落飛馬 tab
 function loadDropOdds() {
-  Papa.parse("csv/dropodds.csv", {
-    download: true,
+  Papa.parse("https://ges202507.github.io/dashboard/csv/dropodds.csv", {
+  download: true,
     complete: function (results) {
       const data = results.data;
       const tableHead = document.querySelector("#drop-odds-table thead");
@@ -217,6 +217,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // Auto-refresh every 30 seconds
 setInterval(refreshData, 30000);
+
 
 
 
