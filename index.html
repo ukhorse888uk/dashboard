@@ -5,42 +5,808 @@
   <meta charset="UTF-8" />
   <title>賽馬數據儀表板</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-  <link rel="stylesheet" href="style.css" />
+
+  <!-- ===== CSS START ===== -->
+  <style>
+    body {
+      background-color: #ffffff;
+      font-family: Arial, sans-serif;
+      margin: 10px;
+    }
+
+    .race-table {
+      table-layout: fixed;
+      /* fix column widths */
+      width: 100%;
+      /* or set a specific width */
+      max-width: 1000px;
+      /* optional max width to prevent spreading */
+    }
+
+    .race-table td:nth-child(2) {
+      width: 70%;
+      /* Wider but not full width */
+      padding-right: 18px !important;
+      border-right: none
+        /* adds space without visible border */
+        white-space: nowrap;
+      /* Prevent line break */
+      overflow: hidden;
+      /* Hide overflow */
+      text-overflow: ellipsis;
+      /* Show ... if text too long */
+    }
+
+
+    .race-table td:nth-child(3) {
+      width: 15%;
+      /* adjust as needed */
+      padding-left: 20px !important;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Optional: set smaller width on other columns */
+    .race-table td:nth-child(1),
+    .race-table td:nth-child(4),
+    .race-table td:nth-child(5),
+    .race-table td:nth-child(6) {
+      width: auto;
+      padding-left: 2px;
+      padding-right: 2px;
+    }
+
+    /* Reduce horizontal padding between col 2 and col 3 */
+    .race-table td:nth-child(2) {
+      padding-right: 0px;
+      /* reduce right padding */
+    }
+
+    .race-table td:nth-child(3) {
+      padding-left: 0px;
+      /* reduce left padding */
+    }
+
+
+
+    .tab-bar {
+      display: flex;
+      background-color: #ddd;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      user-select: none;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      color: #333;
+      font-weight: bold;
+      border-radius: 5px 5px 0 0;
+      transition: background-color 0.3s;
+    }
+
+    .tab.active {
+      background-color: #2196F3;
+      color: white;
+    }
+
+    #main-container {
+      display: flex;
+      gap: 10px;
+      overflow-y: visible;
+      min-height: 400px;
+    }
+
+    /* Race list */
+    #race-list {
+      width: 220px;
+      background: #2196F3;
+      padding: 10px;
+      border-radius: 5px;
+
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      color: white;
+    }
+
+    #race-details {
+      flex-grow: 1;
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 5px;
+
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      font-size: 15px;
+    }
+
+    .course-header {
+      padding: 6px 0;
+      margin: 12px 0 5px 0;
+      font-weight: bold;
+      font-size: 16px;
+      color: #f8f8f8;
+      cursor: default;
+      user-select: none;
+      border-bottom: 1px solid #0055ff50;
+    }
+
+    .course-header.expanded {
+      color: #ffffff;
+    }
+
+    .course-header::after {
+      content: "▼";
+      margin-left: 8px;
+      font-size: 12px;
+      color: #ffff00;
+      transition: transform 0.2s ease;
+    }
+
+    .course-header.expanded::after {
+      transform: rotate(180deg);
+    }
+
+    .race-list-inner {
+      margin-left: 15px;
+      margin-bottom: 15px;
+    }
+
+    #race-list button {
+      width: 100%;
+      padding: 8px 12px;
+      margin-bottom: 5px;
+      border: none;
+      background-color: #eeeeee;
+      cursor: pointer;
+      border-radius: 4px;
+      text-align: left;
+      font-size: 14px;
+      transition: background-color 0.2s;
+      color: black;
+    }
+
+    #race-list button.active,
+    #race-list button:hover {
+      background-color: #f90bd9;
+      color: white;
+    }
+
+    /* Race details */
+    #race-details h2 {
+      margin-top: 0;
+    }
+
+    table.race-table {
+      width: 100%;
+      border-spacing: 0 !important;
+      border-collapse: collapse;
+    }
+
+    table.race-table thead tr {
+      background-color: #2196F3;
+      color: white;
+    }
+
+    table.race-table th,
+    table.race-table td {
+      padding: 1px 2px;
+      text-align: left;
+      border-bottom: none;
+    }
+
+    table.race-table td:nth-child(2) {
+      padding-right: 4px !important;
+      /* less right padding on column 2 */
+    }
+
+    table.race-table td:nth-child(3) {
+      padding-left: 2px !important;
+      /* less left padding on column 3 */
+    }
+
+    table.race-table tbody tr:last-child {
+      border-bottom: 1px solid #ccc;
+    }
+
+    /* Drop odds */
+    #drop-odds {
+      flex-grow: 1;
+      background-color: #ffffff;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      font-size: 15px;
+      display: none;
+      height: auto !important;
+      overflow-y: visible !important;
+    }
+
+    /* Drop odds table */
+    #drop-odds-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    /* Header row – blue background */
+    #drop-odds-table thead tr {
+      background-color: #2196F3;
+      color: white;
+    }
+
+    #drop-odds-table th,
+    #drop-odds-table td {
+      padding: 8px 10px;
+      text-align: left;
+      font-size: 14px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    /* Reduce padding for first 4 columns */
+    #drop-odds-table th:nth-child(1),
+    #drop-odds-table td:nth-child(1) {
+      width: 30px;
+    }
+
+    #drop-odds-table th:nth-child(2),
+    #drop-odds-table td:nth-child(2) {
+      width: 60px;
+    }
+
+    #drop-odds-table th:nth-child(3),
+    #drop-odds-table td:nth-child(3) {
+      width: 30px;
+      text-align: right;
+    }
+
+    #drop-odds-table th:nth-child(4),
+    #drop-odds-table td:nth-child(4) {
+      width: 120px;
+    }
+
+    /* Alternate row background colors */
+    #drop-odds-table tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    /* Green color for negative changes */
+    .negative-change {
+      color: green;
+    }
+
+    /* Fix body and html scrolling */
+    html,
+    body {
+      height: auto;
+      overflow-y: auto;
+    }
+  </style>
+  <!-- ===== CSS END ===== -->
 </head>
 
 <body>
+
   <div class="tab-bar">
     <div class="tab active" data-tab="races">賽程列表</div>
     <div class="tab" data-tab="drops">落飛馬</div>
-    <div class="tab" data-tab="results">賽果</div>
   </div>
 
   <div id="main-container">
     <div id="race-list">
       <h3>賽程列表</h3>
-      <!-- Race buttons will be appended here -->
     </div>
 
     <div id="race-details">
       <h2>賽程詳情</h2>
-      <!-- Race details will appear here -->
     </div>
 
-    <div id="drop-odds" style="display:none;">
+    <div id="drop-odds">
       <h2>落飛馬</h2>
-      <table id="drop-odds-table" cellspacing="0" cellpadding="5" style="width:100%; border-collapse: collapse;">
+      <table id="drop-odds-table" cellspacing="0" cellpadding="5">
         <thead></thead>
         <tbody></tbody>
       </table>
     </div>
-
-    <div id="results" style="display:none;">
-      <h2>賽果 (待實作)</h2>
-      <!-- Placeholder for results -->
-    </div>
   </div>
 
-  <script src="script.js"></script>
+  <!-- ===== JavaScript START ===== -->
+  <script>
+    let activeTab = 'races';
+    let expandedCourse = null;
+    let selectedRaceKey = null;
+
+    function loadRacecard() {
+      Papa.parse("https://ges202507.github.io/dashboard/csv/racecard.csv", {
+        download: true,
+        complete: function (results) {
+          const raceData = results.data.slice(1);
+          const courseMap = {};
+
+          raceData.forEach(row => {
+            const course = row[1];
+            const raceTime = row[2];
+
+            if (!courseMap[course]) courseMap[course] = {};
+            if (!courseMap[course][raceTime]) courseMap[course][raceTime] = [];
+
+            courseMap[course][raceTime].push(row);
+          });
+
+          const raceList = document.getElementById('race-list');
+          raceList.innerHTML = '<h3>賽程列表</h3>';
+
+          Object.keys(courseMap).forEach(course => {
+            const courseHeader = document.createElement('div');
+            courseHeader.classList.add('course-header');
+            courseHeader.textContent = course;
+
+            const raceTimesContainer = document.createElement('div');
+            raceTimesContainer.classList.add('race-list-inner');
+            raceTimesContainer.style.display = 'none';
+
+            Object.keys(courseMap[course]).forEach(raceTime => {
+              const raceKey = `${course} - ${raceTime}`;
+              const button = document.createElement('button');
+              button.textContent = raceKey;
+
+              button.addEventListener('click', () => {
+                selectedRaceKey = raceKey;
+
+                raceTimesContainer.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+                button.classList.add('active');
+
+                displayRace(courseMap[course][raceTime], raceKey);
+              });
+
+              if (raceKey === selectedRaceKey) {
+                button.classList.add('active');
+              }
+
+              raceTimesContainer.appendChild(button);
+            });
+
+            courseHeader.addEventListener('click', () => {
+              const isCurrentlyExpanded = courseHeader.classList.contains('expanded');
+
+              document.querySelectorAll('.race-list-inner').forEach(inner => {
+                inner.style.display = 'none';
+              });
+              document.querySelectorAll('.course-header').forEach(h => {
+                h.classList.remove('expanded');
+              });
+
+              if (!isCurrentlyExpanded) {
+                courseHeader.classList.add('expanded');
+                raceTimesContainer.style.display = 'block';
+                expandedCourse = course;
+              } else {
+                expandedCourse = null;
+              }
+            });
+
+            if (course === expandedCourse) {
+              courseHeader.classList.add('expanded');
+              raceTimesContainer.style.display = 'block';
+            }
+
+            raceList.appendChild(courseHeader);
+            raceList.appendChild(raceTimesContainer);
+          });
+        }
+      });
+    }
+
+    function displayRace(raceRows, raceKey) {
+      const raceDetails = document.getElementById('race-details');
+      raceDetails.innerHTML = `<h2>${raceKey}</h2>`;
+
+      const table = document.createElement('table');
+      table.classList.add('race-table');
+      table.style.width = '100%';
+      table.cellSpacing = 0;
+      table.cellPadding = 5;
+      table.style.borderSpacing = '0';
+      table.style.borderCollapse = 'collapse';
+
+      const thead = document.createElement('thead');
+      const headerRow = document.createElement('tr');
+
+      const headers = [
+        "號碼(擋）", "馬名", "年齡", "近戰績", "隔夜", "最近"
+      ];
+
+      headers.forEach(text => {
+        const th = document.createElement('th');
+        th.textContent = text;
+        th.style.borderBottom = '1px solid #ccc';
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      const bgColors = ['white', '#f0f0f0'];
+
+      raceRows.forEach((row, index) => {
+        const horseNumber = row[11] || '';   // col L
+        const draw = row[16] || '';          // col Q
+        const horseName = row[12] || '';     // col M
+        const age = row[13] || '';           // col N
+        const jockey = row[14] || '';        // col O
+        const trainer = row[15] || '';       // col P
+        const silkUrl = row[9] || '';        // col J
+        const latestRecord = '';
+        const lastnightOdds = '';
+        const nowOdds = '';
+
+        const bgColor = bgColors[index % 2];
+        const line23TextStyle = 'font-size: 0.85em; line-height: 1.1em;';
+
+        function styleTd(td, extraCss = '') {
+          td.style.border = 'none';
+          td.style.backgroundColor = bgColor;
+          td.style.verticalAlign = 'middle';
+          if (extraCss) td.style.cssText += extraCss;
+          if (!td.textContent.trim() && td.children.length === 0) {
+            td.innerHTML = '&nbsp;';
+          }
+        }
+
+        // --- Line 1 ---
+        const tr1 = document.createElement('tr');
+        tr1.style.backgroundColor = bgColor;
+
+        // Col 1
+        const tdNum1 = document.createElement('td');
+        tdNum1.textContent = `${horseNumber}(${draw})`;
+        styleTd(tdNum1, 'padding-right:1px; font-weight:bold;');
+        tr1.appendChild(tdNum1);
+
+        // Col 2
+        const tdName = document.createElement('td');
+        tdName.textContent = horseName;
+        styleTd(tdName, 'padding-left:1px; padding-right:2px; font-weight:bold;');
+        tr1.appendChild(tdName);
+
+        // Col 3
+        const tdAge = document.createElement('td');
+        tdAge.textContent = age;
+        styleTd(tdAge, 'padding-left:2px; padding-right:1px;');
+        tr1.appendChild(tdAge);
+
+        // Col 4
+        const tdLatest = document.createElement('td');
+        tdLatest.textContent = latestRecord;
+        styleTd(tdLatest);
+        tr1.appendChild(tdLatest);
+
+        // Col 5
+        const tdLastnight = document.createElement('td');
+        tdLastnight.textContent = lastnightOdds;
+        styleTd(tdLastnight);
+        tr1.appendChild(tdLastnight);
+
+        // Col 6
+        const tdNowOdds = document.createElement('td');
+        tdNowOdds.textContent = nowOdds;
+        styleTd(tdNowOdds);
+        tr1.appendChild(tdNowOdds);
+
+        // Append Line 1
+        tbody.appendChild(tr1);
+
+        // Add some space below Line 1 to separate from Line 2
+        tr1.style.paddingBottom = '6px';
+        tr1.querySelectorAll('td').forEach(td => {
+          td.style.paddingBottom = '6px';
+        });
+
+        // --- Line 2 ---
+        const tr2 = document.createElement('tr');
+        tr2.style.backgroundColor = bgColor;
+        // Tighten vertical spacing a bit on line 2 as well
+        tr2.style.paddingTop = '6px';
+        tr2.style.lineHeight = '1.1em';
+
+        // Col 1: Silk image
+        const tdSilk = document.createElement('td');
+        if (silkUrl) {
+          const img = document.createElement('img');
+          img.src = silkUrl;
+          img.alt = 'Silk';
+          img.style.width = '40px';
+          img.style.height = '32px';
+          img.style.objectFit = 'contain';
+          tdSilk.appendChild(img);
+        }
+        styleTd(tdSilk, 'padding-right:4px;');
+        tr2.appendChild(tdSilk);
+
+        // Col 2: White box + jockey name
+        const tdWhiteBoxJockey = document.createElement('td');
+        tdWhiteBoxJockey.style.display = 'flex';
+        tdWhiteBoxJockey.style.alignItems = 'center';
+        tdWhiteBoxJockey.style.backgroundColor = bgColor;
+
+        const whiteBox = document.createElement('div');
+        whiteBox.textContent = '騎';
+        whiteBox.style.width = '18px';
+        whiteBox.style.height = '18px';
+        whiteBox.style.border = '1px solid grey';
+        whiteBox.style.color = 'black';
+        whiteBox.style.fontWeight = 'bold';
+        whiteBox.style.fontSize = '16px';
+        whiteBox.style.display = 'flex';
+        whiteBox.style.justifyContent = 'center';
+        whiteBox.style.alignItems = 'center';
+        whiteBox.style.marginRight = '5px';
+
+        const jockeySpan = document.createElement('span');
+        jockeySpan.textContent = jockey || '';
+        jockeySpan.style.fontSize = '0.85em';
+
+        tdWhiteBoxJockey.appendChild(whiteBox);
+        tdWhiteBoxJockey.appendChild(jockeySpan);
+        styleTd(tdWhiteBoxJockey, 'padding-left:0; padding-right:8px;');
+        tr2.appendChild(tdWhiteBoxJockey);
+
+        // Empty cols 3-6
+        for (let i = 0; i < 4; i++) {
+          const tdEmpty = document.createElement('td');
+          styleTd(tdEmpty);
+          tdEmpty.textContent = ' ';
+          tr2.appendChild(tdEmpty);
+        }
+
+        // Tighten padding/margin on all tds in tr2
+        tr2.querySelectorAll('td').forEach(td => {
+          td.style.paddingTop = '2px';
+          td.style.paddingBottom = '2px';
+          td.style.marginTop = '0';
+          td.style.marginBottom = '10px';
+
+        });
+
+        tbody.appendChild(tr2);
+
+        // --- Line 3 ---
+        const tr3 = document.createElement('tr');
+        tr3.style.backgroundColor = bgColor;
+        tr3.style.paddingBottom = '12px';
+        // Col 1: blank
+        const tdBlank = document.createElement('td');
+        styleTd(tdBlank);
+        tdBlank.textContent = ' ';
+        tr3.appendChild(tdBlank);
+
+        // Col 2: Black box + trainer name
+        const tdBlackBoxTrainer = document.createElement('td');
+        tdBlackBoxTrainer.style.display = 'flex';
+        tdBlackBoxTrainer.style.alignItems = 'center';
+        tdBlackBoxTrainer.style.backgroundColor = bgColor;
+
+        const blackBox = document.createElement('div');
+        blackBox.textContent = '練';
+        blackBox.style.width = '18px';
+        blackBox.style.height = '18px';
+        blackBox.style.backgroundColor = 'black';
+        blackBox.style.color = 'white';
+        blackBox.style.fontWeight = 'bold';
+        blackBox.style.fontSize = '16px';
+        blackBox.style.display = 'flex';
+        blackBox.style.justifyContent = 'center';
+        blackBox.style.alignItems = 'center';
+        blackBox.style.marginRight = '5px';
+
+        const trainerSpan = document.createElement('span');
+        trainerSpan.textContent = trainer || '';
+        trainerSpan.style.fontSize = '0.85em';
+
+        tdBlackBoxTrainer.appendChild(blackBox);
+        tdBlackBoxTrainer.appendChild(trainerSpan);
+        styleTd(tdBlackBoxTrainer, 'padding-left:0; padding-right:8px;');
+        tr3.appendChild(tdBlackBoxTrainer);
+
+        // Empty cols 3-6
+        for (let i = 0; i < 4; i++) {
+          const tdEmpty = document.createElement('td');
+          styleTd(tdEmpty);
+          tdEmpty.textContent = ' ';
+          tr3.appendChild(tdEmpty);
+        }
+
+
+
+        // Remove vertical padding for Line 3 cells
+        tr3.querySelectorAll('td').forEach(td => {
+          td.style.paddingTop = '0';
+          td.style.paddingBottom = '0';
+        });
+
+        tbody.appendChild(tr3);
+
+        // Add spacer row for vertical gap between horses
+        const spacerRow = document.createElement('tr');
+        const spacerTd = document.createElement('td');
+        spacerTd.colSpan = 6;        // span all columns
+        spacerTd.style.height = '12px';  // adjust space height here
+        spacerRow.appendChild(spacerTd);
+        tbody.appendChild(spacerRow);
+
+
+
+
+
+
+
+
+      });
+
+      table.appendChild(tbody);
+      raceDetails.appendChild(table);
+    }
+
+
+
+
+
+    function loadDropOdds() {
+      Papa.parse("https://ges202507.github.io/dashboard/csv/dropodds.csv", {
+        download: true,
+        complete: function (results) {
+          const data = results.data;
+          const tableHead = document.querySelector("#drop-odds-table thead");
+          const tableBody = document.querySelector("#drop-odds-table tbody");
+
+          tableHead.innerHTML = "";
+          tableBody.innerHTML = "";
+
+          if (data.length <= 1) {
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+            cell.textContent = "沒有資料";
+            cell.colSpan = 10;
+            row.appendChild(cell);
+            tableBody.appendChild(row);
+            return;
+          }
+
+          const headerRow = document.createElement("tr");
+
+          const headers = [
+            "賽時",
+            "場地",
+            "號碼",
+            "馬名",
+            "隔夜價格",
+            "現時價格",
+            "變動",
+            "變動 %",
+            "最早掉價<br>時/賠",
+            "最低價格<br>時/賠"
+          ];
+
+          headers.forEach(text => {
+            const th = document.createElement("th");
+            th.innerHTML = text;
+            headerRow.appendChild(th);
+          });
+          tableHead.appendChild(headerRow);
+
+          data.slice(1).forEach(row => {
+            if (!row || row.length === 0) return;
+            const isEmpty = row.every(cell => !cell || cell.trim() === '');
+            if (isEmpty || row.length < 7) return;
+
+            const tr = document.createElement("tr");
+
+            const lastCol = row[row.length - 1] || "";
+            const [nowTime, nowOdd] = lastCol.includes(' / ') ? lastCol.split(' / ') : ["", lastCol];
+
+            const lastnightPrice = parseFloat(row[5]) || 0;
+            const nowOddNum = parseFloat(nowOdd) || 0;
+            const change = nowOddNum - lastnightPrice;
+            const percentChange = lastnightPrice ? (change / lastnightPrice) * 100 : 0;
+
+            const tdTime = document.createElement("td");
+            tdTime.textContent = row[1] || "";
+            tr.appendChild(tdTime);
+
+            const tdCourse = document.createElement("td");
+            tdCourse.textContent = row[2] || "";
+            tr.appendChild(tdCourse);
+
+            const tdNumber = document.createElement("td");
+            tdNumber.textContent = row[3] || "";
+            tr.appendChild(tdNumber);
+
+            const tdName = document.createElement("td");
+            tdName.textContent = row[4] || "";
+            tr.appendChild(tdName);
+
+            const tdLastNight = document.createElement("td");
+            tdLastNight.textContent = row[5] || "";
+            tr.appendChild(tdLastNight);
+
+            const tdNowOdd = document.createElement("td");
+            tdNowOdd.textContent = nowOdd || "";
+            tr.appendChild(tdNowOdd);
+
+            const tdChange = document.createElement("td");
+            const absChange = Math.abs(change).toFixed(2);
+            tdChange.textContent = absChange === "0.00" ? "" : (change < 0 ? '-' : '') + absChange;
+            tdChange.style.color = change < 0 ? 'green' : 'black';
+            tr.appendChild(tdChange);
+
+            const tdPercent = document.createElement("td");
+            const absPercent = Math.abs(percentChange).toFixed(2);
+            tdPercent.textContent = absPercent === "0.00" ? "" : (change < 0 ? '-' : '') + absPercent + '%';
+            tdPercent.style.color = change < 0 ? 'green' : 'black';
+            tr.appendChild(tdPercent);
+
+            const tdEarliestDrop = document.createElement("td");
+            const earliestDrop = row[6] || '';
+            if (earliestDrop.includes(' / ')) {
+              const [dropTime, dropOdd] = earliestDrop.split(' / ');
+              tdEarliestDrop.innerHTML = `<div>${dropTime}</div><div>${dropOdd}</div>`;
+            } else {
+              tdEarliestDrop.textContent = earliestDrop;
+            }
+            tr.appendChild(tdEarliestDrop);
+
+            const tdLowest = document.createElement("td");
+            const lowest = row[0] || '';
+            if (lowest.includes(' / ')) {
+              const [lowTime, lowOdd] = lowest.split(' / ');
+              tdLowest.innerHTML = `<div>${lowTime}</div><div>${lowOdd}</div>`;
+            } else {
+              tdLowest.textContent = lowest;
+            }
+            tr.appendChild(tdLowest);
+
+            tableBody.appendChild(tr);
+          });
+        }
+      });
+    }
+
+    // Tab switch logic
+    document.querySelectorAll('.tab-bar .tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab-bar .tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        activeTab = tab.dataset.tab;
+
+        document.getElementById('race-list').style.display = activeTab === 'races' ? 'block' : 'none';
+        document.getElementById('race-details').style.display = activeTab === 'races' ? 'block' : 'none';
+        document.getElementById('drop-odds').style.display = activeTab === 'drops' ? 'block' : 'none';
+
+        if (activeTab === 'races') {
+          loadRacecard();
+        } else if (activeTab === 'drops') {
+          loadDropOdds();
+        }
+      });
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelector(`.tab-bar .tab[data-tab="${activeTab}"]`).classList.add('active');
+      document.getElementById('race-list').style.display = 'block';
+      document.getElementById('race-details').style.display = 'block';
+      document.getElementById('drop-odds').style.display = 'none';
+
+      loadRacecard();
+    });
+
+    // Auto refresh every 30 seconds
+    setInterval(() => {
+      if (activeTab === 'races') loadRacecard();
+      else if (activeTab === 'drops') loadDropOdds();
+    }, 30000);
+  </script>
+  <!-- ===== JavaScript END ===== -->
 </body>
 
 </html>
