@@ -83,6 +83,7 @@ function displayRace(raceRows, raceKey) {
 }
 
 // Load and display DropOdds CSV for 落飛馬 tab
+// Load and display DropOdds CSV for 落飛馬 tab
 function loadDropOdds() {
   Papa.parse("https://ges202507.github.io/dashboard/csv/dropodds.csv", {
     download: true,
@@ -104,20 +105,21 @@ function loadDropOdds() {
         return;
       }
 
-      // Headers in Traditional Chinese matching your data columns
+      // Updated headers per your mapping
       const headers = [
-        "賽時",        // Time (A)
-        "場地",        // Course (B)
-        "馬名",        // Horse Name (D)
-        "初盤賠率",    // Original Odds (E)
-        "現時賠率",    // Now Odds (F)
-        "賠率變動",    // Change (G)
-        "變動百分比",  // % Change (H)
-        "賠率取時間",  // Odd Taken Time (I)
-        "名次",        // Finish Position (J)
-        "SP賠率"       // SP Odds (K)
+        "赛时",          // Time (col B)
+        "场地",          // Course (col C)
+        "号码",          // Horse Number (col D)
+        "马名",          // Horse Name (col E)
+        "隔夜价格",      // Lastnight Price (col F)
+        "现时价格",      // Now Odds (last column odds)
+        "变动",          // Change (difference)
+        "变动 %",        // % Change
+        "最早掉价 时/赔",  // Earliest Big Drop (col G)
+        "最低价格 时/赔"   // Lowest Odds Drop (col A)
       ];
 
+      // Create header row
       const headerRow = document.createElement("tr");
       headers.forEach(text => {
         const th = document.createElement("th");
@@ -126,40 +128,103 @@ function loadDropOdds() {
       });
       tableHead.appendChild(headerRow);
 
+      // Process each data row (skip header)
       data.slice(1).forEach(row => {
-        if (row.length < 11) return;
+        if (row.length < 7) return; // Minimal length check
 
         const tr = document.createElement("tr");
 
-        [
-          row[0],  // Time (A)
-          row[1],  // Course (B)
-          row[3],  // Horse Name (D)
-          row[4],  // Original Odds (E)
-          row[5],  // Now Odds (F)
-          row[6],  // Change (G)
-          row[7],  // % Change (H)
-          row[8],  // Odd Taken Time (I)
-          row[9],  // Finish Position (J)
-          row[10]  // SP Odds (K)
-        ].forEach((text, index) => {
-          const td = document.createElement("td");
+        // Extract last column for current odds and time
+        const lastCol = row[row.length - 1];
+        const [nowTime, nowOdd] = lastCol.includes(' / ') ? lastCol.split(' / ') : ["", lastCol];
 
-          if ((index === 5 || index === 6) && text !== "") {
-            td.textContent = "-" + text;
-            td.classList.add("negative-change");
-          } else {
-            td.textContent = text;
-          }
+        // Parse numbers safely
+        const lastnightPrice = parseFloat(row[5]) || 0;
+        const nowOddNum = parseFloat(nowOdd) || 0;
+        const change = nowOddNum - lastnightPrice;
+        const percentChange = lastnightPrice ? (change / lastnightPrice) * 100 : 0;
 
-          tr.appendChild(td);
-        });
+        // 1. Time (col B)
+        const tdTime = document.createElement("td");
+        tdTime.textContent = row[1];
+        tr.appendChild(tdTime);
+
+        // 2. Course (col C)
+        const tdCourse = document.createElement("td");
+        tdCourse.textContent = row[2];
+        tr.appendChild(tdCourse);
+
+        // 3. Horse Number (col D)
+        const tdNumber = document.createElement("td");
+        tdNumber.textContent = row[3];
+        tr.appendChild(tdNumber);
+
+        // 4. Horse Name (col E)
+        const tdName = document.createElement("td");
+        tdName.textContent = row[4];
+        tr.appendChild(tdName);
+
+        // 5. Lastnight Price (col F)
+        const tdLastNight = document.createElement("td");
+        tdLastNight.textContent = row[5];
+        tr.appendChild(tdLastNight);
+
+        // 6. Now Odds (last column)
+        const tdNowOdd = document.createElement("td");
+        tdNowOdd.innerHTML = `<div>${nowTime}</div><div>${nowOdd}</div>`;
+        tr.appendChild(tdNowOdd);
+
+        // 7. Change (difference)
+        const tdChange = document.createElement("td");
+        const absChange = Math.abs(change).toFixed(2);
+        if (absChange === "0.00") {
+          tdChange.textContent = "";
+        } else {
+          tdChange.textContent = (change < 0 ? '-' : '') + absChange;
+          tdChange.style.color = change < 0 ? 'green' : 'black';
+        }
+        tr.appendChild(tdChange);
+
+        // 8. Percent Change
+        const tdPercent = document.createElement("td");
+        const absPercent = Math.abs(percentChange).toFixed(2);
+        if (absPercent === "0.00") {
+          tdPercent.textContent = "";
+        } else {
+          tdPercent.textContent = (change < 0 ? '-' : '') + absPercent + '%';
+          tdPercent.style.color = change < 0 ? 'green' : 'black';
+        }
+        tr.appendChild(tdPercent);
+
+
+        // 9. Earliest big drop (col G)
+        const tdEarliestDrop = document.createElement("td");
+        const earliestDrop = row[6] || '';
+        if (earliestDrop.includes(' / ')) {
+          const [dropTime, dropOdd] = earliestDrop.split(' / ');
+          tdEarliestDrop.innerHTML = `<div>${dropTime}</div><div>${dropOdd}</div>`;
+        } else {
+          tdEarliestDrop.textContent = earliestDrop;
+        }
+        tr.appendChild(tdEarliestDrop);
+
+        // 10. Lowest odds drop (col A)
+        const tdLowest = document.createElement("td");
+        const lowest = row[0] || '';
+        if (lowest.includes(' / ')) {
+          const [lowTime, lowOdd] = lowest.split(' / ');
+          tdLowest.innerHTML = `<div>${lowTime}</div><div>${lowOdd}</div>`;
+        } else {
+          tdLowest.textContent = lowest;
+        }
+        tr.appendChild(tdLowest);
 
         tableBody.appendChild(tr);
       });
     }
   });
 }
+
 
 // Refresh only the active tab's data
 function refreshData() {
