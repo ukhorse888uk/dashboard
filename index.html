@@ -287,10 +287,35 @@
 
 <body>
 
+
   <div class="tab-bar">
-    <div class="tab active" data-tab="races">賽程列表</div>
-    <div class="tab" data-tab="drops">落飛馬</div>
+    <div class="tab active" data-tab="races">
+      <svg class="icon calendar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"
+        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        style="vertical-align: text-bottom;">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+        <text x="12" y="17" text-anchor="middle" font-size="10" font-family="Arial" fill="currentColor"
+          font-weight="bold">8</text>
+      </svg>
+      賽程列表
+    </div>
+    <div class="tab" data-tab="drops">
+      <svg class="icon green-triangle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 6" width="12" height="8"
+        fill="green" style="vertical-align: middle; margin-right: 4px;">
+        <path d="M0 0 L5 6 L10 0 Z" />
+      </svg>
+      落飛馬
+      <svg class="icon green-triangle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 6" width="12" height="8"
+        fill="green" style="vertical-align: middle; margin-left: 4px;">
+        <path d="M0 0 L5 6 L10 0 Z" />
+      </svg>
+    </div>
   </div>
+
+
 
   <div id="main-container">
     <div id="race-list">
@@ -315,15 +340,66 @@
     let activeTab = 'races';
     let expandedCourse = null;
     let selectedRaceKey = null;
+    let dropoddLookup = {};
 
-    function loadRacecard() {
-      Papa.parse("https://ges202507.github.io/dashboard/csv/racecard.csv", {
+
+
+
+    // Load drop odds first
+    function loadDropOddsData(callback) {
+      Papa.parse("https://ges202507.github.io/dashboard/csv/dropodds.csv?cb=" + Date.now(), {
+        download: true,
+        complete: function (results) {
+          dropoddLookup = {};
+
+          results.data.slice(1).forEach(row => {
+            if (!row || row.length < 6) return;
+            const horseName = row[4];
+            if (!horseName) return;
+
+            // Get original odds from col 5 (index 5)
+            const originalOdd = row[5] || '';
+
+            // Get now odds from last non-empty column
+            let nowOdd = '';
+            for (let i = row.length - 1; i >= 0; i--) {
+              if (row[i] && row[i].trim() !== '') {
+                nowOdd = row[i];
+                break;
+              }
+            }
+
+            // If nowOdd contains time info like "hh:mm / odds", extract odds only
+            if (nowOdd.includes(" / ")) {
+              nowOdd = nowOdd.split(" / ")[1];
+            }
+
+            dropoddLookup[horseName] = { originalOdd, nowOdd };
+          });
+
+          callback();
+        }
+      });
+    }
+
+    function loadRacecard(dropoddLookup) {
+      Papa.parse(`https://ges202507.github.io/dashboard/csv/racecard.csv?cb=${Date.now()}`, {
         download: true,
         complete: function (results) {
           const raceData = results.data.slice(1);
           const courseMap = {};
 
+          // Add originalOdd and nowOdd to each row if available
           raceData.forEach(row => {
+            const horseName = row[12] || '';
+            if (dropoddLookup[horseName]) {
+              row.originalOdd = dropoddLookup[horseName].originalOdd;
+              row.nowOdd = dropoddLookup[horseName].nowOdd;
+            } else {
+              row.originalOdd = '';
+              row.nowOdd = '';
+            }
+
             const course = row[1];
             const raceTime = row[2];
 
@@ -356,7 +432,7 @@
                 raceTimesContainer.querySelectorAll('button').forEach(b => b.classList.remove('active'));
                 button.classList.add('active');
 
-                displayRace(courseMap[course][raceTime], raceKey);
+                displayRace(courseMap[course][raceTime], raceKey, dropoddLookup);
               });
 
               if (raceKey === selectedRaceKey) {
@@ -397,7 +473,8 @@
       });
     }
 
-    function displayRace(raceRows, raceKey) {
+    // Your original displayRace function with added odds columns
+    function displayRace(raceRows, raceKey, dropoddLookup) {
       const raceDetails = document.getElementById('race-details');
       raceDetails.innerHTML = `<h2>${raceKey}</h2>`;
 
@@ -437,11 +514,12 @@
         const trainer = row[15] || '';       // col P
         const silkUrl = row[9] || '';        // col J
         const latestRecord = '';
-        const lastnightOdds = '';
-        const nowOdds = '';
+
+        // Use original odds and now odds from your lookup or fallback
+        const lastnightOdds = row.originalOdd || '-';
+        const nowOdds = row.nowOdd || '-';
 
         const bgColor = bgColors[index % 2];
-        const line23TextStyle = 'font-size: 0.85em; line-height: 1.1em;';
 
         function styleTd(td, extraCss = '') {
           td.style.border = 'none';
@@ -481,33 +559,23 @@
         styleTd(tdLatest);
         tr1.appendChild(tdLatest);
 
-        // Col 5
+        // Col 5 - Original Odds
         const tdLastnight = document.createElement('td');
         tdLastnight.textContent = lastnightOdds;
         styleTd(tdLastnight);
         tr1.appendChild(tdLastnight);
 
-        // Col 6
+        // Col 6 - Now Odds
         const tdNowOdds = document.createElement('td');
         tdNowOdds.textContent = nowOdds;
         styleTd(tdNowOdds);
         tr1.appendChild(tdNowOdds);
 
-        // Append Line 1
         tbody.appendChild(tr1);
-
-        // Add some space below Line 1 to separate from Line 2
-        tr1.style.paddingBottom = '6px';
-        tr1.querySelectorAll('td').forEach(td => {
-          td.style.paddingBottom = '6px';
-        });
 
         // --- Line 2 ---
         const tr2 = document.createElement('tr');
         tr2.style.backgroundColor = bgColor;
-        // Tighten vertical spacing a bit on line 2 as well
-        tr2.style.paddingTop = '6px';
-        tr2.style.lineHeight = '1.1em';
 
         // Col 1: Silk image
         const tdSilk = document.createElement('td');
@@ -559,13 +627,11 @@
           tr2.appendChild(tdEmpty);
         }
 
-        // Tighten padding/margin on all tds in tr2
         tr2.querySelectorAll('td').forEach(td => {
           td.style.paddingTop = '2px';
           td.style.paddingBottom = '2px';
           td.style.marginTop = '0';
           td.style.marginBottom = '10px';
-
         });
 
         tbody.appendChild(tr2);
@@ -574,6 +640,7 @@
         const tr3 = document.createElement('tr');
         tr3.style.backgroundColor = bgColor;
         tr3.style.paddingBottom = '12px';
+
         // Col 1: blank
         const tdBlank = document.createElement('td');
         styleTd(tdBlank);
@@ -616,9 +683,6 @@
           tr3.appendChild(tdEmpty);
         }
 
-
-
-        // Remove vertical padding for Line 3 cells
         tr3.querySelectorAll('td').forEach(td => {
           td.style.paddingTop = '0';
           td.style.paddingBottom = '0';
@@ -629,25 +693,254 @@
         // Add spacer row for vertical gap between horses
         const spacerRow = document.createElement('tr');
         const spacerTd = document.createElement('td');
-        spacerTd.colSpan = 6;        // span all columns
-        spacerTd.style.height = '12px';  // adjust space height here
+        spacerTd.colSpan = 6; // span all columns
+        spacerTd.style.height = '12px'; // adjust space height here
         spacerRow.appendChild(spacerTd);
         tbody.appendChild(spacerRow);
-
-
-
-
-
-
-
-
       });
 
       table.appendChild(tbody);
       raceDetails.appendChild(table);
     }
 
+    // Finally load everything
+    loadDropOddsData(() => {
+      loadRacecard(dropoddLookup);
+    });
 
+
+    function displayRace(raceRows, raceKey) {
+      const raceDetails = document.getElementById('race-details');
+      raceDetails.innerHTML = `<h2>${raceKey}</h2>`;
+
+      const table = document.createElement('table');
+      table.classList.add('race-table');
+      table.style.width = '100%';
+      table.cellSpacing = 0;
+      table.cellPadding = 5;
+      table.style.borderSpacing = '0';
+      table.style.borderCollapse = 'collapse';
+
+      const thead = document.createElement('thead');
+      const headerRow = document.createElement('tr');
+
+      const headers = [
+        "號碼(擋）", "馬名", "年齡", "近戰績", "隔夜", "最近"
+      ];
+
+      headers.forEach(text => {
+        const th = document.createElement('th');
+        th.textContent = text;
+        th.style.borderBottom = '1px solid #ccc';
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      const bgColors = ['white', '#f0f0f0'];
+
+      raceRows.forEach((row, index) => {
+        const horseNumber = row[11] || '';   // col L
+        const draw = row[16] || '';          // col Q
+        const horseName = row[12] || '';     // col M
+        const age = row[13] || '';           // col N
+        const jockey = row[14] || '';        // col O
+        const trainer = row[15] || '';       // col P
+        const silkUrl = row[9] || '';        // col J
+        const latestRecord = row[32] || '';
+
+        // Original odds from racecard.csv col S (index 18)
+        const lastnightOdds = row[18] || '-';
+
+        // Now odds from racecard.csv col T (index 19) or fallback '-'
+        const nowOdds = row[19] || '-';
+
+        const bgColor = bgColors[index % 2];
+
+        function styleTd(td, extraCss = '') {
+          td.style.border = 'none';
+          td.style.backgroundColor = bgColor;
+          td.style.verticalAlign = 'middle';
+          if (extraCss) td.style.cssText += extraCss;
+          if (!td.textContent.trim() && td.children.length === 0) {
+            td.innerHTML = '&nbsp;';
+          }
+        }
+
+        // --- Line 1 ---
+        const tr1 = document.createElement('tr');
+        tr1.style.backgroundColor = bgColor;
+
+        // Col 1
+        const tdNum1 = document.createElement('td');
+        tdNum1.textContent = `${horseNumber}(${draw})`;
+        styleTd(tdNum1, 'padding-right:1px; font-weight:bold;');
+        tr1.appendChild(tdNum1);
+
+        // Col 2
+        const tdName = document.createElement('td');
+        tdName.textContent = horseName;
+        styleTd(tdName, 'padding-left:1px; padding-right:2px; font-weight:bold;');
+        tr1.appendChild(tdName);
+
+        // Col 3
+        const tdAge = document.createElement('td');
+        tdAge.textContent = age;
+        styleTd(tdAge, 'padding-left:2px; padding-right:1px;');
+        tr1.appendChild(tdAge);
+
+        // Col 4
+        const tdLatest = document.createElement('td');
+        tdLatest.textContent = latestRecord;
+        styleTd(tdLatest);
+        tr1.appendChild(tdLatest);
+
+        // Col 5 - Original Odds from col S
+        const tdLastnight = document.createElement('td');
+        tdLastnight.textContent = lastnightOdds;
+        styleTd(tdLastnight);
+        tr1.appendChild(tdLastnight);
+
+        // Col 6 - Now Odds from col T
+        const tdNowOdds = document.createElement('td');
+        tdNowOdds.textContent = nowOdds;
+        styleTd(tdNowOdds);
+        tr1.appendChild(tdNowOdds);
+
+        tbody.appendChild(tr1);
+
+        // (Rest of your displayRace function unchanged...)
+
+        // --- Line 2 ---
+        const tr2 = document.createElement('tr');
+        tr2.style.backgroundColor = bgColor;
+
+        // Col 1: Silk image
+        const tdSilk = document.createElement('td');
+        if (silkUrl) {
+          const img = document.createElement('img');
+          img.src = silkUrl;
+          img.alt = 'Silk';
+          img.style.width = '40px';
+          img.style.height = '30px';
+          img.style.objectFit = 'contain';
+          tdSilk.appendChild(img);
+        }
+        styleTd(tdSilk, 'padding-right:4px;');
+        tr2.appendChild(tdSilk);
+
+        // Col 2: White box + jockey name
+        const tdWhiteBoxJockey = document.createElement('td');
+        tdWhiteBoxJockey.style.display = 'flex';
+        tdWhiteBoxJockey.style.alignItems = 'center';
+        tdWhiteBoxJockey.style.backgroundColor = bgColor;
+
+        const whiteBox = document.createElement('div');
+        whiteBox.textContent = '騎';
+        whiteBox.style.width = '18px';
+        whiteBox.style.height = '18px';
+        whiteBox.style.border = '1px solid grey';
+        whiteBox.style.color = 'black';
+        whiteBox.style.fontWeight = 'bold';
+        whiteBox.style.fontSize = '16px';
+        whiteBox.style.display = 'flex';
+        whiteBox.style.justifyContent = 'center';
+        whiteBox.style.alignItems = 'center';
+        whiteBox.style.marginRight = '5px';
+
+        const jockeySpan = document.createElement('span');
+        jockeySpan.textContent = jockey || '';
+        jockeySpan.style.fontSize = '0.85em';
+
+        tdWhiteBoxJockey.appendChild(whiteBox);
+        tdWhiteBoxJockey.appendChild(jockeySpan);
+        styleTd(tdWhiteBoxJockey, 'padding-left:0; padding-right:8px;');
+        tr2.appendChild(tdWhiteBoxJockey);
+
+        // Empty cols 3-6
+        for (let i = 0; i < 4; i++) {
+          const tdEmpty = document.createElement('td');
+          styleTd(tdEmpty);
+          tdEmpty.textContent = ' ';
+          tr2.appendChild(tdEmpty);
+        }
+
+        tr2.querySelectorAll('td').forEach(td => {
+          td.style.paddingTop = '2px';
+          td.style.paddingBottom = '2px';
+          td.style.marginTop = '0';
+          td.style.marginBottom = '10px';
+        });
+
+        tbody.appendChild(tr2);
+
+        // --- Line 3 ---
+        const tr3 = document.createElement('tr');
+        tr3.style.backgroundColor = bgColor;
+        tr3.style.paddingBottom = '12px';
+
+        // Col 1: blank
+        const tdBlank = document.createElement('td');
+        styleTd(tdBlank);
+        tdBlank.textContent = ' ';
+        tr3.appendChild(tdBlank);
+
+        // Col 2: Black box + trainer name
+        const tdBlackBoxTrainer = document.createElement('td');
+        tdBlackBoxTrainer.style.display = 'flex';
+        tdBlackBoxTrainer.style.alignItems = 'center';
+        tdBlackBoxTrainer.style.backgroundColor = bgColor;
+
+        const blackBox = document.createElement('div');
+        blackBox.textContent = '練';
+        blackBox.style.width = '18px';
+        blackBox.style.height = '18px';
+        blackBox.style.backgroundColor = 'black';
+        blackBox.style.color = 'white';
+        blackBox.style.fontWeight = 'bold';
+        blackBox.style.fontSize = '16px';
+        blackBox.style.display = 'flex';
+        blackBox.style.justifyContent = 'center';
+        blackBox.style.alignItems = 'center';
+        blackBox.style.marginRight = '5px';
+
+        const trainerSpan = document.createElement('span');
+        trainerSpan.textContent = trainer || '';
+        trainerSpan.style.fontSize = '0.85em';
+
+        tdBlackBoxTrainer.appendChild(blackBox);
+        tdBlackBoxTrainer.appendChild(trainerSpan);
+        styleTd(tdBlackBoxTrainer, 'padding-left:0; padding-right:8px;');
+        tr3.appendChild(tdBlackBoxTrainer);
+
+        // Empty cols 3-6
+        for (let i = 0; i < 4; i++) {
+          const tdEmpty = document.createElement('td');
+          styleTd(tdEmpty);
+          tdEmpty.textContent = ' ';
+          tr3.appendChild(tdEmpty);
+        }
+
+        tr3.querySelectorAll('td').forEach(td => {
+          td.style.paddingTop = '0';
+          td.style.paddingBottom = '0';
+        });
+
+        tbody.appendChild(tr3);
+
+        // Spacer row between horses
+        const spacerRow = document.createElement('tr');
+        const spacerTd = document.createElement('td');
+        spacerTd.colSpan = 6;
+        spacerTd.style.height = '12px';
+        spacerRow.appendChild(spacerTd);
+        tbody.appendChild(spacerRow);
+      });
+
+      table.appendChild(tbody);
+      raceDetails.appendChild(table);
+    }
 
 
 
@@ -673,20 +966,11 @@
           }
 
           const headerRow = document.createElement("tr");
-
           const headers = [
-            "賽時",
-            "場地",
-            "號碼",
-            "馬名",
-            "隔夜價格",
-            "現時價格",
-            "變動",
-            "變動 %",
-            "最早掉價<br>時/賠",
-            "最低價格<br>時/賠"
+            "賽時", "場地", "號碼", "馬名",
+            "隔夜價格", "現時價格", "變動", "變動 %",
+            "最早掉價<br>時/賠", "最低價格<br>時/賠"
           ];
-
           headers.forEach(text => {
             const th = document.createElement("th");
             th.innerHTML = text;
@@ -694,71 +978,170 @@
           });
           tableHead.appendChild(headerRow);
 
-          data.slice(1).forEach(row => {
-            if (!row || row.length === 0) return;
+          // Filter valid rows and sort by time (col 1)
+          const rows = data.slice(1).filter(row => {
+            if (!row || row.length === 0) return false;
             const isEmpty = row.every(cell => !cell || cell.trim() === '');
-            if (isEmpty || row.length < 7) return;
+            if (isEmpty || row.length < 13) return false;
+            if (!row[1]) return false; // no time
+            return true;
+          });
 
-            const tr = document.createElement("tr");
+          rows.sort((a, b) => {
+            const [aH, aM] = a[1].split(":").map(n => parseInt(n, 10));
+            const [bH, bM] = b[1].split(":").map(n => parseInt(n, 10));
+            return (aH * 60 + aM) - (bH * 60 + bM);
+          });
 
-            const lastCol = row[row.length - 1] || "";
-            const [nowTime, nowOdd] = lastCol.includes(' / ') ? lastCol.split(' / ') : ["", lastCol];
+          // Now process each row after sorting
+          rows.forEach(row => {
+            let lastCol = "";
+            for (let i = row.length - 1; i >= 0; i--) {
+              if (row[i] && row[i].trim() !== "") {
+                lastCol = row[i];
+                break;
+              }
+            }
+            if (!lastCol) return;
+
+            let nowOddCell = lastCol;
+
+            if (lastCol.includes(" / ")) {
+              const [colTimeStr] = lastCol.split(" / ");
+              const [colH, colMin] = colTimeStr.split(":").map(n => parseInt(n, 10));
+              const colMinutes = colH * 60 + colMin;
+
+              const raceTimeStr = row[1];
+              const [raceH, raceM] = raceTimeStr.split(":").map(n => parseInt(n, 10));
+              const raceMinutes = raceH * 60 + raceM;
+
+              if (colMinutes > raceMinutes) {
+                if (row[12] && row[12].trim() !== "") {
+                  nowOddCell = row[12];
+                } else {
+                  // no value in col M - skip this horse
+                  return;
+                }
+              }
+            }
+
+            const [nowTime, nowOdd] = nowOddCell.includes(" / ") ? nowOddCell.split(" / ") : ["", nowOddCell];
 
             const lastnightPrice = parseFloat(row[5]) || 0;
             const nowOddNum = parseFloat(nowOdd) || 0;
             const change = nowOddNum - lastnightPrice;
             const percentChange = lastnightPrice ? (change / lastnightPrice) * 100 : 0;
 
+            const tr = document.createElement("tr");
+
+            // Col 1 - Race Time
             const tdTime = document.createElement("td");
-            tdTime.textContent = row[1] || "";
+            tdTime.textContent = row[1];
             tr.appendChild(tdTime);
 
+            // Col 2 - Course
             const tdCourse = document.createElement("td");
-            tdCourse.textContent = row[2] || "";
+            tdCourse.textContent = row[2];
             tr.appendChild(tdCourse);
 
+            // Col 3 - Number
             const tdNumber = document.createElement("td");
-            tdNumber.textContent = row[3] || "";
+            tdNumber.textContent = row[3];
             tr.appendChild(tdNumber);
 
+            // Col 4 - Horse Name
             const tdName = document.createElement("td");
-            tdName.textContent = row[4] || "";
+            tdName.textContent = row[4];
             tr.appendChild(tdName);
 
+            // Col 5 - Last Night Price
             const tdLastNight = document.createElement("td");
-            tdLastNight.textContent = row[5] || "";
+            tdLastNight.textContent = row[5];
             tr.appendChild(tdLastNight);
 
+            // Col 6 - Now price with triangle arrow pointing towards odd number
             const tdNowOdd = document.createElement("td");
-            tdNowOdd.textContent = nowOdd || "";
+            tdNowOdd.textContent = nowOdd; // default
+
+            if (lastnightPrice > 0) {
+              if (nowOddNum <= lastnightPrice * 0.52) {
+                // Price dropped >=48%: green down arrows before and after
+                tdNowOdd.innerHTML = `<span style="color: green; font-weight: bold;">&#9660;</span> ${nowOdd} <span style="color: green; font-weight: bold;">&#9660;</span>`;
+              } else if (nowOddNum >= lastnightPrice * 1.48) {
+                // Price rose >=48%: red up arrows before and after
+                tdNowOdd.innerHTML = `<span style="color: red; font-weight: bold;">&#9650;</span> ${nowOdd} <span style="color: red; font-weight: bold;">&#9650;</span>`;
+              }
+            }
             tr.appendChild(tdNowOdd);
 
+
+            // Col 7 - Change with green or red highlight on the text only
             const tdChange = document.createElement("td");
             const absChange = Math.abs(change).toFixed(2);
-            tdChange.textContent = absChange === "0.00" ? "" : (change < 0 ? '-' : '') + absChange;
-            tdChange.style.color = change < 0 ? 'green' : 'black';
+            if (absChange === "0.00") {
+              tdChange.textContent = "";
+            } else {
+              const spanChange = document.createElement("span");
+              spanChange.textContent = (change < 0 ? '-' : '') + absChange;
+              if (percentChange <= -48) {
+                spanChange.style.backgroundColor = "green";
+                spanChange.style.color = "white";
+                spanChange.style.fontWeight = "bold";
+                spanChange.style.padding = "0 4px";
+                spanChange.style.borderRadius = "3px";
+              } else if (percentChange >= 48) {
+                spanChange.style.backgroundColor = "red";
+                spanChange.style.color = "white";
+                spanChange.style.fontWeight = "bold";
+                spanChange.style.padding = "0 4px";
+                spanChange.style.borderRadius = "3px";
+              }
+              tdChange.appendChild(spanChange);
+            }
             tr.appendChild(tdChange);
 
+            // Col 8 - Percent change with green or red highlight on the text only
             const tdPercent = document.createElement("td");
             const absPercent = Math.abs(percentChange).toFixed(2);
-            tdPercent.textContent = absPercent === "0.00" ? "" : (change < 0 ? '-' : '') + absPercent + '%';
-            tdPercent.style.color = change < 0 ? 'green' : 'black';
+            if (absPercent === "0.00") {
+              tdPercent.textContent = "";
+            } else {
+              const spanPercent = document.createElement("span");
+              spanPercent.textContent = (change < 0 ? '-' : '') + absPercent + '%';
+              if (percentChange <= -48) {
+                spanPercent.style.backgroundColor = "green";
+                spanPercent.style.color = "white";
+                spanPercent.style.fontWeight = "bold";
+                spanPercent.style.padding = "0 4px";
+                spanPercent.style.borderRadius = "3px";
+              } else if (percentChange >= 48) {
+                spanPercent.style.backgroundColor = "red";
+                spanPercent.style.color = "white";
+                spanPercent.style.fontWeight = "bold";
+                spanPercent.style.padding = "0 4px";
+                spanPercent.style.borderRadius = "3px";
+              }
+              tdPercent.appendChild(spanPercent);
+            }
             tr.appendChild(tdPercent);
 
+
+            // Col 9 - Earliest Drop Time/Odds
             const tdEarliestDrop = document.createElement("td");
             const earliestDrop = row[6] || '';
-            if (earliestDrop.includes(' / ')) {
-              const [dropTime, dropOdd] = earliestDrop.split(' / ');
+            if (earliestDrop.includes(" / ")) {
+              const [dropTime, dropOdd] = earliestDrop.split(" / ");
               tdEarliestDrop.innerHTML = `<div>${dropTime}</div><div>${dropOdd}</div>`;
             } else {
               tdEarliestDrop.textContent = earliestDrop;
             }
             tr.appendChild(tdEarliestDrop);
 
+            // Col 10 - Lowest Price Time/Odds
             const tdLowest = document.createElement("td");
             const lowest = row[0] || '';
-            if (lowest.includes(' / ')) {
-              const [lowTime, lowOdd] = lowest.split(' / ');
+            if (lowest.includes(" / ")) {
+              const [lowTime, lowOdd] = lowest.split(" / ");
               tdLowest.innerHTML = `<div>${lowTime}</div><div>${lowOdd}</div>`;
             } else {
               tdLowest.textContent = lowest;
@@ -770,6 +1153,13 @@
         }
       });
     }
+
+
+
+
+
+
+
 
     // Tab switch logic
     document.querySelectorAll('.tab-bar .tab').forEach(tab => {
