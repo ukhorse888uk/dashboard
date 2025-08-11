@@ -347,7 +347,7 @@
 
     // Load drop odds first
     function loadDropOddsData(callback) {
-      Papa.parse("https://ges202507.github.io/dashboard/csv/dropodds.csv?cb=" + Date.now(), {
+      Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/dropodds.csv?cb=" + Date.now(), {
         download: true,
         complete: function (results) {
           dropoddLookup = {};
@@ -383,7 +383,7 @@
     }
 
     function loadRacecard(dropoddLookup) {
-      Papa.parse(`https://ges202507.github.io/dashboard/csv/racecard.csv?cb=${Date.now()}`, {
+      Papa.parse(`https://ukhorse888uk.github.io/dashboard/csv/racecard.csv?cb=${Date.now()}`, {
         download: true,
         complete: function (results) {
           const raceData = results.data.slice(1);
@@ -945,7 +945,7 @@
 
 
     function loadDropOdds() {
-      Papa.parse("https://ges202507.github.io/dashboard/csv/dropodds.csv", {
+      Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/dropodds.csv", {
         download: true,
         complete: function (results) {
           const data = results.data;
