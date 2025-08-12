@@ -1060,8 +1060,13 @@
             tr.appendChild(tdLastNight);
 
             // Col 6 - Now price with triangle arrow pointing towards odd number
-            const tdNowOdd = document.createElement("td");
-            tdNowOdd.textContent = nowOdd; // default
+            // Col 6 - 最近 (Latest Odds from racecard.csv col T, index 19)
+            const nowOdds = row[19] || '-';
+            const tdNowOdds = document.createElement('td');
+            tdNowOdds.textContent = nowOdds;
+            styleTd(tdNowOdds);
+            tr1.appendChild(tdNowOdds);
+
 
             if (lastnightPrice > 0) {
               if (nowOddNum <= lastnightPrice * 0.52) {
