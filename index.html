@@ -993,7 +993,6 @@
             return (aH * 60 + aM) - (bH * 60 + bM);
           });
 
-          // Now process each row after sorting
           rows.forEach(row => {
             let lastCol = "";
             for (let i = row.length - 1; i >= 0; i--) {
@@ -1019,8 +1018,7 @@
                 if (row[12] && row[12].trim() !== "") {
                   nowOddCell = row[12];
                 } else {
-                  // no value in col M - skip this horse
-                  return;
+                  return; // skip if no valid value
                 }
               }
             }
@@ -1059,28 +1057,20 @@
             tdLastNight.textContent = row[5];
             tr.appendChild(tdLastNight);
 
-            // Col 6 - Now price with triangle arrow pointing towards odd number
-            // Col 6 - 最近 (Latest Odds from racecard.csv col T, index 19)
-            const nowOdds = row[19] || '-';
-            const tdNowOdds = document.createElement('td');
-            tdNowOdds.textContent = nowOdds;
-            styleTd(tdNowOdds);
-            tr1.appendChild(tdNowOdds);
-
-
+            // Col 6 - Now price with arrows
+            const tdNowOdd = document.createElement('td');
+            tdNowOdd.textContent = nowOdd;
+            // You can add styling here if you want, or define styleTd if you use it
             if (lastnightPrice > 0) {
               if (nowOddNum <= lastnightPrice * 0.52) {
-                // Price dropped >=48%: green down arrows before and after
                 tdNowOdd.innerHTML = `<span style="color: green; font-weight: bold;">&#9660;</span> ${nowOdd} <span style="color: green; font-weight: bold;">&#9660;</span>`;
               } else if (nowOddNum >= lastnightPrice * 1.48) {
-                // Price rose >=48%: red up arrows before and after
                 tdNowOdd.innerHTML = `<span style="color: red; font-weight: bold;">&#9650;</span> ${nowOdd} <span style="color: red; font-weight: bold;">&#9650;</span>`;
               }
             }
             tr.appendChild(tdNowOdd);
 
-
-            // Col 7 - Change with green or red highlight on the text only
+            // Col 7 - Change
             const tdChange = document.createElement("td");
             const absChange = Math.abs(change).toFixed(2);
             if (absChange === "0.00") {
@@ -1105,7 +1095,7 @@
             }
             tr.appendChild(tdChange);
 
-            // Col 8 - Percent change with green or red highlight on the text only
+            // Col 8 - Percent change
             const tdPercent = document.createElement("td");
             const absPercent = Math.abs(percentChange).toFixed(2);
             if (absPercent === "0.00") {
@@ -1129,7 +1119,6 @@
               tdPercent.appendChild(spanPercent);
             }
             tr.appendChild(tdPercent);
-
 
             // Col 9 - Earliest Drop Time/Odds
             const tdEarliestDrop = document.createElement("td");
@@ -1158,6 +1147,7 @@
         }
       });
     }
+
 
 
 
