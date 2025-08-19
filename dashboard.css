@@ -1,0 +1,385 @@
+/* === Global Styles === */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #fff;
+  color: #000;
+  line-height: 1.4;
+}
+
+/* === Top Tabs === */
+.tab-bar {
+  display: flex;
+  background: #2e5c2e;
+  border-bottom: 2px solid #a3d9a5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tab {
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  background: #2e5c2e;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-right: 1px solid #a3d9a5;
+  border-radius: 4px 4px 0 0;
+  transition: all 0.3s ease;
+}
+
+.tab:last-child {
+  border-right: none;
+}
+
+.tab:hover {
+  background: #ffd966;
+  color: #000;
+}
+
+.tab.active {
+  background: #ffd966;
+  color: #000;
+}
+
+/* === Layout === */
+.container {
+  display: flex;
+  height: calc(100vh - 50px);
+  transition: all 0.3s ease;
+}
+
+/* === Sidebar === */
+#sidebar {
+  flex: 0 0 220px;
+  background: #0d2a0d;
+  border-right: 3px solid #ffd966;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  padding-top: 10px;
+  will-change: width, opacity;
+}
+
+/* Course Buttons */
+.course-button {
+  display: block;
+  width: 90%;
+  background: #1e4a1e !important;
+  color: #ffec99 !important;
+  font-weight: bold;
+  font-size: 15px;
+  padding: 12px 35px 12px 15px !important;
+  margin: 8px auto !important;
+  border: none !important;
+  border-left: 5px solid #ffd966 !important;
+  border-radius: 4px;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Triangle Arrow */
+.course-button::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid #ffec99;
+  transition: all 0.3s;
+}
+
+/* Race Buttons */
+.race-list button {
+  display: block;
+  width: 85%;
+  background: #f0f0f0 !important;
+  color: #222 !important;
+  border: none !important;
+  border-left: 3px solid #89c789 !important;
+  padding: 8px 20px !important;
+  margin: 2px auto 2px 25px !important;
+  font-size: 13px;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+
+/* Hover States */
+.course-button:hover {
+  background: #ffd966 !important;
+  color: #0d2a0d !important;
+  transform: translateX(5px);
+}
+
+.race-list button:hover {
+  background: #ddeedd !important;
+}
+
+/* Active States */
+.course-button.active {
+  background: #ffd966 !important;
+  color: #0d2a0d !important;
+}
+
+.race-list button.active {
+  background: #d4e8d4 !important;
+  font-weight: bold;
+  border-left: 3px solid #1e4a1e !important;
+}
+
+/* === Main Content === */
+#main-content {
+  flex: 1;
+  min-width: 0;
+  /* Prevent overflow */
+  padding: 20px;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+}
+
+/* === Race Table === */
+.race-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 14px;
+  table-layout: fixed;
+}
+
+.race-table th {
+  background: #2e5c2e;
+  color: white;
+  padding: 10px 8px;
+  text-align: left;
+  position: sticky;
+  top: 0;
+}
+
+.race-table td {
+  padding: 8px 10px;
+  vertical-align: top;
+}
+
+/* Column Widths */
+.race-table td:nth-child(1),
+.race-table th:nth-child(1) {
+  width: 40px;
+}
+
+.race-table td:nth-child(2),
+.race-table th:nth-child(2) {
+  width: 25%;
+  min-width: 190px;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.race-table td:nth-child(3),
+.race-table th:nth-child(3) {
+  width: 60px;
+}
+
+.race-table td:nth-child(4),
+.race-table th:nth-child(4) {
+  width: 100px;
+}
+
+.race-table td:nth-child(5),
+.race-table th:nth-child(5) {
+  width: 80px;
+}
+
+.race-table td:nth-child(6),
+.race-table th:nth-child(6) {
+  width: 80px;
+}
+
+
+/* === Horse Silk Images === */
+.horse-silk {
+  height: 40px;
+  /* Fixed size */
+  width: auto;
+  display: block;
+  margin: 2px auto;
+  border: 1px solid #eee;
+  border-radius: 2px;
+  object-fit: contain;
+  /* Ensures proper scaling */
+}
+
+/* === Drop Odds Grid === */
+#drop-odds {
+  display: none;
+  width: 100%;
+}
+
+/* Additional styles for drop odds table */
+.drop-odds-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 14px;
+  table-layout: fixed;
+}
+
+.drop-odds-table th {
+  background: #2e5c2e;
+  color: white;
+  padding: 10px 8px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+}
+
+.drop-odds-table td {
+  padding: 8px 10px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+/* Column Widths for Drop Odds */
+.drop-odds-table th:nth-child(1),
+.drop-odds-table td:nth-child(1) {
+  width: 60px;
+}
+
+.drop-odds-table th:nth-child(2),
+.drop-odds-table td:nth-child(2) {
+  width: 60px;
+}
+
+.drop-odds-table th:nth-child(3),
+.drop-odds-table td:nth-child(3) {
+  width: 40px;
+}
+
+.drop-odds-table th:nth-child(4),
+.drop-odds-table td:nth-child(4) {
+  width: 20%;
+}
+
+.drop-odds-table th:nth-child(5),
+.drop-odds-table td:nth-child(5) {
+  width: 70px;
+}
+
+.drop-odds-table th:nth-child(6),
+.drop-odds-table td:nth-child(6) {
+  width: 70px;
+}
+
+.drop-odds-table th:nth-child(7),
+.drop-odds-table td:nth-child(7) {
+  width: 70px;
+}
+
+.drop-odds-table th:nth-child(8),
+.drop-odds-table td:nth-child(8) {
+  width: 70px;
+}
+
+.drop-odds-table th:nth-child(9),
+.drop-odds-table td:nth-child(9) {
+  width: 90px;
+}
+
+.drop-odds-table th:nth-child(10),
+.drop-odds-table td:nth-child(10) {
+  width: 90px;
+}
+
+/* Color coding for drop odds */
+.green {
+  background-color: #e6ffea;
+  color: #006400;
+  font-weight: bold;
+}
+
+.red {
+  background-color: #ffebee;
+  color: #8b0000;
+  font-weight: bold;
+}
+
+
+.grid-item {
+  padding: 6px;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
+}
+
+.grid-item.green {
+  background-color: #e6ffea;
+  color: #006400;
+}
+
+.grid-item.red {
+  background-color: #ffebee;
+  color: #8b0000;
+}
+
+/* === Tab States === */
+.tab-drops #sidebar {
+  flex: 0 0 0 !important;
+  opacity: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.tab-drops #main-content {
+  flex: 1 0 100% !important;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  #sidebar {
+    width: 100%;
+    max-height: 200px;
+  }
+
+  .race-table {
+    font-size: 13px;
+  }
+
+  /* Mobile tab states */
+  .tab-drops #sidebar {
+    display: none;
+  }
+}
+
+/* Utility Classes */
+.error {
+  color: #d32f2f;
+  text-align: center;
+  padding: 20px;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+}
+
+.grid-header {
+  background-color: #ffd966;
+  font-weight: bold;
+  padding: 10px 5px;
+  text-align: center;
+  border-bottom: 2px solid #0af702;
+}

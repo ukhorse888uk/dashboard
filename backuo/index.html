@@ -5,11 +5,11 @@
   <meta charset="UTF-8">
   <title>Horse Racing Dashboard</title>
   <link rel="stylesheet" href="dashboard.css">
-  <link rel="stylesheet" href="drop-odds.css">
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 </head>
 
 <body>
+
   <!-- Tabs -->
   <div class="tab-bar">
     <div class="tab active" data-tab="races">賽程列表</div>
@@ -26,13 +26,12 @@
     <div id="main-content">
       <div id="race-details"></div>
       <div id="drop-odds" style="display:none;">
-        <div id="drop-odds-container"></div>
+        <div id="drop-odds-grid"></div>
       </div>
     </div>
   </div>
 
   <script src="dashboard.js"></script>
-  <script src="drop-odds.js"></script>
 </body>
 
 </html>

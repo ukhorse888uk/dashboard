@@ -1,0 +1,132 @@
+/* === Global === */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #fff;
+  color: #000;
+}
+
+/* === Top Tabs === */
+.tab-bar {
+  display: flex;
+  background: #2e5c2e;
+  /* dark green */
+  border-bottom: 2px solid #a3d9a5;
+  /* light green divider */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tab {
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  background: #2e5c2e;
+  /* default green */
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-right: 1px solid #a3d9a5;
+  /* light green divider */
+  border-radius: 4px 4px 0 0;
+  transition: background 0.2s, color 0.2s;
+}
+
+.tab:last-child {
+  border-right: none;
+}
+
+.tab:hover {
+  background: #ffd966;
+  /* golden yellow */
+  color: #000;
+}
+
+.tab.active {
+  background: #ffd966;
+  color: #000;
+}
+
+/* === Layout === */
+.container {
+  display: flex;
+  height: calc(100vh - 50px);
+}
+
+/* === Sidebar === */
+#sidebar {
+  width: 200px;
+  border-right: 2px solid #a3d9a5;
+  background: #2e5c2e;
+  overflow-y: auto;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+  border-radius: 0 8px 8px 0;
+  padding-top: 10px;
+}
+
+/* Sidebar buttons */
+#sidebar button {
+  display: block;
+  width: 90%;
+  margin: 0 auto 4px auto;
+  padding: 10px;
+  border: none;
+  background: #2e5c2e;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  border-left: 4px solid #a3d9a5;
+  border-radius: 6px;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+  transition: background 0.2s, color 0.2s, transform 0.1s;
+}
+
+#sidebar button:hover {
+  background: #ffd966;
+  color: #000;
+  transform: translateX(2px);
+}
+
+#sidebar button.active {
+  background: #ffd966;
+  color: #000;
+  font-weight: bold;
+  border-left-color: #2e5c2e;
+}
+
+/* === Main Content === */
+#main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* === Race Table === */
+.race-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.race-table th {
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.race-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+.race-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+/* === Drop Odds Section === */
+#drop-odds-grid {
+  margin-top: 20px;
+}
