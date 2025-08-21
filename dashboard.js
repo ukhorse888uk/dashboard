@@ -1,27 +1,52 @@
 // ===== Active tab =====
 let activeTab = localStorage.getItem('activeTab') || 'races';
 
+let masterJockeyMap = {};
+let masterTrainerMap = {};
+
+function buildMasterMaps(data) {
+  masterJockeyMap = {};
+  masterTrainerMap = {};
+
+  data.forEach(row => {
+    const jockeyName = row[34] || ''; // Column AI
+    const jockeyCount = row[35] || '0'; // Column AJ
+    if (jockeyName && jockeyName.trim() !== '' && jockeyName.trim().toUpperCase() !== 'NON-RUNNER') {
+      masterJockeyMap[jockeyName.trim()] = { raceCount: jockeyCount };  // store as object
+    }
+
+    const trainerName = row[47] || ''; // Column AV
+    const trainerCount = row[48] || '0'; // Column AW
+    if (trainerName && trainerName.trim() !== '' && trainerName.trim().toUpperCase() !== 'NON-RUNNER') {
+      masterTrainerMap[trainerName.trim()] = { raceCount: trainerCount }; // store as object
+    }
+  });
+}
+
+
 function loadRacecard() {
   Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/racecard.csv?cb=" + Date.now(), {
     download: true,
     complete: function (results) {
-      // 1. Data filtering and validation
       const validRows = results.data
-        .filter(row => row && row.length > 0) // Remove empty rows
-        .filter(row => row[1] && String(row[1]).trim() !== ""); // Remove empty course names
+        .filter(row => row && row.length > 0)
+        .filter(row => row[1] && String(row[1]).trim() !== "");
 
       if (!validRows || validRows.length <= 1) {
-        document.getElementById('sidebar').innerHTML = ''; // Clear sidebar
+        document.getElementById('sidebar').innerHTML = '';
         return;
       }
 
       const raceRows = validRows.slice(1); // Skip header
 
+      // Build master lookup maps for jockeys and trainers
+      buildMasterMaps(raceRows);
+
       // 2. Group races by course and raceKey
       const courseMap = {};
       raceRows.forEach(row => {
         const course = (row[1] || '').trim();
-        if (!course) return; // Skip if course is empty
+        if (!course) return;
 
         const raceTime = (row[2] || '').trim();
         const raceKey = `${course} ${raceTime}`;
@@ -102,11 +127,12 @@ function loadRacecard() {
   });
 }
 
+
 function displayRace(raceRows, raceKey) {
   const raceDetails = document.getElementById('race-details');
   raceDetails.innerHTML = ''; // Clear previous content
 
-  // Get race metadata
+  // Get race metadata from first row
   const raceData = raceRows[0];
   const distance = raceData[5] || 'N/A';
   const raceClass = raceData[4] || 'N/A';
@@ -116,9 +142,9 @@ function displayRace(raceRows, raceKey) {
   const prizeValue = rawPrize.replace(/[^0-9]/g, '');
   const formattedPrize = prizeValue ? `£${parseInt(prizeValue).toLocaleString()}` : 'N/A';
 
-  // Create race header (Chinese labels)
+  // Header
   const raceHeader = document.createElement('div');
-  raceHeader.className = 'race-header'; // Add this to your CSS
+  raceHeader.className = 'race-header';
   raceHeader.innerHTML = `
     <div class="race-title">${raceKey}</div>
     <div class="race-meta">
@@ -131,11 +157,9 @@ function displayRace(raceRows, raceKey) {
   `;
   raceDetails.appendChild(raceHeader);
 
-  // Create table - SINGLE DECLARATION
+  // Table + header row
   const table = document.createElement('table');
   table.className = 'race-table';
-
-  // Header Row (Chinese column headers)
   const headerRow = document.createElement('tr');
   ['號碼(檔)', '馬名', '年齡', '近戰績', '隔夜', '最近'].forEach(text => {
     const th = document.createElement('th');
@@ -144,23 +168,38 @@ function displayRace(raceRows, raceKey) {
   });
   table.appendChild(headerRow);
 
-  // Horse Rows
-  raceRows.forEach((row, index) => {
-    const horseNumber = row[11] || '';     // Column L
-    const draw = row[16] || '';            // Column Q
-    const horseName = row[12] || '';       // Column M
-    const age = row[13] || '';             // Column N
-    const latestRecord = row[26] || '';    // Column AA
-    const lastnightOdds = row[18] || '-';  // Column S
-    const nowOdds = row[19] || '-';        // Column T
-    const jockey = row[14] || '';          // Column O
-    const trainer = row[15] || '';         // Column P
-    const silkUrl = row[9] || '';          // Column J (NEW: Silk URL)
+  // Process ONLY horse rows
+  const horseRows = raceRows.filter(row => {
+    const horseNumber = row[11]; // Column L
+    return horseNumber && horseNumber.toString().trim() !== '' &&
+      horseNumber.toString().trim() !== 'Jockey' &&
+      horseNumber.toString().trim() !== 'Trainer';
+  });
+
+  horseRows.forEach((row, index) => {
+    const horseNumber = row[11] || '';     // L
+    const draw = row[16] || '';            // Q
+    const horseName = row[12] || '';       // M
+    const age = row[13] || '';             // N
+    const latestRecord = row[26] || '';    // AA
+    const lastnightOdds = row[18] || '-';  // S
+    const nowOdds = row[19] || '-';        // T
+    const jockeyRaw = (row[14] || '').trim(); // O
+    const trainerRaw = (row[15] || '').trim(); // P
+    const silkUrl = row[9] || '';          // J
+
+    // Strip "騎 ", "練 " prefixes and remove parentheses before lookup
+    const jockey = jockeyRaw.replace(/^騎\s*/, '').replace(/\s*\(.*?\)/g, '').trim();
+    const trainer = trainerRaw.replace(/^練\s*/, '').replace(/\s*\(.*?\)/g, '').trim();
+
+    // Get jockey/trainer data from master maps
+    const jockeyData = masterJockeyMap[jockey] || { raceCount: '0', races: [] };
+    const trainerData = masterTrainerMap[trainer] || { raceCount: '0', races: [] };
 
     const horseRow = document.createElement('tr');
     horseRow.style.backgroundColor = index % 2 === 0 ? 'white' : '#f9f9f9';
 
-    // Column 1: Number + Silk (Updated)
+    // Col 1
     const numCell = document.createElement('td');
     numCell.innerHTML = `
       <div style="font-weight:bold">${horseNumber} (${draw})</div>
@@ -169,17 +208,31 @@ function displayRace(raceRows, raceKey) {
     `;
     horseRow.appendChild(numCell);
 
-    // Column 2: Name + Jockey/Trainer
+    // Col 2
     const nameCell = document.createElement('td');
     nameCell.innerHTML = `
       <div style="font-weight:bold">${horseName}</div>
-      <div><span class="jockey-badge">騎 ${jockey}</span></div>
-      <div><span class="trainer-badge">練 ${trainer}</span></div>
+      <div><span class="jockey-badge">騎 ${jockeyRaw}</span></div>
+      <div><span class="trainer-badge">練 ${trainerRaw}</span></div>
     `;
     horseRow.appendChild(nameCell);
 
-    // Columns 3-6 (unchanged)
-    [age, latestRecord, lastnightOdds, nowOdds].forEach(text => {
+    // Col 3 (age + race counts)
+    const ageCell = document.createElement('td');
+    ageCell.innerHTML = `
+      <div>${age}</div>
+      <div style="font-size: 14px; color: #666; font-weight: bold;">騎師場次 ${jockeyData.raceCount}</div>
+      <div style="font-size: 14px; color: #666; font-weight: bold;">練馬師場次 ${trainerData.raceCount}</div>
+    `;
+    horseRow.appendChild(ageCell);
+
+    // Col 4 (latest record only)
+    const recordCell = document.createElement('td');
+    recordCell.innerHTML = `<div>${latestRecord}</div>`;
+    horseRow.appendChild(recordCell);
+
+    // Cols 5-6
+    [lastnightOdds, nowOdds].forEach(text => {
       const cell = document.createElement('td');
       cell.innerHTML = `<div>${text}</div><div></div><div></div>`;
       horseRow.appendChild(cell);
@@ -190,6 +243,9 @@ function displayRace(raceRows, raceKey) {
 
   raceDetails.appendChild(table);
 }
+
+
+
 
 
 

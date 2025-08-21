@@ -11,8 +11,14 @@ body {
 .tab-bar {
   display: flex;
   background: #2e5c2e;
-  border-bottom: 2px solid #a3d9a5;
+  border-bottom: 2px solid #ffd966;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  /* ADDED */
+  top: 0;
+  /* ADDED */
+  z-index: 1000;
+  /* ADDED */
 }
 
 .tab {
@@ -53,7 +59,7 @@ body {
 #sidebar {
   flex: 0 0 220px;
   background: #0d2a0d;
-  border-right: 3px solid #ffd966;
+  border-right: 3px solid #fcfbf9;
   overflow-y: auto;
   transition: all 0.3s ease;
   padding-top: 10px;
@@ -140,7 +146,8 @@ body {
   flex: 1;
   min-width: 0;
   /* Prevent overflow */
-  padding: 20px;
+  padding: 0;
+  /* CHANGED from 20px to 0 */
   overflow-y: auto;
   transition: all 0.3s ease;
 }
@@ -149,9 +156,17 @@ body {
 .race-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
+  margin-top: 0;
   font-size: 14px;
   table-layout: fixed;
+  border-left: none;
+}
+
+.race-table thead {
+  position: sticky;
+  top: 50px;
+  /* Height of tab bar */
+  z-index: 900;
 }
 
 .race-table th {
@@ -159,13 +174,32 @@ body {
   color: white;
   padding: 10px 8px;
   text-align: left;
-  position: sticky;
-  top: 0;
+  /* REMOVE THIS: position: sticky; */
+  /* REMOVE THIS: top: 0; */
+  border-bottom: 2px solid #a3d9a5;
+  border-left: none;
+  border-right: none;
+  /* ADDED - remove right borders too */
+}
+
+.race-table th:first-child {
+  border-left: none;
+  padding-left: 10px;
+  /* ADDED - ensure proper left alignment */
 }
 
 .race-table td {
   padding: 8px 10px;
   vertical-align: top;
+  border-left: none;
+  border-right: none;
+  /* ADDED - remove right borders too */
+}
+
+.race-table td:first-child {
+  border-left: none;
+  padding-left: 10px;
+  /* ADDED - ensure proper left alignment */
 }
 
 /* Column Widths */
@@ -218,6 +252,52 @@ body {
   /* Ensures proper scaling */
 }
 
+
+/* Add this to your CSS for the jockey races count */
+.race-table td:nth-child(3) div:nth-child(2) {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* Optional: Style for better readability */
+.jockey-races-count {
+  background-color: #f0f8ff;
+  padding: 2px 4px;
+  border-radius: 3px;
+  border: 1px solid #d0e8ff;
+  font-weight: bold;
+}
+
+.trainer-races-count {
+  background-color: #f0f8ff;
+  padding: 2px 4px;
+  border-radius: 3px;
+  border: 1px solid #d0e8ff;
+  font-weight: bold;
+}
+
+
+
+.other-races-container {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.other-race-btn {
+  padding: 2px 8px;
+  border: 1px solid #ddd;
+  border-radius: 9999px;
+  background: #f5f7ff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.other-race-btn:hover {
+  filter: brightness(0.96);
+}
+
 /* === Drop Odds Grid === */
 #drop-odds {
   display: none;
@@ -228,9 +308,19 @@ body {
 .drop-odds-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
+  margin-top: 0;
+  /* CHANGED from 15px to 0 */
   font-size: 14px;
   table-layout: fixed;
+  border-left: none;
+  /* ADDED */
+}
+
+.drop-odds-table thead {
+  /* ADDED */
+  position: sticky;
+  top: 50px;
+  z-index: 900;
 }
 
 .drop-odds-table th {
@@ -238,14 +328,48 @@ body {
   color: white;
   padding: 10px 8px;
   text-align: center;
-  position: sticky;
-  top: 0;
+  border-bottom: 2px solid #a3d9a5;
+  /* ADDED */
+  border-left: none;
+  border-right: none;
+  /* ADDED - remove right borders too */
+  /* ADDED */
+}
+
+.drop-odds-table th:first-child {
+  /* ADDED */
+  border-left: none;
+  padding-left: 10px;
+  /* ADDED - ensure proper left alignment */
 }
 
 .drop-odds-table td {
   padding: 8px 10px;
   text-align: center;
   border-bottom: 1px solid #eee;
+  border-left: none;
+  border-right: none;
+  /* ADDED - remove right borders too */
+  /* ADDED */
+}
+
+.drop-odds-table td:first-child {
+  /* ADDED */
+  border-left: none;
+  padding-left: 10px;
+  /* ADDED - ensure proper left alignment */
+}
+
+/* ADD THIS to ensure table takes full width and no extra borders */
+table {
+  border-spacing: 0;
+  border: none;
+}
+
+/* ADD THIS to remove any potential container borders */
+#main-content {
+  border: none;
+  outline: none;
 }
 
 /* Column Widths for Drop Odds */
