@@ -262,6 +262,8 @@ function loadDropOdds() {
       }
 
       // Trim keys and values, skip fully empty rows, ensure first horse row is included
+      // Trim keys/values and filter out empty rows and rows without 'Horse Name' or 'Time'
+      // Trim keys/values and filter out invalid rows
       data = data
         .map(row => {
           const trimmedRow = {};
@@ -271,7 +273,16 @@ function loadDropOdds() {
           });
           return trimmedRow;
         })
-        .filter(row => Object.keys(row).length > 0 && row['Horse Name'] && row['Horse Name'] !== '');
+        .filter(row =>
+          row['Horse Name'] && row['Horse Name'] !== '' &&
+          row['Time'] && row['Time'] !== '' &&
+          row['Horse Name'] !== 'Horse Name' // remove accidental header rows
+        );
+
+      // Sort by Time
+      data.sort((a, b) => a['Time'].localeCompare(b['Time'], undefined, { numeric: true, sensitivity: 'base' }));
+
+
 
       if (data.length === 0) {
         container.innerHTML = '<div class="error">沒有有效馬匹數據</div>';
@@ -279,23 +290,23 @@ function loadDropOdds() {
       }
 
       let tableHTML = `
-        <table class="drop-odds-table">
-          <thead>
-            <tr>
-              <th>賽時</th>
-              <th>場地</th>
-              <th>號碼</th>
-              <th>馬名</th>
-              <th>隔夜價格</th>
-              <th>現時價格</th>
-              <th>變動</th>
-              <th>變動 %</th>
-              <th>最早掉價<br>時/賠</th>
-              <th>最低價格<br>時/賠</th>
-            </tr>
-          </thead>
-          <tbody>
-      `;
+  <table class="drop-odds-table">
+    <thead>
+      <tr>
+        <th>賽時</th>
+        <th>場地</th>
+        <th>號碼</th>
+        <th>馬名</th>
+        <th>隔夜價格</th>
+        <th>現時價格</th>
+        <th>變動</th>
+        <th>變動 %</th>
+        <th>賽果</th>
+        <th>跑出賠率</th>
+      </tr>
+    </thead>
+    <tbody>
+`;
 
       data.forEach(row => {
         const original = parseFloat(row['Original']) || 0;
@@ -305,18 +316,19 @@ function loadDropOdds() {
         const colorClass = pctChange <= -48 ? 'green' : pctChange >= 48 ? 'red' : '';
 
         tableHTML += `<tr>
-          <td>${row['Time'] || '--'}</td>
-          <td>${row['Course'] || '--'}</td>
-          <td>${row['Num'] || '--'}</td>
-          <td>${row['Horse Name']}</td>
-          <td>${original.toFixed(2)}</td>
-          <td>${now.toFixed(2)}</td>
-          <td class="${colorClass}">${change.toFixed(2)}</td>
-          <td class="${colorClass}">${pctChange.toFixed(2)}%</td>
-          <td>${row['first'] || '--'}</td>
-          <td>${row['LOWEST'] || '--'}</td>
-        </tr>`;
+    <td>${row['Time'] || '--'}</td>
+    <td>${row['Course'] || '--'}</td>
+    <td>${row['Num'] || '--'}</td>
+    <td>${row['Horse Name']}</td>
+    <td>${original.toFixed(2)}</td>
+    <td>${now.toFixed(2)}</td>
+    <td class="${colorClass}">${change.toFixed(2)}</td>
+    <td class="${colorClass}">${pctChange.toFixed(2)}%</td>
+    <td>${row['FIN'] || '--'}</td>
+    <td>${row['SP Odds'] || '--'}</td>
+  </tr>`;
       });
+
 
       tableHTML += '</tbody></table>';
       container.innerHTML = tableHTML;

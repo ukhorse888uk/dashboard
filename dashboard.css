@@ -509,6 +509,27 @@ table {
   font-weight: bold;
 }
 
+#drop-odds-container {
+  position: relative;
+  z-index: 1;
+  /* ensures it’s above tabs if needed */
+  margin-top: 10px;
+  /* or enough spacing below your tab bar */
+  padding-top: 50px;
+  /* adjust height of your top tab bar */
+}
+
+.drop-odds-table thead th {
+  position: sticky;
+  top: 50px;
+  /* offset from the top to avoid tab bar overlap */
+  background: #2e5c2e;
+  /* your header color, can remain default */
+  z-index: 2;
+  height: 40px;
+  /* make header row taller if needed */
+}
+
 
 .grid-item {
   padding: 6px;
