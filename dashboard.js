@@ -55,16 +55,11 @@ function loadRacecard() {
         courseMap[course][raceKey].push(row);
       });
 
-      // 3. Clean up empty courses
-      Object.keys(courseMap).forEach(course => {
-        if (Object.keys(courseMap[course]).length === 0) {
-          delete courseMap[course];
-        }
-      });
-
-      // 4. Build sidebar UI
+      // 3. Build sidebar UI
       const sidebar = document.getElementById('sidebar');
       sidebar.innerHTML = '';
+
+      let raceCounter = 1; // global race counter
 
       Object.keys(courseMap).forEach(course => {
         const btn = document.createElement('button');
@@ -77,6 +72,8 @@ function loadRacecard() {
 
         Object.keys(courseMap[course]).forEach(raceKey => {
           const raceBtn = document.createElement('button');
+          raceBtn.className = 'race-button';
+          raceBtn.setAttribute('data-race-number', raceCounter); // number for half-circle
           raceBtn.textContent = raceKey;
 
           raceBtn.addEventListener('click', () => {
@@ -87,6 +84,7 @@ function loadRacecard() {
           });
 
           raceListDiv.appendChild(raceBtn);
+          raceCounter++; // increment global counter
         });
 
         btn.addEventListener('click', () => {
@@ -107,7 +105,7 @@ function loadRacecard() {
         sidebar.appendChild(raceListDiv);
       });
 
-      // 5. Restore last opened course & race
+      // 4. Restore last opened course & race
       const savedCourse = localStorage.getItem('activeCourse');
       const savedRace = localStorage.getItem('activeRace');
 
@@ -126,6 +124,7 @@ function loadRacecard() {
     }
   });
 }
+
 
 
 function displayRace(raceRows, raceKey) {
@@ -148,7 +147,7 @@ function displayRace(raceRows, raceKey) {
   raceHeader.innerHTML = `
     <div class="race-title">${raceKey}</div>
     <div class="race-meta">
-      <span>距離: ${distance}m</span>
+      <span>距離: ${distance} Furlong </span>
       <span>班數: ${raceClass}</span>
       <span>地質: ${going}</span>
       <span>獎金: ${formattedPrize}</span>
@@ -244,49 +243,41 @@ function displayRace(raceRows, raceKey) {
   raceDetails.appendChild(table);
 }
 
-
-
-
-
-
 function loadDropOdds() {
-  const grid = document.getElementById("drop-odds-grid");
-  grid.innerHTML = '<div class="loading">載入中...</div>';
-
-  // Rest of your loadDropOdds() code
-}
-
-
-
-// Function to load drop odds data with table layout
-function loadDropOdds() {
-  console.log("Starting drop odds load...");
-
   const container = document.getElementById("drop-odds-container");
-  if (!container) {
-    console.error("Drop odds container not found!");
-    return;
-  }
-
   container.innerHTML = '<div class="loading">載入中...</div>';
 
   const csvUrl = "https://ukhorse888uk.github.io/dashboard/csv/dropodds.csv?cb=" + Date.now();
-  console.log("Fetching:", csvUrl);
 
   Papa.parse(csvUrl, {
     download: true,
     header: true,
     skipEmptyLines: true,
     complete: function (results) {
-      console.log("Raw results:", results);
+      let data = results.data;
 
-      if (!results.data || results.data.length === 0) {
-        console.warn("No data received", results);
+      if (!data || data.length === 0) {
         container.innerHTML = '<div class="error">沒有數據 (Empty)</div>';
         return;
       }
 
-      // Create table
+      // Trim keys and values, skip fully empty rows, ensure first horse row is included
+      data = data
+        .map(row => {
+          const trimmedRow = {};
+          Object.keys(row).forEach(k => {
+            const key = k.trim();
+            trimmedRow[key] = row[k] ? row[k].toString().trim() : '';
+          });
+          return trimmedRow;
+        })
+        .filter(row => Object.keys(row).length > 0 && row['Horse Name'] && row['Horse Name'] !== '');
+
+      if (data.length === 0) {
+        container.innerHTML = '<div class="error">沒有有效馬匹數據</div>';
+        return;
+      }
+
       let tableHTML = `
         <table class="drop-odds-table">
           <thead>
@@ -306,78 +297,53 @@ function loadDropOdds() {
           <tbody>
       `;
 
-      // Process data
-      results.data
-        .filter(row => row && row.Time && row['Horse Name'])
-        .sort((a, b) => a.Time.localeCompare(b.Time))
-        .forEach(row => {
-          // Map columns as requested
-          const time = row.Time || '--'; // Col B
-          const course = row.Course || '--'; // Col C
-          const num = row.Num || '--'; // Col D
-          const horseName = row['Horse Name'] || '--'; // Col E
-          const original = parseFloat(row.Original) || 0; // Col F
-          const current = parseFloat(row.NOW) || 0; // Col G
-          const change = parseFloat(row.Change) || (current - original); // Col H
-          const pctChange = parseFloat(row['%']) || (original ? (change / original) * 100 : 0); // Col I
-          const spOdds = row['SP Odds'] || '--'; // Col P
+      data.forEach(row => {
+        const original = parseFloat(row['Original']) || 0;
+        const now = parseFloat(row['NOW']) || 0;
+        const change = parseFloat(row['Change']) || (now - original);
+        const pctChange = parseFloat(row['%']) || (original ? (change / original) * 100 : 0);
+        const colorClass = pctChange <= -48 ? 'green' : pctChange >= 48 ? 'red' : '';
 
-          const colorClass = pctChange <= -48 ? 'green' : pctChange >= 48 ? 'red' : '';
+        tableHTML += `<tr>
+          <td>${row['Time'] || '--'}</td>
+          <td>${row['Course'] || '--'}</td>
+          <td>${row['Num'] || '--'}</td>
+          <td>${row['Horse Name']}</td>
+          <td>${original.toFixed(2)}</td>
+          <td>${now.toFixed(2)}</td>
+          <td class="${colorClass}">${change.toFixed(2)}</td>
+          <td class="${colorClass}">${pctChange.toFixed(2)}%</td>
+          <td>${row['first'] || '--'}</td>
+          <td>${row['LOWEST'] || '--'}</td>
+        </tr>`;
+      });
 
-          tableHTML += `
-            <tr>
-              <td>${time}</td>
-              <td>${course}</td>
-              <td>${num}</td>
-              <td>${horseName}</td>
-              <td>${original.toFixed(2)}</td>
-              <td>${current.toFixed(2)}</td>
-              <td class="${colorClass}">${change.toFixed(2)}</td>
-              <td class="${colorClass}">${pctChange.toFixed(2)}%</td>
-              <td>${spOdds}</td>
-              <td>${spOdds}</td>
-            </tr>
-          `;
-        });
-
-      tableHTML += `
-          </tbody>
-        </table>
-      `;
-
+      tableHTML += '</tbody></table>';
       container.innerHTML = tableHTML;
     },
     error: function (err) {
-      console.error("Papa Parse error:", err);
       container.innerHTML = `<div class="error">加載失敗 (Error)<br>${err.message}</div>`;
+      console.error(err);
     }
   });
 }
 
-// Modify tab switching for drop odds
+// ===== Tab Switching and Auto Refresh =====
 document.addEventListener('DOMContentLoaded', function () {
-  // Store the original tab switching code
-  const originalTabs = document.querySelectorAll('.tab-bar .tab');
+  const tabs = document.querySelectorAll('.tab-bar .tab');
 
-  originalTabs.forEach(tab => {
-    // Remove any existing event listeners
-    const newTab = tab.cloneNode(true);
-    tab.parentNode.replaceChild(newTab, tab);
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
 
-    // Add new event listener
-    newTab.addEventListener('click', function () {
-      // Set active tab
-      document.querySelectorAll('.tab-bar .tab').forEach(t => t.classList.remove('active'));
-      newTab.classList.add('active');
-      const activeTab = newTab.dataset.tab;
+      const activeTab = tab.dataset.tab;
       localStorage.setItem('activeTab', activeTab);
 
-      // Get elements
       const sidebar = document.getElementById('sidebar');
       const mainContent = document.getElementById('main-content');
 
       if (activeTab === 'drops') {
-        // Switch to Drop Odds (full-width)
         sidebar.style.flex = '0 0 0';
         sidebar.style.width = '0';
         sidebar.style.opacity = '0';
@@ -391,7 +357,6 @@ document.addEventListener('DOMContentLoaded', function () {
         loadDropOdds();
 
       } else {
-        // Switch to Racecard (with sidebar)
         sidebar.style.flex = '0 0 220px';
         sidebar.style.width = '220px';
         sidebar.style.opacity = '1';
@@ -403,78 +368,25 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('race-details').style.display = 'block';
         document.getElementById('drop-odds').style.display = 'none';
 
-        // Call your original loadRacecard function
-        if (typeof loadRacecard === 'function') {
-          loadRacecard();
-        }
+        if (typeof loadRacecard === 'function') loadRacecard();
       }
     });
   });
 
-  // Set initial tab based on localStorage or default
+  // Initial tab load
   const savedTab = localStorage.getItem('activeTab') || 'races';
-  const tabElement = document.querySelector(`.tab[data-tab="${savedTab}"]`);
-  if (tabElement) {
-    tabElement.click();
-  }
-});
-// ===== Corrected Tab Switching =====
-document.querySelectorAll('.tab-bar .tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    // Set active tab
-    document.querySelectorAll('.tab-bar .tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    activeTab = tab.dataset.tab;
-    localStorage.setItem('activeTab', activeTab);
-
-    // Get elements
-    const container = document.querySelector('.container');
-    const sidebar = document.getElementById('sidebar');
-    const mainContent = document.getElementById('main-content');
-
-    if (activeTab === 'drops') {
-      // Switch to Drop Odds (full-width)
-      sidebar.style.flex = '0 0 0';
-      sidebar.style.width = '0';
-      sidebar.style.opacity = '0';
-      sidebar.style.overflow = 'hidden';
-
-      mainContent.style.flex = '1 0 100%';
-      mainContent.style.maxWidth = '100%';
-
-      document.getElementById('race-details').style.display = 'none';
-      document.getElementById('drop-odds').style.display = 'block';
-      loadDropOdds();
-
-    } else {
-      // Switch to Racecard (with sidebar)
-      sidebar.style.flex = '0 0 220px';
-      sidebar.style.width = '220px';
-      sidebar.style.opacity = '1';
-      sidebar.style.overflow = 'auto';
-
-      mainContent.style.flex = '1';
-      mainContent.style.maxWidth = 'calc(100% - 220px)';
-
-      document.getElementById('race-details').style.display = 'block';
-      document.getElementById('drop-odds').style.display = 'none';
-      loadRacecard();
-    }
-  });
+  const tabElement = document.querySelector(`.tab-bar .tab[data-tab="${savedTab}"]`);
+  if (tabElement) tabElement.click();
 });
 
-// ===== Initial load =====
-window.addEventListener('DOMContentLoaded', () => {
-  document.querySelector(`.tab-bar .tab[data-tab="${activeTab}"]`).classList.add('active');
-  if (activeTab === 'races') loadRacecard();
-  else if (activeTab === 'drops') loadDropOdds();
-});
-
-// ===== Auto refresh every 30s =====
+// Auto-refresh every 30 seconds
 setInterval(() => {
+  const activeTab = localStorage.getItem('activeTab') || 'races';
   if (activeTab === 'races') loadRacecard();
   else if (activeTab === 'drops') loadDropOdds();
 }, 30000);
+
+
 
 
 
