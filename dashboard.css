@@ -14,11 +14,8 @@ body {
   border-bottom: 2px solid #ffd966;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
-  /* ADDED */
   top: 0;
-  /* ADDED */
   z-index: 1000;
-  /* ADDED */
 }
 
 .tab {
@@ -145,9 +142,7 @@ body {
 #main-content {
   flex: 1;
   min-width: 0;
-  /* Prevent overflow */
   padding: 0;
-  /* CHANGED from 20px to 0 */
   overflow-y: auto;
   transition: all 0.3s ease;
 }
@@ -165,7 +160,6 @@ body {
 .race-table thead {
   position: sticky;
   top: 50px;
-  /* Height of tab bar */
   z-index: 900;
 }
 
@@ -174,18 +168,14 @@ body {
   color: white;
   padding: 10px 8px;
   text-align: left;
-  /* REMOVE THIS: position: sticky; */
-  /* REMOVE THIS: top: 0; */
   border-bottom: 2px solid #a3d9a5;
   border-left: none;
   border-right: none;
-  /* ADDED - remove right borders too */
 }
 
 .race-table th:first-child {
   border-left: none;
   padding-left: 10px;
-  /* ADDED - ensure proper left alignment */
 }
 
 .race-table td {
@@ -193,13 +183,11 @@ body {
   vertical-align: top;
   border-left: none;
   border-right: none;
-  /* ADDED - remove right borders too */
 }
 
 .race-table td:first-child {
   border-left: none;
   padding-left: 10px;
-  /* ADDED - ensure proper left alignment */
 }
 
 /* Column Widths */
@@ -238,20 +226,56 @@ body {
   width: 80px;
 }
 
+/* Smooth highlight transition for race table rows */
+.race-table tr {
+  transition: background-color 1s;
+}
+
+/* Highlight selected horse */
+.horse-highlight {
+  background-color: #fffb91 !important;
+}
+
+/* Clickable horse names in drop-odds table */
+.horse-link {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+}
+
+.race-circle {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+  border-radius: 50%;
+  background-color: #2196F3;
+  color: white;
+  text-align: center;
+  font-size: 12px;
+  margin-right: 3px;
+  cursor: pointer;
+}
+
+.race-circle:hover {
+  background-color: #0b7dda;
+}
+
+.horse-highlight {
+  background-color: yellow !important;
+  transition: background-color 0.3s ease;
+}
 
 /* === Horse Silk Images === */
 .horse-silk {
   height: 40px;
-  /* Fixed size */
   width: auto;
   display: block;
   margin: 2px auto;
   border: 1px solid #eee;
   border-radius: 2px;
   object-fit: contain;
-  /* Ensures proper scaling */
 }
-
 
 /* Add this to your CSS for the jockey races count */
 .race-table td:nth-child(3) div:nth-child(2) {
@@ -277,8 +301,6 @@ body {
   font-weight: bold;
 }
 
-
-
 .other-races-container {
   display: flex;
   gap: 6px;
@@ -302,7 +324,6 @@ body {
   display: flex;
   align-items: center;
   margin-bottom: 6px;
-  /* space between races */
 }
 
 .race-badge {
@@ -310,7 +331,6 @@ body {
   height: 24px;
   background-color: gold;
   border-radius: 50% 50% 0 0;
-  /* half-circle on top */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -322,19 +342,6 @@ body {
 .race-button {
   position: relative;
   padding: 6px 8px 6px 36px;
-  /* leave space for half-circle on the left */
-  background-color: #f5f5f5;
-  border: 1px solid #ccc;
-  text-align: left;
-  cursor: pointer;
-  border-radius: 4px;
-  margin-bottom: 6px;
-}
-
-.race-button {
-  position: relative;
-  padding: 6px 8px 6px 36px;
-  /* leave space for half-circle on the left */
   background-color: #f5f5f5;
   border: 1px solid #ccc;
   text-align: left;
@@ -348,14 +355,12 @@ body {
   content: attr(data-race-number);
   position: absolute;
   left: -12px;
-  /* shift half-circle outside the button */
   top: 50%;
   transform: translateY(-50%);
   width: 24px;
   height: 24px;
   background-color: gold;
   border-radius: 50% 0 0 50%;
-  /* rounded left, flat right */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -363,8 +368,6 @@ body {
   color: #000;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
 }
-
-
 
 /* === Drop Odds Grid === */
 #drop-odds {
@@ -377,15 +380,12 @@ body {
   width: 100%;
   border-collapse: collapse;
   margin-top: 0;
-  /* CHANGED from 15px to 0 */
   font-size: 14px;
   table-layout: fixed;
   border-left: none;
-  /* ADDED */
 }
 
 .drop-odds-table thead {
-  /* ADDED */
   position: sticky;
   top: 50px;
   z-index: 900;
@@ -397,18 +397,13 @@ body {
   padding: 10px 8px;
   text-align: center;
   border-bottom: 2px solid #a3d9a5;
-  /* ADDED */
   border-left: none;
   border-right: none;
-  /* ADDED - remove right borders too */
-  /* ADDED */
 }
 
 .drop-odds-table th:first-child {
-  /* ADDED */
   border-left: none;
   padding-left: 10px;
-  /* ADDED - ensure proper left alignment */
 }
 
 .drop-odds-table td {
@@ -417,15 +412,11 @@ body {
   border-bottom: 1px solid #eee;
   border-left: none;
   border-right: none;
-  /* ADDED - remove right borders too */
-  /* ADDED */
 }
 
 .drop-odds-table td:first-child {
-  /* ADDED */
   border-left: none;
   padding-left: 10px;
-  /* ADDED - ensure proper left alignment */
 }
 
 /* ADD THIS to ensure table takes full width and no extra borders */
@@ -442,7 +433,6 @@ table {
 
 .drop-odds-table tbody tr:first-child td {
   padding-top: 18px;
-  /* increase space above the first row */
 }
 
 /* Column Widths for Drop Odds */
@@ -512,24 +502,17 @@ table {
 #drop-odds-container {
   position: relative;
   z-index: 1;
-  /* ensures it’s above tabs if needed */
   margin-top: 10px;
-  /* or enough spacing below your tab bar */
   padding-top: 50px;
-  /* adjust height of your top tab bar */
 }
 
 .drop-odds-table thead th {
   position: sticky;
   top: 50px;
-  /* offset from the top to avoid tab bar overlap */
   background: #2e5c2e;
-  /* your header color, can remain default */
   z-index: 2;
   height: 40px;
-  /* make header row taller if needed */
 }
-
 
 .grid-item {
   padding: 6px;
@@ -600,4 +583,125 @@ table {
   padding: 10px 5px;
   text-align: center;
   border-bottom: 2px solid #0af702;
+}
+
+/* Jockey race pills styling */
+.race-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+/* default race pill */
+.race-pill {
+  display: inline-block;
+  background: #2e5c2e;
+  /* green */
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+/* race pill when clicked */
+.race-pill.current {
+  background-color: gold !important;
+  /* gold overrides green */
+  color: black !important;
+  font-weight: bold;
+}
+
+
+.race-pill:hover {
+  background: #3a743a;
+  transform: translateY(-1px);
+}
+
+
+
+
+/* highlight jockey row */
+.highlight-jockey {
+  background-color: yellow !important;
+  transition: background-color 1s ease;
+}
+
+/* gold pill button */
+.active-pill {
+  background-color: gold !important;
+  color: black !important;
+}
+
+.pill-button {
+  border: none;
+  border-radius: 50%;
+  background: #ccc;
+  color: black;
+  padding: 4px 8px;
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+.pill-button.gold {
+  background: gold;
+  color: black;
+}
+
+.horse-row.highlight {
+  background-color: yellow;
+  transition: background-color 0.5s ease;
+}
+
+.race-button.active {
+  background-color: gold !important;
+  color: black;
+}
+
+
+/* disabled pill */
+.race-pill.disabled {
+  background-color: #ccc !important;
+  color: #666 !important;
+  cursor: not-allowed;
+}
+
+.disabled-pill {
+  background-color: grey !important;
+  color: #ccc !important;
+  cursor: default !important;
+  pointer-events: none;
+}
+
+
+@keyframes highlight {
+  0% {
+    background-color: #fffb91;
+  }
+
+  70% {
+    background-color: #fffb91;
+  }
+
+  100% {
+    background-color: inherit;
+  }
+}
+
+/* Race pills container that spans multiple columns */
+.race-pills-container {
+  grid-column: 4 / span 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+  .race-pills-container {
+    grid-column: 1 / span 6;
+  }
 }

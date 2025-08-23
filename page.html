@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horse Racing Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(90deg, #1a2980 0%, #26d0ce 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            display: flex;
+            min-height: 600px;
+        }
+
+        #sidebar {
+            width: 300px;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .course-button {
+            background: #34495e;
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            margin: 8px 0;
+            width: 100%;
+            text-align: left;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-button:hover {
+            background: #3d566e;
+            transform: translateX(5px);
+        }
+
+        .course-button.active {
+            background: #1abc9c;
+        }
+
+        .race-list {
+            padding-left: 20px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .race-button {
+            background: #4a6b8a;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px 0;
+            width: 100%;
+            text-align: left;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .race-button:hover {
+            background: #5a7b9a;
+        }
+
+        .race-button.active {
+            background: #e74c3c;
+        }
+
+        .race-number {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+            background: #1abc9c;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        #race-details {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .race-header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .race-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .race-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .race-meta span {
+            background: #e8f4fc;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .race-name {
+            font-style: italic;
+            color: #7f8c8d;
+            margin-top: 10px;
+        }
+
+        .race-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .race-table th {
+            background: #1a2980;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .race-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .race-table tr:hover {
+            background: #f5f9ff !important;
+        }
+
+        .horse-silk {
+            height: 30px;
+            width: 30px;
+            object-fit: contain;
+        }
+
+        .jockey-badge,
+        .trainer-badge {
+            display: inline-block;
+            background: #e1f5fe;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin: 2px 0;
+            color: #0277bd;
+        }
+
+        .trainer-badge {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .race-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .race-pill {
+            display: inline-block;
+            background: #ff7043;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .race-pill:hover {
+            background: #ff5722;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+
+            #sidebar {
+                width: 100%;
+                max-height: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Horse Racing Dashboard</h1>
+            <p class="subtitle">Real-time race information and jockey statistics</p>
+        </header>
+
+        <div class="content">
+            <div id="sidebar">
+                <div class="loading">Loading race data...</div>
+            </div>
+
+            <div id="race-details">
+                <div class="loading">Select a race to view details</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== Active tab =====
+        let activeTab = localStorage.getItem('activeTab') || 'races';
+
+        let masterJockeyMap = {};
+        let masterTrainerMap = {};
+        let raceNumberMap = {}; // Maps race keys to their assigned numbers
+
+        function buildMasterMaps(data) {
+            masterJockeyMap = {};
+            masterTrainerMap = {};
+
+            data.forEach(row => {
+                const jockeyName = row[34] || ''; // Column AI
+                const jockeyCount = row[35] || '0'; // Column AJ
+                if (jockeyName && jockeyName.trim() !== '' && jockeyName.trim().toUpperCase() !== 'NON-RUNNER') {
+                    // Process jockey races from columns AK to AU
+                    const jockeyRaces = row.slice(36, 47)
+                        .filter(r => r && r.trim() !== '')
+                        .map(raceStr => {
+                            // Parse race string: "14:20 | Aintree | horsename"
+                            const parts = raceStr.split('|').map(p => p.trim());
+                            return {
+                                time: parts[0] || '',
+                                course: parts[1] || '',
+                                horse: parts[2] || '',
+                                fullString: raceStr
+                            };
+                        });
+
+                    masterJockeyMap[jockeyName.trim()] = {
+                        raceCount: jockeyCount,
+                        races: jockeyRaces
+                    };
+                }
+
+                const trainerName = row[47] || ''; // Column AV
+                const trainerCount = row[48] || '0'; // Column AW
+                if (trainerName && trainerName.trim() !== '' && trainerName.trim().toUpperCase() !== 'NON-RUNNER') {
+                    masterTrainerMap[trainerName.trim()] = { raceCount: trainerCount };
+                }
+            });
+        }
+
+        function loadRacecard() {
+            Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/racecard.csv?cb=" + Date.now(), {
+                download: true,
+                complete: function (results) {
+                    const validRows = results.data
+                        .filter(row => row && row.length > 0)
+                        .filter(row => row[1] && String(row[1]).trim() !== "");
+
+                    if (!validRows || validRows.length <= 1) {
+                        document.getElementById('sidebar').innerHTML = '';
+                        return;
+                    }
+
+                    const raceRows = validRows.slice(1); // Skip header
+
+                    // Build master lookup maps for jockeys and trainers
+                    buildMasterMaps(raceRows);
+
+                    // 2. Group races by course and raceKey
+                    const courseMap = {};
+                    raceRows.forEach(row => {
+                        const course = (row[1] || '').trim();
+                        if (!course) return;
+
+                        const raceTime = (row[2] || '').trim();
+                        const raceKey = `${course} ${raceTime}`;
+                        if (!courseMap[course]) courseMap[course] = {};
+                        if (!courseMap[course][raceKey]) courseMap[course][raceKey] = [];
+                        courseMap[course][raceKey].push(row);
+                    });
+
+                    // 3. Build sidebar UI
+                    const sidebar = document.getElementById('sidebar');
+                    sidebar.innerHTML = '';
+
+                    let raceCounter = 1; // global race counter
+                    raceNumberMap = {}; // Reset race number map
+
+                    Object.keys(courseMap).forEach(course => {
+                        const btn = document.createElement('button');
+                        btn.textContent = course;
+                        btn.className = 'course-button';
+
+                        const raceListDiv = document.createElement('div');
+                        raceListDiv.className = 'race-list';
+                        raceListDiv.style.display = 'none';
+
+                        Object.keys(courseMap[course]).forEach(raceKey => {
+                            // Store race number mapping
+                            raceNumberMap[raceKey] = raceCounter;
+
+                            const raceBtn = document.createElement('button');
+                            raceBtn.className = 'race-button';
+                            raceBtn.setAttribute('data-race-number', raceCounter);
+                            raceBtn.innerHTML = `<span class="race-number">${raceCounter}</span> ${raceKey}`;
+
+                            raceBtn.addEventListener('click', () => {
+                                // Remove active class from all race buttons
+                                document.querySelectorAll('.race-list button').forEach(b => b.classList.remove('active'));
+                                raceBtn.classList.add('active');
+
+                                // Display the race
+                                displayRace(courseMap[course][raceKey], raceKey);
+
+                                // Save active race to localStorage
+                                localStorage.setItem('activeRace', raceKey);
+
+                                // Scroll race-details container to top
+                                const raceDetails = document.getElementById('race-details');
+                                if (raceDetails) {
+                                    raceDetails.scrollTo({ top: 0, behavior: 'smooth' });
+                                }
+                            });
+
+                            raceListDiv.appendChild(raceBtn);
+                            raceCounter++; // increment global counter
+                        });
+
+                        btn.addEventListener('click', () => {
+                            document.querySelectorAll('.course-button').forEach(b => {
+                                if (b !== btn) {
+                                    b.classList.remove('active');
+                                    b.nextSibling.style.display = 'none';
+                                }
+                            });
+
+                            const isActive = btn.classList.toggle('active');
+                            raceListDiv.style.display = isActive ? 'block' : 'none';
+                            if (isActive) localStorage.setItem('activeCourse', course);
+                            else localStorage.removeItem('activeCourse');
+                        });
+
+                        sidebar.appendChild(btn);
+                        sidebar.appendChild(raceListDiv);
+                    });
+
+                    // 4. Restore last opened course & race
+                    const savedCourse = localStorage.getItem('activeCourse');
+                    const savedRace = localStorage.getItem('activeRace');
+
+                    if (savedCourse) {
+                        const courseBtn = [...document.querySelectorAll('.course-button')].find(b => b.textContent === savedCourse);
+                        if (courseBtn) {
+                            courseBtn.classList.add('active');
+                            courseBtn.nextSibling.style.display = 'block';
+                        }
+                    }
+
+                    if (savedRace) {
+                        const raceBtn = [...document.querySelectorAll('.race-list button')].find(b => b.textContent.includes(savedRace));
+                        if (raceBtn) raceBtn.click();
+                    }
+                }
+            });
+        }
+
+        function displayRace(raceRows, raceKey) {
+            const raceDetails = document.getElementById('race-details');
+            raceDetails.innerHTML = ''; // Clear previous content
+
+            // Get race metadata from first row
+            const raceData = raceRows[0];
+            const distance = raceData[5] || 'N/A';
+            const raceClass = raceData[4] || 'N/A';
+            const going = raceData[7] || 'N/A';
+            const raceName = raceData[3] || '';
+            const rawPrize = raceData[6] || '';
+            const prizeValue = rawPrize.replace(/[^0-9]/g, '');
+            const formattedPrize = prizeValue ? `£${parseInt(prizeValue).toLocaleString()}` : 'N/A';
+
+            // Header
+            const raceHeader = document.createElement('div');
+            raceHeader.className = 'race-header';
+            raceHeader.innerHTML = `
+                <div class="race-title">${raceKey}</div>
+                <div class="race-meta">
+                    <span>距離: ${distance} Furlong </span>
+                    <span>班數: ${raceClass}</span>
+                    <span>地質: ${going}</span>
+                    <span>獎金: ${formattedPrize}</span>
+                </div>
+                ${raceName ? `<div class="race-name">${raceName}</div>` : ''}
+            `;
+            raceDetails.appendChild(raceHeader);
+
+            // Table + header row
+            const table = document.createElement('table');
+            table.className = 'race-table';
+            const headerRow = document.createElement('tr');
+            ['號碼(檔)', '馬名', '年齡', '近戰績', '隔夜', '最近'].forEach(text => {
+                const th = document.createElement('th');
+                th.textContent = text;
+                headerRow.appendChild(th);
+            });
+            table.appendChild(headerRow);
+
+            // Process ONLY horse rows
+            const horseRows = raceRows.filter(row => {
+                const horseNumber = row[11]; // Column L
+                return horseNumber && horseNumber.toString().trim() !== '' &&
+                    horseNumber.toString().trim() !== 'Jockey' &&
+                    horseNumber.toString().trim() !== 'Trainer';
+            });
+
+            horseRows.forEach((row, index) => {
+                const horseNumber = row[11] || '';     // L
+                const draw = row[16] || '';            // Q
+                const horseName = row[12] || '';       // M
+                const age = row[13] || '';             // N
+                const latestRecord = row[26] || '';    // AA
+                const lastnightOdds = row[18] || '-';  // S
+                const nowOdds = row[19] || '-';        // T
+                const jockeyRaw = (row[14] || '').trim(); // O
+                const trainerRaw = (row[15] || '').trim(); // P
+                const silkUrl = row[9] || '';          // J
+
+                // Strip "騎 ", "練 " prefixes and remove parentheses before lookup
+                const jockey = jockeyRaw.replace(/^騎\s*/, '').replace(/\s*\(.*?\)/g, '').trim();
+                const trainer = trainerRaw.replace(/^練\s*/, '').replace(/\s*\(.*?\)/g, '').trim();
+
+                // Get jockey/trainer data from master maps
+                const jockeyData = masterJockeyMap[jockey] || { raceCount: '0', races: [] };
+                const trainerData = masterTrainerMap[trainer] || { raceCount: '0', races: [] };
+
+                const horseRow = document.createElement('tr');
+                horseRow.style.backgroundColor = index % 2 === 0 ? 'white' : '#f9f9f9';
+
+                // Col 1
+                const numCell = document.createElement('td');
+                numCell.innerHTML = `
+                    <div style="font-weight:bold">${horseNumber} (${draw})</div>
+                    <div style="height:24px">${silkUrl ? `<img src="${silkUrl}" class="horse-silk">` : ''}</div>
+                    <div></div>
+                `;
+                horseRow.appendChild(numCell);
+
+                // Col 2
+                const nameCell = document.createElement('td');
+                nameCell.innerHTML = `
+                    <div style="font-weight:bold">${horseName}</div>
+                    <div><span class="jockey-badge">騎 ${jockeyRaw}</span></div>
+                    <div><span class="trainer-badge">練 ${trainerRaw}</span></div>
+                `;
+                horseRow.appendChild(nameCell);
+
+                // Col 3 (age + race counts)
+                const ageCell = document.createElement('td');
+                ageCell.innerHTML = `
+                    <div>${age}</div>
+                    <div style="font-size: 14px; color: #666; font-weight: bold;">騎師場次 ${jockeyData.raceCount}</div>
+                    <div style="font-size: 14px; color: #666; font-weight: bold;">練馬師場次 ${trainerData.raceCount}</div>
+                `;
+                horseRow.appendChild(ageCell);
+
+                // Col 4 (latest record + race pills)
+                const recordCell = document.createElement('td');
+
+                // Create race pills for jockey's other races
+                let racePillsHTML = '';
+                if (jockeyData.races && jockeyData.races.length > 0) {
+                    racePillsHTML = '<div class="race-pills">';
+
+                    jockeyData.races.forEach(race => {
+                        // Create a race key to match with our raceNumberMap
+                        const raceKey = `${race.course} ${race.time}`;
+
+                        // Find the race number for this race
+                        const raceNumber = raceNumberMap[raceKey];
+
+                        if (raceNumber) {
+                            racePillsHTML += `<span class="race-pill" data-race-key="${raceKey}">${raceNumber}</span>`;
+                        }
+                    });
+
+                    racePillsHTML += '</div>';
+                }
+
+                recordCell.innerHTML = `<div>${latestRecord}</div>${racePillsHTML}`;
+                horseRow.appendChild(recordCell);
+
+                // Cols 5-6
+                [lastnightOdds, nowOdds].forEach(text => {
+                    const cell = document.createElement('td');
+                    cell.innerHTML = `<div>${text}</div><div></div><div></div>`;
+                    horseRow.appendChild(cell);
+                });
+
+                table.appendChild(horseRow);
+            });
+
+            raceDetails.appendChild(table);
+
+            // Add event listeners to race pills
+            document.querySelectorAll('.race-pill').forEach(pill => {
+                pill.addEventListener('click', () => {
+                    const raceKey = pill.getAttribute('data-race-key');
+
+                    // Find the race button with this race key
+                    const raceBtn = [...document.querySelectorAll('.race-button')]
+                        .find(btn => btn.textContent.includes(raceKey));
+
+                    if (raceBtn) {
+                        raceBtn.click();
+                    }
+                });
+            });
+        }
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', function () {
+            loadRacecard();
+        });
+    </script>
+</body>
+
+</html>
