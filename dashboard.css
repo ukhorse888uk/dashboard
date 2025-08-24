@@ -585,41 +585,94 @@ table {
   border-bottom: 2px solid #0af702;
 }
 
-/* Jockey race pills styling */
 .race-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-top: 8px;
+  display: block;
+  /* treat as block container */
+  column-width: 100px;
+  /* width of each column (adjust to pill width) */
+  column-gap: 4px;
+  /* gap between columns */
 }
 
-/* default race pill */
 .race-pill {
   display: inline-block;
+  /* each pill is treated as a block in column */
+  margin: 2px 0;
+  /* vertical spacing between pills */
+}
+
+
+
+.race-pill {
+  padding: 3px 10px;
+  margin: 0;
+  border: 1px solid transparent;
+  border-left: none;
   background: #2e5c2e;
-  /* green */
-  color: white;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.7rem;
+  /* default dark green */
+  color: #fff;
+
   cursor: pointer;
-  transition: all 0.3s;
-  white-space: nowrap;
-}
-
-/* race pill when clicked */
-.race-pill.current {
-  background-color: gold !important;
-  /* gold overrides green */
-  color: black !important;
+  text-align: center;
+  min-width: 6px;
+  min-height: 6px;
+  font-size: 12px;
   font-weight: bold;
+  /* make all pill texts bold */
+  border-radius: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  /* 3D effect */
+  transition: all 0.2s ease;
 }
 
+.race-pill:first-child {
+  border-left: 1px solid transparent;
+  border-radius: 4px 0 0 4px;
+}
 
+.race-pill:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+/* Gold pill for current race */
+.race-pill.gold {
+  background: linear-gradient(to bottom, #FFD700, #FFC700);
+  border-color: #FFD700;
+  color: #000;
+  /* black text */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  /* subtle highlight on top, no bottom line */
+}
+
+.race-pill.gold {
+  color: #000 !important;
+  /* force black text */
+}
+
+/* Green pill for finished race */
+.race-pill.green {
+  background: linear-gradient(to bottom, #4CAF50, #43A047);
+  border-color: #4CAF50;
+  color: #fff;
+  box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark green for other pills */
+.race-pill.dark-green {
+  background: linear-gradient(to bottom, #2e5c2e, #244822);
+  border-color: #2e5c2e;
+  color: #fff;
+  box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Hover effect */
 .race-pill:hover {
-  background: #3a743a;
-  transform: translateY(-1px);
+  filter: brightness(2.15);
 }
+
+
+
+
 
 
 

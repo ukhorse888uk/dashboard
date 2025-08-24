@@ -259,7 +259,8 @@ function displayRace(raceRows, raceKey) {
         const raceKeyOther = `${race.course} ${race.time}`;
         const raceNumber = raceNumberMap[raceKeyOther];
         if (raceNumber) {
-          racePillsHTML += `<span class="race-pill" data-race-key="${raceKeyOther}" data-jockey="${jockey}">${raceNumber}</span>`;
+          racePillsHTML += `<span class="race-pill" data-race-key="${raceKeyOther}" data-jockey="${jockey}" data-number="${raceNumber}">${raceNumber}</span>`;
+
         }
       });
       racePillsHTML += '</div>';
@@ -297,12 +298,8 @@ function displayRace(raceRows, raceKey) {
         .find(btn => btn.textContent.includes(raceKey));
 
       if (raceBtn) {
-        // Remove active from all buttons
         document.querySelectorAll('.race-button').forEach(b => b.classList.remove('active'));
-        // Add active to this button
         raceBtn.classList.add('active');
-
-        // Trigger race button click
         raceBtn.click();
 
         // Highlight first horse row with that jockey
@@ -320,16 +317,20 @@ function displayRace(raceRows, raceKey) {
               }
             });
           }
-
-          // Disable and grey out pill(s) matching the current race number
-          const currentRaceNumber = raceNumberMap[raceKey];
-          document.querySelectorAll(`.race-pill[data-number="${currentRaceNumber}"]`)
-            .forEach(p => p.classList.add('disabled-pill'));
-        }, 50);
+        }, 0);
       }
     });
   });
+
+  // Highlight and disable pills for the current race or finished race
+  const currentRaceNumber = raceNumberMap[raceKey];
+  document.querySelectorAll(`.race-pill[data-number="${currentRaceNumber}"]`).forEach(pill => {
+    // Determine color dynamically (example: if raceKey === currentRaceKey → gold, else green)
+    const isCurrent = true; // replace with your actual logic to detect current race
+    pill.classList.add('disabled-pill', isCurrent ? 'gold' : 'green');
+  });
 }
+
 
 
 
