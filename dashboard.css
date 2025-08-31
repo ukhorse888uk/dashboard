@@ -45,97 +45,114 @@ body {
   color: #000;
 }
 
-/* === Layout === */
-.container {
-  display: flex;
-  height: calc(100vh - 50px);
-  transition: all 0.3s ease;
-}
-
-/* === Sidebar === */
-#sidebar {
-  flex: 0 0 220px;
-  background: #0d2a0d;
-  border-right: 3px solid #fcfbf9;
-  overflow-y: auto;
-  transition: all 0.3s ease;
-  padding-top: 10px;
-  will-change: width, opacity;
-}
-
-/* Course Buttons */
-.course-button {
-  display: block;
-  width: 90%;
-  background: #1e4a1e !important;
-  color: #ffec99 !important;
-  font-weight: bold;
-  font-size: 15px;
-  padding: 12px 35px 12px 15px !important;
-  margin: 8px auto !important;
-  border: none !important;
-  border-left: 5px solid #ffd966 !important;
-  border-radius: 4px;
-  text-align: left;
-  cursor: pointer;
+.tab-bar .tab[data-tab="races"] .arrow {
   position: relative;
-  transition: all 0.3s;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-left: 6px;
+  vertical-align: middle;
+  cursor: pointer;
+  transition: transform 0.3s ease;
 }
 
-/* Triangle Arrow */
-.course-button::after {
-  content: "";
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 8px solid #ffec99;
-  transition: all 0.3s;
+/* Flip arrow when dropdown is open */
+.tab-bar .tab[data-tab="races"] .arrow.open {
+  transform: rotate(180deg);
 }
 
-/* Race Buttons */
-.race-list button {
-  display: block;
-  width: 85%;
-  background: #f0f0f0 !important;
-  color: #222 !important;
-  border: none !important;
-  border-left: 3px solid #89c789 !important;
-  padding: 8px 20px !important;
-  margin: 2px auto 2px 25px !important;
+/* --- Added scroll for race list --- */
+#race-list {
+  overflow-y: auto;
+  max-height: calc(100px - 150px);
+  padding-right: 4px;
+}
+
+/* === Race Dropdown Panel === */
+#race-dropdown {
+  display: block !important;
+  background: white;
+  color: black;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  padding: 0;
+  z-index: 999;
+  border: none;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   font-size: 13px;
-  border-radius: 3px;
-  transition: all 0.2s;
+  line-height: 1.3;
 }
 
-/* Hover States */
-.course-button:hover {
-  background: #ffd966 !important;
-  color: #0d2a0d !important;
-  transform: translateX(5px);
+#race-dropdown.open {
+  max-height: 400px;
+  opacity: 1;
+  visibility: visible;
+  padding: 5px 10px;
 }
 
-.race-list button:hover {
-  background: #ddeedd !important;
+/* Course row - use flexbox for alignment */
+.course-row {
+  display: flex;
+  margin-bottom: 5px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #eee;
+  color: #000;
+  font-size: 13px;
+  line-height: 1.3;
 }
 
-/* Active States */
-.course-button.active {
-  background: #ffd966 !important;
-  color: #0d2a0d !important;
+.course-row:last-child {
+  border-bottom: none;
 }
 
-.race-list button.active {
-  background: #d4e8d4 !important;
+/* Course name - fixed width */
+.course-name {
+  flex: 0 0 120px;
   font-weight: bold;
-  border-left: 3px solid #1e4a1e !important;
+  color: #000;
+  padding-right: 10px;
+  text-align: left;
+}
+
+/* Race times container */
+.race-times {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Race times - plain text */
+.race-time {
+  color: #000;
+  cursor: pointer;
+  padding: 2px 4px;
+  white-space: nowrap;
+}
+
+.race-time:hover {
+  background-color: #ffd966;
+}
+
+.race-time.active {
+  font-weight: bold;
+  color: #eee;
+  background-color: #2e5c2e;
+}
+
+/* Remove all pill styles */
+.course-row .race-pill {
+  display: none;
+}
+
+/* Arrow indicator for toggle */
+.tab-bar .tab[data-tab="races"] .arrow {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 12px;
 }
 
 /* === Main Content === */
@@ -145,6 +162,8 @@ body {
   padding: 0;
   overflow-y: auto;
   transition: all 0.3s ease;
+  border: none;
+  outline: none;
 }
 
 /* === Race Table === */
@@ -154,7 +173,6 @@ body {
   margin-top: 0;
   font-size: 14px;
   table-layout: fixed;
-  border-left: none;
 }
 
 .race-table thead {
@@ -169,106 +187,28 @@ body {
   padding: 10px 8px;
   text-align: left;
   border-bottom: 2px solid #a3d9a5;
-  border-left: none;
-  border-right: none;
-}
-
-.race-table th:first-child {
-  border-left: none;
-  padding-left: 10px;
 }
 
 .race-table td {
   padding: 8px 10px;
   vertical-align: top;
-  border-left: none;
-  border-right: none;
 }
 
 .race-table td:first-child {
-  border-left: none;
   padding-left: 10px;
 }
 
-/* Column Widths */
-.race-table td:nth-child(1),
-.race-table th:nth-child(1) {
-  width: 40px;
-}
-
-.race-table td:nth-child(2),
-.race-table th:nth-child(2) {
-  width: 25%;
-  min-width: 190px;
-  max-width: 300px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.race-table td:nth-child(3),
-.race-table th:nth-child(3) {
-  width: 60px;
-}
-
-.race-table td:nth-child(4),
-.race-table th:nth-child(4) {
-  width: 100px;
-}
-
-.race-table td:nth-child(5),
-.race-table th:nth-child(5) {
-  width: 80px;
-}
-
-.race-table td:nth-child(6),
-.race-table th:nth-child(6) {
-  width: 80px;
-}
-
-/* Smooth highlight transition for race table rows */
 .race-table tr {
   transition: background-color 1s;
 }
 
-/* Highlight selected horse */
 .horse-highlight {
   background-color: #fffb91 !important;
 }
 
-/* Clickable horse names in drop-odds table */
-.horse-link {
-  cursor: pointer;
-  color: blue;
-  text-decoration: underline;
-}
-
-.race-circle {
-  display: inline-block;
-  width: 22px;
-  height: 22px;
-  line-height: 22px;
-  border-radius: 50%;
-  background-color: #2196F3;
-  color: white;
-  text-align: center;
-  font-size: 12px;
-  margin-right: 3px;
-  cursor: pointer;
-}
-
-.race-circle:hover {
-  background-color: #0b7dda;
-}
-
-.horse-highlight {
-  background-color: yellow !important;
-  transition: background-color 0.3s ease;
-}
-
-/* === Horse Silk Images === */
+/* Horse Silk Images */
 .horse-silk {
-  height: 40px;
+  height: 34px;
   width: auto;
   display: block;
   margin: 2px auto;
@@ -277,96 +217,111 @@ body {
   object-fit: contain;
 }
 
-/* Add this to your CSS for the jockey races count */
-.race-table td:nth-child(3) div:nth-child(2) {
-  font-size: 12px;
-  color: #666;
-  margin-top: 2px;
+/* Jockey and Trainer badges */
+.jockey-badge,
+.trainer-badge {
+  font-size: 0.85em;
+  color: #7f8c8d;
+  display: block;
+  line-height: 1.4;
 }
 
-/* Optional: Style for better readability */
-.jockey-races-count {
-  background-color: #f0f8ff;
-  padding: 2px 4px;
-  border-radius: 3px;
-  border: 1px solid #d0e8ff;
-  font-weight: bold;
-}
-
-.trainer-races-count {
-  background-color: #f0f8ff;
-  padding: 2px 4px;
-  border-radius: 3px;
-  border: 1px solid #d0e8ff;
-  font-weight: bold;
-}
-
-.other-races-container {
+/* Race pills for jockey history */
+.race-pills {
   display: flex;
-  gap: 6px;
   flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 5px;
 }
 
-.other-race-btn {
-  padding: 2px 8px;
-  border: 1px solid #ddd;
-  border-radius: 9999px;
-  background: #f5f7ff;
-  font-size: 12px;
+.race-pill {
+  background-color: #3498db;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 0.75em;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.other-race-btn:hover {
-  filter: brightness(0.96);
+.race-pill:hover {
+  background-color: #2980b9;
 }
 
-.race-wrapper {
-  display: flex;
-  align-items: center;
-  margin-bottom: 6px;
+.race-pill.disabled-pill {
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
-.race-badge {
-  width: 24px;
-  height: 24px;
-  background-color: gold;
-  border-radius: 50% 50% 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.race-pill.green {
+  background-color: #27ae60;
+}
+
+.race-pill.gold {
+  background-color: #f39c12;
+}
+
+.highlight-jockey {
+  animation: highlightFade 3s ease-in-out;
+  background-color: #fff3cd !important;
+}
+
+@keyframes highlightFade {
+  0% {
+    background-color: #fff3cd;
+  }
+
+  100% {
+    background-color: inherit;
+  }
+}
+
+/* Race header styles */
+.race-header {
+  background-color: #34495e;
+  color: white;
+  padding: 15px;
+  border-radius: 5px 5px 0 0;
+  margin-bottom: 1px;
+}
+
+.race-title {
+  font-size: 1.5em;
   font-weight: bold;
-  color: #000;
-  margin-right: 6px;
+  margin-bottom: 10px;
 }
 
-.race-button {
-  position: relative;
-  padding: 6px 8px 6px 36px;
-  background-color: #f5f5f5;
-  border: 1px solid #ccc;
-  text-align: left;
-  cursor: pointer;
-  border-radius: 4px;
-  margin-bottom: 6px;
-}
-
-/* Half-circle number on the left */
-.race-button::before {
-  content: attr(data-race-number);
-  position: absolute;
-  left: -12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
-  background-color: gold;
-  border-radius: 50% 0 0 50%;
+.race-meta {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  color: #000;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 0.9em;
+  margin-bottom: 5px;
+}
+
+.race-name {
+  font-style: italic;
+  margin-top: 5px;
+}
+
+/* Formatted pedigree info */
+.pedigree-info {
+  font-size: 0.8em;
+  color: #666;
+  line-height: 1.3;
+}
+
+/* Add these styles to your dashboard.css file */
+.owner-info {
+  font-size: 0.85em;
+  color: #666;
+  line-height: 1.3;
+}
+
+.pedigree-info {
+  font-size: 0.9em;
+  color: #666;
+  line-height: 1.3;
 }
 
 /* === Drop Odds Grid === */
@@ -423,12 +378,6 @@ body {
 table {
   border-spacing: 0;
   border: none;
-}
-
-/* ADD THIS to remove any potential container borders */
-#main-content {
-  border: none;
-  outline: none;
 }
 
 .drop-odds-table tbody tr:first-child td {
@@ -561,6 +510,10 @@ table {
   .tab-drops #sidebar {
     display: none;
   }
+
+  .race-pills-container {
+    grid-column: 1 / span 6;
+  }
 }
 
 /* Utility Classes */
@@ -586,22 +539,10 @@ table {
 }
 
 .race-pills {
-  display: block;
-  /* treat as block container */
-  column-width: 100px;
-  /* width of each column (adjust to pill width) */
-  column-gap: 4px;
-  /* gap between columns */
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 4px;
 }
-
-.race-pill {
-  display: inline-block;
-  /* each pill is treated as a block in column */
-  margin: 2px 0;
-  /* vertical spacing between pills */
-}
-
-
 
 .race-pill {
   padding: 3px 10px;
@@ -609,19 +550,15 @@ table {
   border: 1px solid transparent;
   border-left: none;
   background: #2e5c2e;
-  /* default dark green */
   color: #fff;
-
   cursor: pointer;
   text-align: center;
   min-width: 6px;
   min-height: 6px;
   font-size: 12px;
   font-weight: bold;
-  /* make all pill texts bold */
   border-radius: 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  /* 3D effect */
   transition: all 0.2s ease;
 }
 
@@ -638,15 +575,8 @@ table {
 .race-pill.gold {
   background: linear-gradient(to bottom, #FFD700, #FFC700);
   border-color: #FFD700;
-  color: #000;
-  /* black text */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  /* subtle highlight on top, no bottom line */
-}
-
-.race-pill.gold {
   color: #000 !important;
-  /* force black text */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 /* Green pill for finished race */
@@ -669,13 +599,6 @@ table {
 .race-pill:hover {
   filter: brightness(2.15);
 }
-
-
-
-
-
-
-
 
 /* highlight jockey row */
 .highlight-jockey {
@@ -714,7 +637,6 @@ table {
   color: black;
 }
 
-
 /* disabled pill */
 .race-pill.disabled {
   background-color: #ccc !important;
@@ -728,7 +650,6 @@ table {
   cursor: default !important;
   pointer-events: none;
 }
-
 
 @keyframes highlight {
   0% {
@@ -751,10 +672,4 @@ table {
   flex-wrap: wrap;
   gap: 5px;
   margin-top: 5px;
-}
-
-@media (max-width: 768px) {
-  .race-pills-container {
-    grid-column: 1 / span 6;
-  }
 }

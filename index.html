@@ -11,16 +11,25 @@
 <body>
   <!-- Tabs -->
   <div class="tab-bar">
-    <div class="tab active" data-tab="races">賽程列表</div>
+    <div class="tab" data-tab="races">
+      賽程列表 <span class="arrow">▼</span>
+    </div>
     <div class="tab" data-tab="drops">落飛馬</div>
+    <div class="tab" data-tab="results">賽果</div>
+  </div>
+
+  <!-- Dropdown Panel for 賽程列表 -->
+  <div id="race-dropdown">
+    <div class="dropdown-header">
+      <span>賽事</span>
+      <button id="close-dropdown">▲</button>
+    </div>
+    <div id="race-courses">
+      <!-- Course + times will be inserted here -->
+    </div>
   </div>
 
   <div class="container">
-    <!-- Sidebar -->
-    <div id="sidebar">
-      <!-- Course buttons will be inserted here -->
-    </div>
-
     <!-- Main Content -->
     <div id="main-content">
       <div id="race-details"></div>
