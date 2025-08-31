@@ -41,7 +41,7 @@ function buildMasterMaps(data) {
 // ==============================
 // Load Racecard and Build Dropdown
 function loadRacecard() {
-  Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/racecard.csv?cb=" + Date.now(), {
+  Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/racecard2.csv?cb=" + Date.now(), {
     download: true,
     complete: function (results) {
       const validRows = results.data
@@ -112,57 +112,6 @@ function loadRacecard() {
   });
 }
 
-// --- Sync arrow with dropdown ---
-function updateRaceArrow() {
-  const raceTab = document.querySelector('.tab-bar .tab[data-tab="races"]');
-  const arrow = raceTab.querySelector('.arrow');
-  const dropdown = document.getElementById('race-dropdown');
-
-  if (dropdown.classList.contains('open')) {
-    arrow.classList.add('open');   // arrow points up
-  } else {
-    arrow.classList.remove('open'); // arrow points down
-  }
-}
-
-// --- Toggle Race Dropdown ---
-document.addEventListener('DOMContentLoaded', function () {
-  const raceTab = document.querySelector('.tab-bar .tab[data-tab="races"]');
-  const arrow = raceTab.querySelector('.arrow');
-  const dropdown = document.getElementById('race-dropdown');
-
-  // Ensure dropdown is closed on page load
-  dropdown.classList.remove('open');
-  updateRaceArrow();
-
-  raceTab.addEventListener('click', (e) => {
-    e.stopPropagation();
-    dropdown.classList.toggle('open');
-    updateRaceArrow(); // <-- arrow sync
-  });
-
-  // Close dropdown when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!raceTab.contains(e.target) && !dropdown.contains(e.target)) {
-      dropdown.classList.remove('open');
-      updateRaceArrow();
-    }
-  });
-
-  // Close dropdown when switching to other tabs
-  document.querySelectorAll('.tab-bar .tab').forEach(tab => {
-    if (tab.getAttribute('data-tab') !== 'races') {
-      tab.addEventListener('click', () => {
-        dropdown.classList.remove('open');
-        updateRaceArrow();
-      });
-    }
-  });
-
-  loadRacecard();
-});
-
-
 // ==============================
 // Display Race Table
 // ==============================
@@ -199,7 +148,7 @@ function displayRace(raceRows, raceKey) {
 
   // Create table header with 9 columns
   const headerRow = document.createElement('tr');
-  ['號碼(檔)', '馬名', '年齡', '近戰績', '隔夜', '最近', '練馬師', '騎師', '評分'].forEach(text => {
+  ['號碼(檔)', '馬名', '年齡', '近戰績', '隔夜', '最近', '練馬師', '騎師', 'Breeder'].forEach(text => {
     const th = document.createElement('th');
     th.textContent = text;
     headerRow.appendChild(th);
@@ -380,76 +329,180 @@ function displayRace(raceRows, raceKey) {
   });
 }
 
-// ==============================
-// Drop odds logic remains unchanged
 function loadDropOdds() {
-  // ... your existing code unchanged ...
+  const container = document.getElementById("drop-odds-container");
+  container.innerHTML = '<div class="loading">載入中...</div>';
+
+  const csvUrl = "https://ukhorse888uk.github.io/dashboard/csv/dropodds.csv?cb=" + Date.now();
+
+  Papa.parse(csvUrl, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function (results) {
+      let data = results.data;
+
+      if (!data || data.length === 0) {
+        container.innerHTML = '<div class="error">沒有數據 (Empty)</div>';
+        return;
+      }
+
+      // Trim keys and values, filter out invalid rows
+      data = data
+        .map(row => {
+          const trimmedRow = {};
+          Object.keys(row).forEach(k => {
+            const key = k.trim();
+            trimmedRow[key] = row[k] ? row[k].toString().trim() : '';
+          });
+          return trimmedRow;
+        })
+        .filter(row =>
+          row['Horse Name'] && row['Horse Name'] !== '' &&
+          row['Time'] && row['Time'] !== '' &&
+          row['Horse Name'] !== 'Horse Name' // remove accidental header rows
+        );
+
+      // Sort by Time
+      data.sort((a, b) => a['Time'].localeCompare(b['Time'], undefined, { numeric: true, sensitivity: 'base' }));
+
+      if (data.length === 0) {
+        container.innerHTML = '<div class="error">沒有有效馬匹數據</div>';
+        return;
+      }
+
+      // Build table
+      let tableHTML = `
+        <table class="drop-odds-table">
+          <thead>
+            <tr>
+              <th>賽時</th>
+              <th>場地</th>
+              <th>號碼</th>
+              <th>馬名</th>
+              <th>隔夜價格</th>
+              <th>現時價格</th>
+              <th>變動</th>
+              <th>變動 %</th>
+              <th>賽果</th>
+              <th>跑出賠率</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      data.forEach(row => {
+        const original = parseFloat(row['Original']) || 0;
+        const now = parseFloat(row['NOW']) || 0;
+        const change = parseFloat(row['Change']) || (now - original);
+        const pctChange = parseFloat(row['%']) || (original ? (change / original) * 100 : 0);
+        const colorClass = pctChange <= -48 ? 'green' : pctChange >= 48 ? 'red' : '';
+
+        tableHTML += `
+          <tr>
+            <td>${row['Time'] || '--'}</td>
+            <td>${row['Course'] || '--'}</td>
+            <td>${row['Num'] || '--'}</td>
+            <td>${row['Horse Name']}</td>
+            <td>${original.toFixed(2)}</td>
+            <td>${now.toFixed(2)}</td>
+            <td class="${colorClass}">${change.toFixed(2)}</td>
+            <td class="${colorClass}">${pctChange.toFixed(2)}%</td>
+            <td>${row['FIN'] || '--'}</td>
+            <td>${row['SP Odds'] || '--'}</td>
+          </tr>
+        `;
+      });
+
+      tableHTML += '</tbody></table>';
+      container.innerHTML = tableHTML;
+    },
+    error: function (err) {
+      container.innerHTML = `<div class="error">加載失敗 (Error)<br>${err.message}</div>`;
+      console.error(err);
+    }
+  });
 }
 
-// ==============================
-// Tab switching & auto-refresh logic remains unchanged
-document.addEventListener('DOMContentLoaded', function () {
-  const tabs = document.querySelectorAll('.tab-bar .tab');
 
+// ===== Tab Switching and Auto Refresh =====
+document.addEventListener('DOMContentLoaded', function () {
+  const raceTab = document.querySelector('.tab-bar .tab[data-tab="races"]');
+  const dropsTab = document.querySelector('.tab-bar .tab[data-tab="drops"]');
+  const resultsTab = document.querySelector('.tab-bar .tab[data-tab="results"]');
+  const arrow = raceTab.querySelector('.arrow');
+  const dropdown = document.getElementById('race-dropdown');
+  const raceDetails = document.getElementById('race-details');
+  const dropOddsDiv = document.getElementById('drop-odds');
+
+  // --- Initialize race dropdown ---
+  dropdown.classList.remove('open');
+  updateRaceArrow();
+
+  raceTab.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown.classList.toggle('open');
+    updateRaceArrow();
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!raceTab.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.classList.remove('open');
+      updateRaceArrow();
+    }
+  });
+
+  // Close dropdown when switching to other tabs
+  [dropsTab, resultsTab].forEach(tab => {
+    tab.addEventListener('click', () => {
+      dropdown.classList.remove('open');
+      updateRaceArrow();
+    });
+  });
+
+  // --- Tab switching logic ---
+  const tabs = document.querySelectorAll('.tab-bar .tab');
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
-
       const activeTab = tab.dataset.tab;
       localStorage.setItem('activeTab', activeTab);
 
-      const sidebar = document.getElementById('sidebar');
-      const mainContent = document.getElementById('main-content');
-
       if (activeTab === 'drops') {
-        sidebar.style.flex = '0 0 0';
-        sidebar.style.width = '0';
-        sidebar.style.opacity = '0';
-        sidebar.style.overflow = 'hidden';
-
-        mainContent.style.flex = '1 0 100%';
-        mainContent.style.maxWidth = '100%';
-
-        document.getElementById('race-details').style.display = 'none';
-        document.getElementById('drop-odds').style.display = 'block';
+        raceDetails.style.display = 'none';
+        dropOddsDiv.style.display = 'block';
         loadDropOdds();
-
       } else {
-        sidebar.style.flex = '0 0 220px';
-        sidebar.style.width = '220px';
-        sidebar.style.opacity = '1';
-        sidebar.style.overflow = 'auto';
-
-        mainContent.style.flex = '1';
-        mainContent.style.maxWidth = 'calc(100% - 220px)';
-
-        document.getElementById('race-details').style.display = 'block';
-        document.getElementById('drop-odds').style.display = 'none';
-
+        raceDetails.style.display = 'block';
+        dropOddsDiv.style.display = 'none';
         if (typeof loadRacecard === 'function') loadRacecard();
       }
     });
   });
 
-  // Initial tab load
-  const savedTab = localStorage.getItem('activeTab');
-  if (savedTab) {
-    const tabElement = document.querySelector(`.tab-bar .tab[data-tab="${savedTab}"]`);
-    if (tabElement) tabElement.click();
-  }
+  // --- Load the saved tab initially ---
+  const savedTab = localStorage.getItem('activeTab') || 'races';
+  document.querySelector(`.tab-bar .tab[data-tab="${savedTab}"]`)?.click();
 
+  // --- Auto-refresh ---
+  setInterval(() => {
+    const activeTab = localStorage.getItem('activeTab') || 'races';
+    if (activeTab === 'races') loadRacecard();
+    else if (activeTab === 'drops') loadDropOdds();
+  }, 30000);
 });
 
-setInterval(() => {
-  const activeTab = localStorage.getItem('activeTab') || 'races';
-  if (activeTab === 'races') loadRacecard();
-  else if (activeTab === 'drops') loadDropOdds();
-}, 30000);
 
-
-
-
-
+// Arrow update function
+function updateRaceArrow() {
+  const raceTab = document.querySelector('.tab-bar .tab[data-tab="races"] .arrow');
+  const dropdown = document.getElementById('race-dropdown');
+  if (raceTab && dropdown) {
+    if (dropdown.classList.contains('open')) raceTab.classList.add('open');
+    else raceTab.classList.remove('open');
+  }
+}
 
 
