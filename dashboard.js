@@ -38,31 +38,25 @@ function buildMasterMaps(data) {
   });
 }
 
-
-
 // ==============================
 // Load Racecard and Build Dropdown
 // ==============================
-// Load Racecard and Build Dropdown
 function loadRacecard() {
   Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/racecard2.csv?cb=" + Date.now(), {
     download: true,
     complete: function (results) {
-
-      // --- Skip CSV header row immediately ---
       const dataWithoutHeader = results.data.slice(1).filter(row => row && row.length > 0);
       if (!dataWithoutHeader || dataWithoutHeader.length === 0) return;
 
-      const raceRows = dataWithoutHeader; // row 0 (header) is skipped
+      const raceRows = dataWithoutHeader;
       buildMasterMaps(raceRows);
 
-      // Group races by course
       const courseMap = {};
       raceRows.forEach(row => {
-        const course = (row[0] || '').trim(); // Column A
+        const course = (row[0] || '').trim();
         if (!course) return;
 
-        const raceTime = (row[2] || '').trim(); // Column C
+        const raceTime = (row[2] || '').trim();
         if (!raceTime) return;
 
         const raceKey = `${raceTime}  ${course}`;
@@ -72,7 +66,6 @@ function loadRacecard() {
         courseMap[course][raceKey].push(row);
       });
 
-      // Build dropdown UI
       const dropdown = document.getElementById('race-dropdown');
       dropdown.innerHTML = '';
 
@@ -86,25 +79,29 @@ function loadRacecard() {
         courseRow.appendChild(courseName);
 
         Object.keys(courseMap[course]).forEach(raceKey => {
-          const timeOnly = raceKey.split('  ')[0]; // first part = time
+          const timeOnly = raceKey.split('  ')[0];
           const timeSpan = document.createElement('span');
           timeSpan.className = 'race-time';
           timeSpan.textContent = timeOnly;
           timeSpan.setAttribute('data-race-key', raceKey);
 
-          // --- Make off_time non-clickable and unselectable ---
+          const activeRace = localStorage.getItem('activeRace');
+          if (activeRace === raceKey) {
+            timeSpan.classList.add('selected-race'); // optional new class
+          }
+
+
           if (timeOnly.toLowerCase() === "off_time") {
-            timeSpan.style.pointerEvents = "none";    // disable click
-            timeSpan.style.userSelect = "none";       // disable text selection
-            timeSpan.style.fontWeight = "bold";       // optional styling
-            timeSpan.style.cursor = "default";        // optional: normal cursor
+            timeSpan.style.pointerEvents = "none";
+            timeSpan.style.userSelect = "none";
+            timeSpan.style.fontWeight = "bold";
+            timeSpan.style.cursor = "default";
           } else {
-            // Click handler for race times
             timeSpan.addEventListener('click', () => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
+              document.querySelectorAll('#race-dropdown .race-time').forEach(t => t.classList.remove('selected-race'));
+              timeSpan.classList.add('selected-race');
 
-              document.querySelectorAll('#race-dropdown .race-time').forEach(t => t.classList.remove('active'));
-              timeSpan.classList.add('active');
 
               displayRace(courseMap[course][raceKey], raceKey);
               localStorage.setItem('activeRace', raceKey);
@@ -118,22 +115,41 @@ function loadRacecard() {
           courseRow.appendChild(document.createTextNode(' '));
         });
 
-
         dropdown.appendChild(courseRow);
       });
     }
   });
 }
 
+function updateRaceArrow() {
+  const raceTab = document.querySelector('.tab[data-tab="races"]');
+  const arrow = raceTab.querySelector('.arrow');
+  if (!arrow) return;
+
+  const dropdown = document.getElementById('race-dropdown');
+
+  // Toggle arrow rotation based on dropdown open/closed
+  if (dropdown.classList.contains('open')) {
+    arrow.classList.add('open');
+  } else {
+    arrow.classList.remove('open');
+  }
+
+  // Keep the "Races" tab visually active only if dropdown is open
+  if (dropdown.classList.contains('open')) {
+    raceTab.classList.add('active');
+  } else {
+    raceTab.classList.remove('active');
+  }
+}
+
 
 // ==============================
 // Display Race Table
 // ==============================
-// Display Race Table (UPDATED FOR 9-COLUMN LAYOUT)
 function displayRace(raceRows, raceKey) {
   const raceDetails = document.getElementById('race-details');
   raceDetails.innerHTML = '';
-
   const raceData = raceRows[0];
   const distance = raceData[4] || 'N/A';
   const raceClass = raceData[6] || 'N/A';
@@ -160,7 +176,6 @@ function displayRace(raceRows, raceKey) {
   const table = document.createElement('table');
   table.className = 'race-table';
 
-  // Create table header with 10 columns now (added silk column)
   const headerRow = document.createElement('tr');
   ['號碼(檔位)', '', '馬名/資訊', '年齡', '近戰績', '隔夜', '最近', '練馬師', '騎師', '繁育者'].forEach(text => {
     const th = document.createElement('th');
@@ -170,7 +185,7 @@ function displayRace(raceRows, raceKey) {
   table.appendChild(headerRow);
 
   const horseRows = raceRows.filter(row => {
-    const horseNumber = row[32]; // Column AG
+    const horseNumber = row[32];
     return horseNumber && horseNumber.toString().trim() !== '' &&
       horseNumber.toString().trim() !== 'Jockey' &&
       horseNumber.toString().trim() !== 'Trainer';
@@ -203,153 +218,67 @@ function displayRace(raceRows, raceKey) {
     const horseRow = document.createElement('tr');
     horseRow.style.backgroundColor = index % 2 === 0 ? 'white' : '#f9f9f9';
 
-    // Column 1: Horse number, form, owner and pedigree
     const col1 = document.createElement('td');
-    col1.innerHTML = `
-      <div style="font-weight:bold">${horseNumber} (${draw})</div>
-      <div>${form}</div>
-    `;
+    col1.innerHTML = `<div style="font-weight:bold">${horseNumber} (${draw})</div><div>${form}</div>`;
     horseRow.appendChild(col1);
 
-    // Column 2: Silk (standalone column)
     const silkCell = document.createElement('td');
     silkCell.innerHTML = silkUrl ? `<img src="${silkUrl}" class="horse-silk">` : '';
     horseRow.appendChild(silkCell);
 
-    // Column 3: Horse name, last run, gender, color, nationality
     const infoCell = document.createElement('td');
-    infoCell.innerHTML = `
-      <div>${horseName}</div>
-      <div>${lastRun} 天</div>
-      <div>${gender} | ${color} | ${nationality}</div>
-    `;
+    infoCell.innerHTML = `<div>${horseName}</div><div>${lastRun} 天</div><div>${gender} | ${color} | ${nationality}</div>`;
     horseRow.appendChild(infoCell);
 
-    // Column 4: Age and stats
     const ageCell = document.createElement('td');
-    ageCell.innerHTML = `
-      <div>${age}</div>
-      <div>騎師: ${jockeyData.raceCount}</div>
-      <div>練馬師: ${trainerData.raceCount}</div>
-    `;
+    ageCell.innerHTML = `<div>${age}</div><div>騎師: ${jockeyData.raceCount}</div><div>練馬師: ${trainerData.raceCount}</div>`;
     horseRow.appendChild(ageCell);
 
-    // Column 5: Form (duplicate)
     const formCell = document.createElement('td');
     formCell.innerHTML = `<div>${form}</div>`;
     horseRow.appendChild(formCell);
 
-    // Column 6: Last Night Odds
     const lastNightOddsCell = document.createElement('td');
     lastNightOddsCell.innerHTML = `<div>${lastnightOdds}</div>`;
     horseRow.appendChild(lastNightOddsCell);
 
-    // Column 7: Now Odds
     const nowOddsCell = document.createElement('td');
     nowOddsCell.innerHTML = `<div>${nowOdds}</div>`;
     horseRow.appendChild(nowOddsCell);
 
-    // Column 8: Trainer
     const trainerCell = document.createElement('td');
     trainerCell.innerHTML = `<div>${trainer}</div>`;
     horseRow.appendChild(trainerCell);
 
-    // Column 9: Jockey
     const jockeyCell = document.createElement('td');
     jockeyCell.innerHTML = `<div>${jockey}</div>`;
     horseRow.appendChild(jockeyCell);
 
-    // Column 10: Rating
     const ratingCell = document.createElement('td');
     ratingCell.innerHTML = `<div>${rating}</div>`;
     horseRow.appendChild(ratingCell);
 
     table.appendChild(horseRow);
 
-    // Second row for owner and pedigree that spans columns 1-2
     const detailsRow = document.createElement('tr');
     detailsRow.style.backgroundColor = index % 2 === 0 ? 'white' : '#f9f9f9';
-
-    // Owner and pedigree info that spans columns 1-2 (will expand to column 2 if needed)
     const detailsCell = document.createElement('td');
-    detailsCell.colSpan = 5; // This spans both column 1 and 2
+    detailsCell.colSpan = 5;
     detailsCell.style.textAlign = 'left';
-    detailsCell.innerHTML = `
-      <div>馬主: ${owner}</div>
-      <div>父 ${sire} - 母 ${dam} (母父 ${damsire})</div>
-    `;
+    detailsCell.innerHTML = `<div>馬主: ${owner}</div><div>父 ${sire} - 母 ${dam} (母父 ${damsire})</div>`;
     detailsRow.appendChild(detailsCell);
-
-    // Add empty cells for the rest of the columns to maintain table structure
     for (let i = 0; i < 8; i++) {
-      const emptyCell = document.createElement('td');
-      detailsRow.appendChild(emptyCell);
+      detailsRow.appendChild(document.createElement('td'));
     }
-
     table.appendChild(detailsRow);
   });
 
   raceDetails.appendChild(table);
-
-
-
-
-
-
-
-
-
-
-  // Pill click events
-  setTimeout(() => {
-    document.querySelectorAll('.race-pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-        const raceKey = pill.getAttribute('data-race-key');
-        const jockeyName = pill.getAttribute('data-jockey');
-
-        document.querySelectorAll('.race-pill').forEach(p => p.classList.remove('current', 'disabled-pill'));
-        pill.classList.add('current');
-
-        const raceBtn = [...document.querySelectorAll('.race-button')]
-          .find(btn => btn.textContent.includes(raceKey));
-
-        if (raceBtn) {
-          document.querySelectorAll('.race-button').forEach(b => b.classList.remove('active'));
-          raceBtn.classList.add('active');
-          raceBtn.click();
-
-          setTimeout(() => {
-            const raceTable = document.querySelector('.race-table');
-            if (raceTable) {
-              const rows = raceTable.querySelectorAll('tr');
-              rows.forEach((r, i) => {
-                if (i === 0) return;
-                const jockeyCell = r.querySelector('td:nth-child(3) .jockey-badge');
-                if (jockeyCell && jockeyCell.textContent.includes(jockeyName)) {
-                  r.classList.add('highlight-jockey');
-                  r.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  setTimeout(() => r.classList.remove('highlight-jockey'), 10000);
-                }
-              });
-            }
-          }, 0);
-        }
-      });
-    });
-
-    const currentRaceNumber = raceNumberMap[raceKey];
-    if (currentRaceNumber !== undefined) {
-      document.querySelectorAll(`.race-pill[data-number="${currentRaceNumber}"]`).forEach(pill => {
-        const isCurrent = true;
-        pill.classList.add('disabled-pill', isCurrent ? 'gold' : 'green');
-      });
-    }
-  }, 0);
 }
 
-
-
-
+// ==============================
+// Load Drop Odds
+// ==============================
 function loadDropOdds() {
   const container = document.getElementById("drop-odds-container");
   container.innerHTML = '<div class="loading">載入中...</div>';
@@ -368,7 +297,6 @@ function loadDropOdds() {
         return;
       }
 
-      // Trim keys and values, filter out invalid rows
       data = data
         .map(row => {
           const trimmedRow = {};
@@ -381,11 +309,10 @@ function loadDropOdds() {
         .filter(row =>
           row['Horse Name'] && row['Horse Name'] !== '' &&
           row['Time'] && row['Time'] !== '' &&
-          row['Horse Name'] !== 'Horse Name' && // remove accidental header rows
-          row['NOW'] && row['NOW'] !== ''        // ✅ skip rows with empty 現時價格
+          row['Horse Name'] !== 'Horse Name' &&
+          row['NOW'] && row['NOW'] !== ''
         );
 
-      // Sort by Time
       data.sort((a, b) =>
         a['Time'].localeCompare(b['Time'], undefined, { numeric: true, sensitivity: 'base' })
       );
@@ -395,7 +322,6 @@ function loadDropOdds() {
         return;
       }
 
-      // Build table
       let tableHTML = `
         <table class="drop-odds-table">
           <thead>
@@ -448,19 +374,17 @@ function loadDropOdds() {
   });
 }
 
-
-
-// ===== Tab Switching and Auto Refresh =====
+// ==============================
+// Tab Switching & Auto Refresh
+// ==============================
 document.addEventListener('DOMContentLoaded', function () {
   const raceTab = document.querySelector('.tab-bar .tab[data-tab="races"]');
   const dropsTab = document.querySelector('.tab-bar .tab[data-tab="drops"]');
   const resultsTab = document.querySelector('.tab-bar .tab[data-tab="results"]');
-  const arrow = raceTab.querySelector('.arrow');
   const dropdown = document.getElementById('race-dropdown');
   const raceDetails = document.getElementById('race-details');
   const dropOddsDiv = document.getElementById('drop-odds');
 
-  // --- Initialize race dropdown ---
   dropdown.classList.remove('open');
   updateRaceArrow();
 
@@ -470,7 +394,6 @@ document.addEventListener('DOMContentLoaded', function () {
     updateRaceArrow();
   });
 
-  // Close dropdown when clicking outside
   document.addEventListener('click', (e) => {
     if (!raceTab.contains(e.target) && !dropdown.contains(e.target)) {
       dropdown.classList.remove('open');
@@ -478,7 +401,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Close dropdown when switching to other tabs
   [dropsTab, resultsTab].forEach(tab => {
     tab.addEventListener('click', () => {
       dropdown.classList.remove('open');
@@ -486,89 +408,47 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // --- Tab switching logic ---
   const tabs = document.querySelectorAll('.tab-bar .tab');
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      const activeTab = tab.dataset.tab;
-      localStorage.setItem('activeTab', activeTab);
+      const activeTabName = tab.dataset.tab;
 
-      if (activeTab === 'drops') {
+      // Remove active from all tabs first
+      tabs.forEach(t => t.classList.remove('active'));
+
+      // Add active to clicked tab
+      tab.classList.add('active');
+
+      // Show/hide content
+      if (activeTabName === 'drops') {
         raceDetails.style.display = 'none';
         dropOddsDiv.style.display = 'block';
         loadDropOdds();
-      } else {
+      } else if (activeTabName === 'results') {
+        raceDetails.style.display = 'none';
+        dropOddsDiv.style.display = 'none';
+      } else { // races
         raceDetails.style.display = 'block';
         dropOddsDiv.style.display = 'none';
         if (typeof loadRacecard === 'function') loadRacecard();
       }
+
+      // Save active tab
+      localStorage.setItem('activeTab', activeTabName);
     });
   });
 
-  // --- Load the saved tab initially ---
+
+
+  // Load saved tab initially
   const savedTab = localStorage.getItem('activeTab') || 'races';
   document.querySelector(`.tab-bar .tab[data-tab="${savedTab}"]`)?.click();
 
-  // --- Auto-refresh ---
   setInterval(() => {
     const activeTab = localStorage.getItem('activeTab') || 'races';
     if (activeTab === 'races') loadRacecard();
     else if (activeTab === 'drops') loadDropOdds();
   }, 30000);
-});
-
-
-// Arrow update function
-function updateRaceArrow() {
-  const raceTab = document.querySelector('.tab-bar .tab[data-tab="races"] .arrow');
-  const dropdown = document.getElementById('race-dropdown');
-  if (raceTab && dropdown) {
-    if (dropdown.classList.contains('open')) raceTab.classList.add('open');
-    else raceTab.classList.remove('open');
-  }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-
-  const raceTable = document.querySelector('.race-table tbody');
-  if (!raceTable) return;
-
-  const horseRows = Array.from(raceTable.querySelectorAll('tr'));
-
-  horseRows.forEach(tr => {
-    // Build a simple subtable
-    let html = '<table class="subtable">';
-    html += `
-      <tr>
-        <th>Col1</th>
-        <th>Col2</th>
-        <th>Col3</th>
-      </tr>
-      <tr>
-        <td>Data 1</td>
-        <td>Data 2</td>
-        <td>Data 3</td>
-      </tr>
-      <tr>
-        <td>Data 4</td>
-        <td>Data 5</td>
-        <td>Data 6</td>
-      </tr>
-    `;
-    html += '</table>';
-
-    // Insert as a new row under the horse row
-    const subRow = document.createElement('tr');
-    const td = document.createElement('td');
-    td.colSpan = tr.children.length;
-    td.innerHTML = html;
-    subRow.appendChild(td);
-
-    tr.parentNode.insertBefore(subRow, tr.nextSibling);
-  });
-
 });
 
 
