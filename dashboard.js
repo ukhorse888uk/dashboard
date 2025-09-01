@@ -162,7 +162,7 @@ function displayRace(raceRows, raceKey) {
 
   // Create table header with 10 columns now (added silk column)
   const headerRow = document.createElement('tr');
-  ['號碼(檔位)', '', '馬名/資訊', '年齡', '近戰績', '隔夜', '最近', '練馬師', '騎師', '評分'].forEach(text => {
+  ['號碼(檔位)', '', '馬名/資訊', '年齡', '近戰績', '隔夜', '最近', '練馬師', '騎師', '繁育者'].forEach(text => {
     const th = document.createElement('th');
     th.textContent = text;
     headerRow.appendChild(th);

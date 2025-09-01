@@ -13,7 +13,6 @@ body {
   background: #2e5c2e;
   border-bottom: 2px solid #ffd966;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
   top: 0;
   z-index: 1000;
 }
@@ -35,65 +34,55 @@ body {
   border-right: none;
 }
 
-.tab:hover {
-  background: #ffd966;
-  color: #000;
-}
-
+.tab:hover,
 .tab.active {
   background: #ffd966;
   color: #000;
 }
 
-.tab-bar .tab[data-tab="races"] .arrow {
-  position: relative;
+/* Arrow for race tab */
+.tab .arrow {
   display: inline-block;
+  position: relative;
   width: 14px;
   height: 14px;
   margin-left: 6px;
   vertical-align: middle;
-  cursor: pointer;
   transition: transform 0.3s ease;
 }
 
-/* Flip arrow when dropdown is open */
-.tab-bar .tab[data-tab="races"] .arrow.open {
+.tab .arrow.open {
   transform: rotate(180deg);
 }
 
-/* --- Added scroll for race list --- */
+/* === Container & Main Content === */
+.container {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  flex-wrap: nowrap;
+  margin: 0;
+  /* remove any default spacing */
+  padding: 0;
+}
+
+#main-content {
+  flex: 1 1 100%;
+  width: 100%;
+  min-width: 0;
+  /* crucial for flex child tables to stretch */
+  padding: 0;
+  overflow-x: auto;
+  /* allow horizontal scroll if needed */
+}
+
+/* === Race List === */
 #race-list {
   overflow-y: auto;
-  max-height: calc(100px - 150px);
-  padding-right: 4px;
+  max-height: calc(100vh - 150px);
+  padding-right: 0px;
 }
 
-/* === Race Dropdown Panel === */
-#race-dropdown {
-  display: block !important;
-  background: white;
-  color: black;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-  padding: 0;
-  z-index: 999;
-  border: none;
-  opacity: 0;
-  visibility: hidden;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  font-size: 13px;
-  line-height: 1.3;
-}
-
-#race-dropdown.open {
-  max-height: 400px;
-  opacity: 1;
-  visibility: visible;
-  padding: 5px 10px;
-}
-
-/* Course row - use flexbox for alignment */
 .course-row {
   display: flex;
   margin-bottom: 5px;
@@ -104,20 +93,12 @@ body {
   line-height: 1.3;
 }
 
-.course-row:last-child {
-  border-bottom: none;
-}
-
-/* Course name - fixed width */
 .course-name {
   flex: 0 0 120px;
   font-weight: bold;
-  color: #000;
   padding-right: 10px;
-  text-align: left;
 }
 
-/* Race times container */
 .race-times {
   flex: 1;
   display: flex;
@@ -125,7 +106,6 @@ body {
   gap: 8px;
 }
 
-/* Race times - plain text */
 .race-time {
   color: #000;
   cursor: pointer;
@@ -143,82 +123,49 @@ body {
   background-color: #2e5c2e;
 }
 
-/* Remove all pill styles */
-.course-row .race-pill {
-  display: none;
-}
-
-/* Arrow indicator for toggle */
-.tab-bar .tab[data-tab="races"] .arrow {
-  display: inline-block;
-  margin-left: 4px;
-  font-size: 12px;
-}
-
-/* === Main Content === */
-#main-content {
-  flex: 1;
-  min-width: 0;
-  padding: 0;
-  overflow-y: auto;
-  transition: all 0.3s ease;
-  border: none;
-  outline: none;
-}
-
-/* === Race Table === */
-.race-table {
+/* === Race Table & Race Details === */
+#race-details {
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 0;
-  font-size: 14px;
-  table-layout: auto;
-  /* keeps columns consistent */
+  overflow-x: auto;
+  margin: 0;
+  padding: 0;
+  /* allow horizontal scroll on small screens */
 }
 
-.race-table thead {
+#race-details table {
+  width: 100%;
+  min-width: 100%;
+  /* ensures table stretches full width */
+  table-layout: auto;
+  border-collapse: collapse;
+  white-space: normal;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+}
+
+#race-details th,
+#race-details td {
+  margin: 0;
+  /* remove any external spacing */
+  padding: 0;
+  /* remove top, right, bottom padding */
+  padding-left: 14px;
+  /* just a little left padding */
+  text-align: left;
+  word-break: break-word;
+}
+
+
+#race-details thead th {
   position: sticky;
   top: 50px;
-  /* distance from top of viewport */
-  z-index: 900;
-  display: table-header-group;
-  /* ensure proper table header behavior */
-}
-
-.race-table th {
   background: #2e5c2e;
   color: white;
-  padding: 10px 8px;
-  text-align: left;
-  border-bottom: 2px solid #a3d9a5;
+  z-index: 10;
 }
 
-.race-table td {
-  padding: 8px 10px;
-  vertical-align: top;
-  word-break: break-word;
-  /* allow long text to wrap */
-}
-
-/* First column extra padding */
-.race-table td:nth-child(1) {
-  max-width: 80px;
-  /* Column 1: number + silk + form + owner + pedigree */
-  padding-right: 10px;
-}
-
-.race-table td:nth-child(2) {
-  max-width: 100px;
-  /* Column 2: horse info */
-  padding-right: 10px;
-}
-
-/* Row background transition */
-.race-table tr {
-  transition: background-color 1s;
-}
-
-/* === Subtable for horse details from CSV === */
+/* Subtable for horse details */
 .subtable {
   width: 100%;
   border-collapse: collapse;
@@ -226,50 +173,19 @@ body {
   font-size: 13px;
 }
 
-.subtable th {
-  background: #ddd;
+.subtable th,
+.subtable td {
   padding: 4px 6px;
   border: 1px solid #ccc;
   text-align: left;
 }
 
-.subtable td {
-  padding: 4px 6px;
-  border: 1px solid #ccc;
-}
-
-/* Optional: alternating row colors for subtable */
 .subtable tr:nth-child(even) {
   background: #f9f9f9;
 }
 
 .subtable tr:nth-child(odd) {
   background: #fff;
-}
-
-/* Optional: small indentation for subtable to visually separate from main row */
-.horse-details .subtable {
-  margin-left: 10px;
-}
-
-
-/* Highlight for horse */
-.horse-highlight {
-  background-color: #fffb91 !important;
-}
-
-/* Each div inside td is a block and fills width */
-.race-table td div {
-  display: block;
-  width: 100%;
-  margin: 2px 0;
-  /* small spacing between lines */
-}
-
-/* Blank line */
-.race-table td .blank-line {
-  height: 6px;
-  /* adjust space for blank line */
 }
 
 /* Horse Silk Images */
@@ -300,58 +216,93 @@ body {
   line-height: 1.4;
 }
 
-
-/* Race pills for jockey history */
-.race-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-top: 5px;
+/* Horse Highlight */
+.horse-highlight {
+  background-color: #fffb91 !important;
 }
 
-.race-pill {
-  background-color: #3498db;
+/* === Drop Odds Table === */
+.drop-odds-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin-top: 0;
+  font-size: 14px;
+}
+
+.drop-odds-table th,
+.drop-odds-table td {
+  padding: 8px 12px;
+  text-align: center;
+  word-break: break-word;
+}
+
+.drop-odds-table thead th {
+  position: sticky;
+  top: 50px;
+  background: #2e5c2e;
   color: white;
-  padding: 2px 6px;
-  border-radius: 10px;
-  font-size: 0.75em;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  z-index: 10;
 }
 
-.race-pill:hover {
-  background-color: #2980b9;
+/* Color coding for drop odds */
+.green {
+  background-color: #e6ffea;
+  color: #006400;
+  font-weight: bold;
 }
 
-.race-pill.disabled-pill {
-  cursor: not-allowed;
-  opacity: 0.7;
+.red {
+  background-color: #34cc3c;
+  color: hsl(0, 0%, 100%);
+  font-weight: bold;
 }
 
-.race-pill.green {
-  background-color: #27ae60;
-}
-
-.race-pill.gold {
-  background-color: #f39c12;
-}
-
-.highlight-jockey {
-  animation: highlightFade 3s ease-in-out;
-  background-color: #fff3cd !important;
-}
-
-@keyframes highlightFade {
-  0% {
-    background-color: #fff3cd;
+/* === Responsive === */
+@media (max-width: 768px) {
+  .tab-bar {
+    flex-direction: column;
+    font-size: 14px;
   }
 
-  100% {
-    background-color: inherit;
+  #race-list {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  #race-details {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  #race-details table,
+  .drop-odds-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  #race-details th,
+  #race-details td,
+  .drop-odds-table th,
+  .drop-odds-table td {
+    font-size: 12px;
+    padding: 4px;
   }
 }
 
-/* Race header styles */
+/* Utility Classes */
+.error,
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Race Header Styles */
 .race-header {
   background-color: #ffffff;
   color: black;
@@ -379,463 +330,11 @@ body {
   margin-top: 5px;
 }
 
-/* Formatted pedigree info */
-.pedigree-info {
-  font-size: 0.8em;
-  color: #666;
-  line-height: 1.3;
-}
-
-/* Add these styles to your dashboard.css file */
-.owner-info {
-  font-size: 0.85em;
-  color: #666;
-  line-height: 1.3;
-}
-
-.pedigree-info {
-  font-size: 0.9em;
-  color: #666;
-  line-height: 1.3;
-}
-
-
-
-/* === Drop Odds Grid === */
-#drop-odds {
-  width: 100%;
-}
-
-/* Additional styles for drop odds table */
-.drop-odds-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 0;
-  font-size: 14px;
-  table-layout: fixed;
-  border-left: none;
-}
-
-.drop-odds-table thead {
-  position: sticky;
-  top: 50px;
-  z-index: 900;
-}
-
-.drop-odds-table th {
-  background: #2e5c2e;
-  color: white;
+.race-table th {
+  background: #ffffff;
+  /* light grey */
+  color: black;
   padding: 10px 8px;
-  text-align: center;
-  border-bottom: 2px solid #a3d9a5;
-  border-left: none;
-  border-right: none;
-}
-
-.drop-odds-table th:first-child {
-  border-left: none;
-  padding-left: 10px;
-}
-
-.drop-odds-table td {
-  padding: 8px 10px;
-  text-align: center;
-  border-bottom: 1px solid #eee;
-  border-left: none;
-  border-right: none;
-}
-
-.drop-odds-table td:first-child {
-  border-left: none;
-  padding-left: 10px;
-}
-
-/* ADD THIS to ensure table takes full width and no extra borders */
-table {
-  border-spacing: 0;
-  border: none;
-}
-
-.drop-odds-table tbody tr:first-child td {
-  padding-top: 18px;
-}
-
-/* Column Widths for Drop Odds */
-.drop-odds-table th:nth-child(1),
-.drop-odds-table td:nth-child(1) {
-  width: 60px;
-}
-
-.drop-odds-table th:nth-child(2),
-.drop-odds-table td:nth-child(2) {
-  width: 120px;
-}
-
-.drop-odds-table th:nth-child(3),
-.drop-odds-table td:nth-child(3) {
-  width: 30px;
-}
-
-.drop-odds-table th:nth-child(4),
-.drop-odds-table td:nth-child(4) {
-  width: 20%;
-}
-
-.drop-odds-table th:nth-child(5),
-.drop-odds-table td:nth-child(5) {
-  width: 70px;
-}
-
-.drop-odds-table th:nth-child(6),
-.drop-odds-table td:nth-child(6) {
-  width: 70px;
-}
-
-.drop-odds-table th:nth-child(7),
-.drop-odds-table td:nth-child(7) {
-  width: 70px;
-}
-
-.drop-odds-table th:nth-child(8),
-.drop-odds-table td:nth-child(8) {
-  width: 70px;
-}
-
-.drop-odds-table th:nth-child(9),
-.drop-odds-table td:nth-child(9) {
-  width: 90px;
-}
-
-.drop-odds-table th:nth-child(10),
-.drop-odds-table td:nth-child(10) {
-  width: 90px;
-}
-
-/* Color coding for drop odds */
-.green {
-  background-color: #e6ffea;
-  color: #006400;
-  font-weight: bold;
-}
-
-.red {
-  background-color: #5ddb5d;
-  color: #ffffff;
-  font-weight: bold;
-}
-
-#drop-odds-container {
-  position: relative;
-  z-index: 1;
-  margin-top: 10px;
-  padding-top: 50px;
-}
-
-.drop-odds-table thead th {
-  position: sticky;
-  top: 50px;
-  background: #2e5c2e;
-  z-index: 2;
-  height: 40px;
-}
-
-.grid-item {
-  padding: 6px;
-  border-bottom: 1px solid #eee;
-  font-size: 13px;
-}
-
-.grid-item.green {
-  background-color: #e6ffea;
-  color: #006400;
-}
-
-.grid-item.red {
-  background-color: #ffebee;
-  color: #8b0000;
-}
-
-/* === Tab States === */
-.tab-drops #sidebar {
-  flex: 0 0 0 !important;
-  opacity: 0;
-  overflow: hidden;
-  padding: 0;
-}
-
-.tab-drops #main-content {
-  flex: 1 0 100% !important;
-}
-
-/* === Responsive === */
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
-
-  #sidebar {
-    width: 100%;
-    max-height: 200px;
-  }
-
-  .race-table {
-    font-size: 13px;
-  }
-
-  /* Mobile tab states */
-  .tab-drops #sidebar {
-    display: none;
-  }
-
-  .race-pills-container {
-    grid-column: 1 / span 6;
-  }
-}
-
-/* Utility Classes */
-.error {
-  color: #d32f2f;
-  text-align: center;
-  padding: 20px;
-}
-
-.loading {
-  text-align: center;
-  padding: 20px;
-  color: #666;
-  font-style: italic;
-}
-
-.grid-header {
-  background-color: #ffd966;
-  font-weight: bold;
-  padding: 10px 5px;
-  text-align: center;
-  border-bottom: 2px solid #0af702;
-}
-
-.race-pills {
-  display: flex !important;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.race-pill {
-  padding: 3px 10px;
-  margin: 0;
-  border: 1px solid transparent;
-  border-left: none;
-  background: #2e5c2e;
-  color: #fff;
-  cursor: pointer;
-  text-align: center;
-  min-width: 6px;
-  min-height: 6px;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease;
-}
-
-.race-pill:first-child {
-  border-left: 1px solid transparent;
-  border-radius: 4px 0 0 4px;
-}
-
-.race-pill:last-child {
-  border-radius: 0 4px 4px 0;
-}
-
-/* Gold pill for current race */
-.race-pill.gold {
-  background: linear-gradient(to bottom, #FFD700, #FFC700);
-  border-color: #FFD700;
-  color: #000 !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-}
-
-/* Green pill for finished race */
-.race-pill.green {
-  background: linear-gradient(to bottom, #4CAF50, #43A047);
-  border-color: #4CAF50;
-  color: #fff;
-  box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-/* Dark green for other pills */
-.race-pill.dark-green {
-  background: linear-gradient(to bottom, #2e5c2e, #244822);
-  border-color: #2e5c2e;
-  color: #fff;
-  box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-/* Hover effect */
-.race-pill:hover {
-  filter: brightness(2.15);
-}
-
-/* highlight jockey row */
-.highlight-jockey {
-  background-color: yellow !important;
-  transition: background-color 1s ease;
-}
-
-/* gold pill button */
-.active-pill {
-  background-color: gold !important;
-  color: black !important;
-}
-
-.pill-button {
-  border: none;
-  border-radius: 50%;
-  background: #ccc;
-  color: black;
-  padding: 4px 8px;
-  cursor: pointer;
-  margin-left: 6px;
-}
-
-.pill-button.gold {
-  background: gold;
-  color: black;
-}
-
-.horse-row.highlight {
-  background-color: yellow;
-  transition: background-color 0.5s ease;
-}
-
-.race-button.active {
-  background-color: gold !important;
-  color: black;
-}
-
-/* disabled pill */
-.race-pill.disabled {
-  background-color: #ccc !important;
-  color: #666 !important;
-  cursor: not-allowed;
-}
-
-.disabled-pill {
-  background-color: grey !important;
-  color: #ccc !important;
-  cursor: default !important;
-  pointer-events: none;
-}
-
-@keyframes highlight {
-  0% {
-    background-color: #fffb91;
-  }
-
-  70% {
-    background-color: #fffb91;
-  }
-
-  100% {
-    background-color: inherit;
-  }
-}
-
-/* Race pills container that spans multiple columns */
-.race-pills-container {
-  grid-column: 4 / span 3;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-top: 5px;
-}
-
-/* ----------------------------
-   Existing styles are above...
------------------------------ */
-
-/* ✅ Mobile responsive rules */
-@media (max-width: 768px) {
-  .tab-bar {
-    flex-direction: column;
-    /* stack tabs vertically */
-    font-size: 14px;
-  }
-
-  .race-list {
-    width: 100%;
-    /* sidebar takes full width */
-    border-right: none;
-    border-bottom: 1px solid #ddd;
-  }
-
-  .race-details {
-    width: 100%;
-    padding: 10px;
-  }
-
-  /* Tables scroll sideways on small screens */
-  .drop-odds-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  .drop-odds-table th,
-  .drop-odds-table td {
-    font-size: 12px;
-    padding: 4px;
-  }
-}
-
-/* ----------------------------
-   Responsive tables
------------------------------ */
-
-/* Portrait mode: race card table scrollable */
-@media screen and (orientation: portrait) {
-  #race-details table {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-}
-
-/* Landscape mode: drop odds table scrollable */
-/* Landscape mode: drop odds table scrollable */
-@media screen and (orientation: landscape) {
-  #drop-odds-container .drop-odds-table {
-    display: block;
-    width: max-content;
-    /* expand to fit content */
-    min-width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-}
-
-/* Portrait mode: race card race details table */
-@media screen and (orientation: portrait) {
-  #race-details {
-    overflow-x: auto;
-    /* allow scrolling */
-  }
-
-  #race-details table {
-    width: max-content;
-    /* expand to fit content */
-    min-width: 100%;
-    /* at least fill screen */
-    border-collapse: collapse;
-    white-space: nowrap;
-    /* stop breaking words */
-  }
-
-  #race-details th,
-  #race-details td {
-    padding: 6px 8px;
-    /* keep cells readable */
-    text-align: left;
-  }
+  text-align: left;
+  border-bottom: 2px solid #999;
 }
