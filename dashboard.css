@@ -749,3 +749,41 @@ table {
   gap: 5px;
   margin-top: 5px;
 }
+
+/* ----------------------------
+   Existing styles are above...
+----------------------------- */
+
+/* ✅ Mobile responsive rules */
+@media (max-width: 768px) {
+  .tab-bar {
+    flex-direction: column;
+    /* stack tabs vertically */
+    font-size: 14px;
+  }
+
+  .race-list {
+    width: 100%;
+    /* sidebar takes full width */
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .race-details {
+    width: 100%;
+    padding: 10px;
+  }
+
+  /* Tables scroll sideways on small screens */
+  .drop-odds-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .drop-odds-table th,
+  .drop-odds-table td {
+    font-size: 12px;
+    padding: 4px;
+  }
+}
