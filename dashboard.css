@@ -803,11 +803,39 @@ table {
 }
 
 /* Landscape mode: drop odds table scrollable */
+/* Landscape mode: drop odds table scrollable */
 @media screen and (orientation: landscape) {
   #drop-odds-container .drop-odds-table {
     display: block;
-    width: 100%;
+    width: max-content;
+    /* expand to fit content */
+    min-width: 100%;
     overflow-x: auto;
     white-space: nowrap;
+  }
+}
+
+/* Portrait mode: race card race details table */
+@media screen and (orientation: portrait) {
+  #race-details {
+    overflow-x: auto;
+    /* allow scrolling */
+  }
+
+  #race-details table {
+    width: max-content;
+    /* expand to fit content */
+    min-width: 100%;
+    /* at least fill screen */
+    border-collapse: collapse;
+    white-space: nowrap;
+    /* stop breaking words */
+  }
+
+  #race-details th,
+  #race-details td {
+    padding: 6px 8px;
+    /* keep cells readable */
+    text-align: left;
   }
 }
