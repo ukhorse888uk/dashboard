@@ -787,3 +787,27 @@ table {
     padding: 4px;
   }
 }
+
+/* ----------------------------
+   Responsive tables
+----------------------------- */
+
+/* Portrait mode: race card table scrollable */
+@media screen and (orientation: portrait) {
+  #race-details table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+/* Landscape mode: drop odds table scrollable */
+@media screen and (orientation: landscape) {
+  #drop-odds-container .drop-odds-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
