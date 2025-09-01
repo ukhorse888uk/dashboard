@@ -381,11 +381,14 @@ function loadDropOdds() {
         .filter(row =>
           row['Horse Name'] && row['Horse Name'] !== '' &&
           row['Time'] && row['Time'] !== '' &&
-          row['Horse Name'] !== 'Horse Name' // remove accidental header rows
+          row['Horse Name'] !== 'Horse Name' && // remove accidental header rows
+          row['NOW'] && row['NOW'] !== ''        // ✅ skip rows with empty 現時價格
         );
 
       // Sort by Time
-      data.sort((a, b) => a['Time'].localeCompare(b['Time'], undefined, { numeric: true, sensitivity: 'base' }));
+      data.sort((a, b) =>
+        a['Time'].localeCompare(b['Time'], undefined, { numeric: true, sensitivity: 'base' })
+      );
 
       if (data.length === 0) {
         container.innerHTML = '<div class="error">沒有有效馬匹數據</div>';
@@ -444,6 +447,7 @@ function loadDropOdds() {
     }
   });
 }
+
 
 
 // ===== Tab Switching and Auto Refresh =====
