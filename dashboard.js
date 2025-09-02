@@ -1,8 +1,8 @@
 let activeTab = localStorage.getItem('activeTab') || 'races';
-
 let masterJockeyMap = {};
 let masterTrainerMap = {};
 let raceNumberMap = {}; // Maps race keys to assigned numbers
+let raceFormData = {}; // Store race form data by horse name
 
 function buildMasterMaps(data) {
   masterJockeyMap = {};
@@ -37,6 +37,53 @@ function buildMasterMaps(data) {
     }
   });
 }
+
+// Load race form data
+function loadRaceFormData() {
+  Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/raceform2.csv?cb=" + Date.now(), {
+    download: true,
+    complete: function (results) {
+      const data = results.data;
+      if (!data || data.length === 0) return;
+
+      let currentHorse = '';
+      raceFormData = {};
+
+      for (let i = 1; i < data.length; i++) {
+        const row = data[i];
+        const horseName = row[0] ? row[0].trim() : '';
+
+        if (horseName !== '') {
+          // New horse found → start new array
+          currentHorse = horseName;
+          raceFormData[currentHorse] = [];
+          // Add this first row for the horse
+          raceFormData[currentHorse].push({
+            date: row[1] || '',
+            colC: row[2] || '',
+            colD: row[3] || '',
+            colE: row[4] || '',
+            colG: row[6] || '',
+            colH: row[7] || '',
+            colI: row[8] || ''
+          });
+        } else if (currentHorse !== '' && row[1] && row[1].trim() !== '') {
+          // Subsequent rows for the same horse
+          raceFormData[currentHorse].push({
+            date: row[1] || '',
+            colC: row[2] || '',
+            colD: row[3] || '',
+            colE: row[4] || '',
+            colG: row[6] || '',
+            colH: row[7] || '',
+            colI: row[8] || ''
+          });
+        }
+      }
+    }
+  });
+}
+
 
 // ==============================
 // Load Racecard and Build Dropdown
@@ -87,9 +134,8 @@ function loadRacecard() {
 
           const activeRace = localStorage.getItem('activeRace');
           if (activeRace === raceKey) {
-            timeSpan.classList.add('selected-race'); // optional new class
+            timeSpan.classList.add('selected-race');
           }
-
 
           if (timeOnly.toLowerCase() === "off_time") {
             timeSpan.style.pointerEvents = "none";
@@ -101,7 +147,6 @@ function loadRacecard() {
               window.scrollTo({ top: 0, behavior: 'smooth' });
               document.querySelectorAll('#race-dropdown .race-time').forEach(t => t.classList.remove('selected-race'));
               timeSpan.classList.add('selected-race');
-
 
               displayRace(courseMap[course][raceKey], raceKey);
               localStorage.setItem('activeRace', raceKey);
@@ -128,20 +173,80 @@ function updateRaceArrow() {
 
   const dropdown = document.getElementById('race-dropdown');
 
-  // Toggle arrow rotation based on dropdown open/closed
   if (dropdown.classList.contains('open')) {
     arrow.classList.add('open');
   } else {
     arrow.classList.remove('open');
   }
 
-  // Keep the "Races" tab visually active only if dropdown is open
   if (dropdown.classList.contains('open')) {
     raceTab.classList.add('active');
   } else {
     raceTab.classList.remove('active');
   }
 }
+
+// ==============================
+// Clean CSV cell (for column J like ="9-6")
+// Clean column J value
+// Clean Excel CSV-style weight
+function cleanWeight(value) {
+  if (!value) return '';
+  // Remove leading =' and trailing '
+  if (value.startsWith("='") && value.endsWith("'")) {
+    return value.slice(2, -1);
+  }
+  return value;
+}
+
+// ==============================
+// Create Race Form Table with column 3 fixed
+function createRaceFormTable(horseName) {
+  const formData = raceFormData[horseName] || [];
+  if (formData.length === 0) {
+    return '<div>No race form data available</div>';
+  }
+
+  let html = '<table class="race-form-table"><thead><tr>';
+  html += '<th>日期</th>';
+  html += '<th>賽事資料</th>';
+  html += '<th>重量</th>';
+  html += '<th>賽果</th>';
+  html += '<th>騎師</th>';
+  html += '<th>OR</th>';
+  html += '<th>TS</th>';
+  html += '<th>RPR</th>';
+  html += '</tr></thead><tbody>';
+
+  formData.slice(0, 6).forEach(race => {
+    // Format date
+    let formattedDate = race.date || '';
+
+    // Column 2 → merged data as before
+    const merged = [race.colC, race.colH, race.colI, race.colD, race.colE]
+      .filter(x => x && x.toString().trim() !== '')
+      .join(' ');
+
+    // Column 3 → weight from colJ
+    const weight = cleanWeight(race.colJ);
+
+    html += `<tr>
+      <td>${formattedDate}</td>
+      <td>${merged}</td>
+      <td>${weight}</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  return html;
+}
+
+
 
 
 // ==============================
@@ -263,18 +368,53 @@ function displayRace(raceRows, raceKey) {
     const detailsRow = document.createElement('tr');
     detailsRow.style.backgroundColor = index % 2 === 0 ? 'white' : '#f9f9f9';
     const detailsCell = document.createElement('td');
-    detailsCell.colSpan = 5;
+    detailsCell.colSpan = 10;
     detailsCell.style.textAlign = 'left';
-    detailsCell.innerHTML = `<div>馬主: ${owner}</div><div>父 ${sire} - 母 ${dam} (母父 ${damsire})</div>`;
+    detailsCell.style.padding = '8px';
+
+    // NOTE: removed per-horse toggle button (as requested), kept the container
+    detailsCell.innerHTML = `
+      <div>馬主: ${owner}</div>
+      <div>父 ${sire} - 母 ${dam} (母父 ${damsire})</div>
+      <div id="race-form-${index}" class="race-form-container" data-horse="${horseName}" style="display:none; margin-top:8px;"></div>
+    `;
+
     detailsRow.appendChild(detailsCell);
-    for (let i = 0; i < 8; i++) {
-      detailsRow.appendChild(document.createElement('td'));
-    }
     table.appendChild(detailsRow);
   });
 
   raceDetails.appendChild(table);
+
+  // ONE global toggle button under the first horse
+  const firstDetailsCell = document.querySelector('#race-form-0')?.parentNode;
+  if (firstDetailsCell) {
+    const toggleBtn = document.createElement('button');
+    toggleBtn.textContent = "顯示/隱藏 賽績表";
+    toggleBtn.className = "toggle-all-race-form";
+    toggleBtn.style.marginTop = "8px";
+
+    firstDetailsCell.insertBefore(toggleBtn, firstDetailsCell.firstChild);
+
+    toggleBtn.addEventListener('click', function () {
+      const containers = document.querySelectorAll('.race-form-container');
+
+      // If any is hidden, we will show all; else hide all
+      const anyHidden = Array.from(containers).some(c => c.style.display === 'none');
+
+      containers.forEach(c => {
+        // Lazy-fill content the first time we show it
+        if (anyHidden && (!c.innerHTML || c.innerHTML.trim() === '')) {
+          const horseName = c.getAttribute('data-horse') || '';
+          c.innerHTML = createRaceFormTable(horseName);
+        }
+        c.style.display = anyHidden ? 'block' : 'none';
+      });
+
+      toggleBtn.textContent = anyHidden ? "顯示/隱藏 賽績表 ✔" : "顯示/隱藏 賽績表";
+    });
+  }
 }
+
 
 // ==============================
 // Load Drop Odds
@@ -378,6 +518,9 @@ function loadDropOdds() {
 // Tab Switching & Auto Refresh
 // ==============================
 document.addEventListener('DOMContentLoaded', function () {
+  // Load race form data on page load
+  loadRaceFormData();
+
   const raceTab = document.querySelector('.tab-bar .tab[data-tab="races"]');
   const dropsTab = document.querySelector('.tab-bar .tab[data-tab="drops"]');
   const resultsTab = document.querySelector('.tab-bar .tab[data-tab="results"]');
@@ -413,13 +556,9 @@ document.addEventListener('DOMContentLoaded', function () {
     tab.addEventListener('click', () => {
       const activeTabName = tab.dataset.tab;
 
-      // Remove active from all tabs first
       tabs.forEach(t => t.classList.remove('active'));
-
-      // Add active to clicked tab
       tab.classList.add('active');
 
-      // Show/hide content
       if (activeTabName === 'drops') {
         raceDetails.style.display = 'none';
         dropOddsDiv.style.display = 'block';
@@ -427,20 +566,16 @@ document.addEventListener('DOMContentLoaded', function () {
       } else if (activeTabName === 'results') {
         raceDetails.style.display = 'none';
         dropOddsDiv.style.display = 'none';
-      } else { // races
+      } else {
         raceDetails.style.display = 'block';
         dropOddsDiv.style.display = 'none';
         if (typeof loadRacecard === 'function') loadRacecard();
       }
 
-      // Save active tab
       localStorage.setItem('activeTab', activeTabName);
     });
   });
 
-
-
-  // Load saved tab initially
   const savedTab = localStorage.getItem('activeTab') || 'races';
   document.querySelector(`.tab-bar .tab[data-tab="${savedTab}"]`)?.click();
 

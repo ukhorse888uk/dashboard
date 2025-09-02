@@ -41,38 +41,29 @@ body {
 }
 
 /* Arrow for race tab */
-/* Arrow for race tab */
 .tab .arrow {
   display: inline-block;
   margin-left: 6px;
   vertical-align: middle;
   transition: transform 0.3s ease;
   transform-origin: center center;
-  /* rotate in place */
 }
 
 .tab .arrow.open {
   transform: rotate(180deg);
 }
 
-
-
 /* === Container & Main Content === */
 .container {
   display: flex;
   width: 100%;
   padding-bottom: 18px;
-  /* keep full width */
   flex-wrap: nowrap;
-
-  /* moves container to the right */
 }
 
 #race-details-wrapper {
   padding-left: 38px;
-  /* only shifts the race table */
 }
-
 
 #main-content {
   flex: 1 1 100%;
@@ -125,38 +116,29 @@ body {
 
 .race-time.selected-race {
   background-color: #2e7d32 !important;
-  /* green */
   color: #fff !important;
   font-weight: bold;
 }
 
-
-/* === Race Table & Race Details === */
 /* === Race Table & Race Details === */
 #race-details {
   width: 100%;
   overflow-x: auto;
-  /* keep horizontal scroll if needed */
   margin: 0;
   padding: 0;
   background: #fff;
-  /* ensures no grey shows outside the table */
 }
 
 #race-details table {
   width: 100%;
-  /* fill container width */
   min-width: 800px;
-  /* optional: ensures table is wide enough for columns */
   table-layout: fixed;
-  /* prevent extra stretching */
   border-collapse: collapse;
   white-space: normal;
   font-size: 14px;
   margin: 0;
   padding: 0;
 }
-
 
 #race-details th,
 #race-details td {
@@ -175,28 +157,84 @@ body {
   z-index: 10;
 }
 
-/* Subtable for horse details */
-.subtable {
+
+/* === Race Form Subtable === */
+.race-form-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 4px;
-  font-size: 13px;
+  margin-top: 8px;
+  font-size: 12px;
+  background-color: #f8f8f8;
 }
 
-.subtable th,
-.subtable td {
+.race-form-table th {
+  background-color: #e0e0e0;
   padding: 4px 6px;
+  text-align: center;
+  font-weight: bold;
   border: 1px solid #ccc;
-  text-align: left;
 }
 
-.subtable tr:nth-child(even) {
-  background: #f9f9f9;
+.race-form-table td {
+  padding: 4px 6px;
+  text-align: center;
+  border: 1px solid #ddd;
 }
 
-.subtable tr:nth-child(odd) {
-  background: #fff;
+.race-form-table tr:nth-child(even) {
+  background-color: #f0f0f0;
 }
+
+/* Column widths for 8 columns */
+.race-form-table th:nth-child(1),
+.race-form-table td:nth-child(1) {
+  width: 10%;
+}
+
+/* 日期 */
+.race-form-table th:nth-child(2),
+.race-form-table td:nth-child(2) {
+  width: 35%;
+}
+
+/* 賽事資料 */
+.race-form-table th:nth-child(3),
+.race-form-table td:nth-child(3) {
+  width: 7%;
+}
+
+/* 重量 */
+.race-form-table th:nth-child(4),
+.race-form-table td:nth-child(4) {
+  width: 8%;
+}
+
+/* 賽果 */
+.race-form-table th:nth-child(5),
+.race-form-table td:nth-child(5) {
+  width: 8%;
+}
+
+/* 騎師 */
+.race-form-table th:nth-child(6),
+.race-form-table td:nth-child(6) {
+  width: 7%;
+}
+
+/* OR */
+.race-form-table th:nth-child(7),
+.race-form-table td:nth-child(7) {
+  width: 8%;
+}
+
+/* TS */
+.race-form-table th:nth-child(8),
+.race-form-table td:nth-child(8) {
+  width: 17%;
+}
+
+/* RPR */
+
 
 /* Horse Silk Images */
 .horse-silk {
@@ -239,7 +277,6 @@ body {
   margin: 0;
   padding: 0;
   position: relative;
-  /* Creates positioning context for sticky elements */
 }
 
 .drop-odds-table {
@@ -250,12 +287,10 @@ body {
   font-size: 14px;
 }
 
-/* The key fix - apply sticky positioning to thead */
 .drop-odds-table thead {
   position: sticky;
   top: 0;
   z-index: 1000;
-  /* Higher z-index to ensure it stays on top */
 }
 
 .drop-odds-table th,
@@ -265,17 +300,14 @@ body {
   word-break: break-word;
 }
 
-/* Sticky table header */
 .drop-odds-table thead th {
   background: #2e5c2e;
   color: white;
   position: sticky;
   top: 0;
   z-index: 10;
-  /* Stick to the top of the container */
 }
 
-/* Adjust column widths */
 .drop-odds-table th:nth-child(2),
 .drop-odds-table td:nth-child(2) {
   width: 10%;
@@ -294,7 +326,6 @@ body {
   text-align: left;
 }
 
-/* Zebra striping for drop odds rows, excluding green/red highlights */
 .drop-odds-table tbody tr:not(.green):not(.red):nth-child(odd) {
   background-color: #ffffff;
 }
@@ -303,7 +334,6 @@ body {
   background-color: #f0f0f0;
 }
 
-/* Color coding for drop odds */
 .green {
   background-color: #e6ffea;
   color: #006400;
@@ -316,7 +346,6 @@ body {
   font-weight: bold;
 }
 
-/* Smooth page scrolling */
 html {
   scroll-behavior: smooth;
 }
@@ -421,10 +450,8 @@ html {
     margin-bottom: 10px;
   }
 
-  /* Ensure sticky header works on mobile */
   .drop-odds-table thead th {
     position: -webkit-sticky;
-    /* For Safari */
     position: sticky;
     top: 0;
   }
@@ -443,7 +470,6 @@ html {
 .race-header {
   background-color: #ffffff;
   color: black;
-
   padding: 0px;
   border-radius: 5px 5px 0 0;
   margin-bottom: 1px;
@@ -474,4 +500,20 @@ html {
   padding: 10px 8px;
   text-align: left;
   border-bottom: 2px solid #999;
+}
+
+/* Toggle button for race form */
+.toggle-race-form {
+  background-color: #4a7c59;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.toggle-race-form:hover {
+  background-color: #3a6348;
 }
