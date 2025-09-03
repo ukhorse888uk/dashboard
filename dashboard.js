@@ -356,7 +356,7 @@ function displayRace(raceRows, raceKey) {
     const form = row[43] || '';
     const owner = row[31] || '';
     const sire = row[28] || '';
-    const dam = row[2] || '';
+    const dam = row[27] || '';
     const damsire = row[29] || '';
     const silkUrl = row[41] || '';
     const lastRun = row[42] || '';
