@@ -40,7 +40,6 @@ body {
   color: #000;
 }
 
-/* Arrow for race tab */
 .tab .arrow {
   display: inline-block;
   margin-left: 6px;
@@ -59,10 +58,11 @@ body {
   width: 100%;
   padding-bottom: 18px;
   flex-wrap: nowrap;
+
 }
 
 #race-details-wrapper {
-  padding-left: 38px;
+  padding-left: 3px;
 }
 
 #main-content {
@@ -120,121 +120,119 @@ body {
   font-weight: bold;
 }
 
-/* === Race Table & Race Details === */
-#race-details {
-  width: 100%;
-  overflow-x: auto;
-  margin: 0;
-  padding: 0;
-  background: #fff;
-}
-
-#race-details table {
-  width: 100%;
+/* Top Race Table Header (馬匹資料表) */
+/* Top Race Table Header */
+/* === Top Race Table === */
+/* === Race Table & Race Form Table Fix === */
+#race-details,
+.race-table-wrapper {
+  width: 95%;
+  /* same width for both tables */
   min-width: 800px;
-  table-layout: fixed;
-  border-collapse: collapse;
-  white-space: normal;
-  font-size: 14px;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
+  overflow-x: auto;
 }
 
-#race-details th,
-#race-details td {
+/* Tables fill parent container */
+.race-table,
+.race-form-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 14px;
+}
+
+/* Cells styling */
+.race-table th,
+.race-table td,
+.race-form-table th,
+.race-form-table td {
   margin: 0;
-  padding: 0px;
-  padding-left: 0px;
+  padding: 4px 6px;
   text-align: left;
-  word-break: break-word;
+  word-break: normal;
+  border: 1px solid transparent;
+  /* ensures borders render */
 }
 
-#race-details thead th {
+/* Race Table Header (very top table) */
+.race-table thead th {
+  background-color: #ffffff;
+  /* grey header */
+  color: black;
+  border-bottom: 2px solid #000;
+  /* black line under header */
   position: sticky;
-  top: 50px;
-  background: #2e5c2e;
-  color: white;
+  top: 0;
   z-index: 10;
 }
 
 
-/* === Race Form Subtable === */
-.race-form-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 8px;
-  font-size: 12px;
+
+/* Race Form Table Header */
+.race-form-table th {
+  background-color: #ffffff;
+  /* white header */
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 2px solid #000;
+}
+
+/* Alternating row colors for race form table */
+.race-form-table tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.race-form-table tbody tr:nth-child(even) {
   background-color: #f8f8f8;
 }
 
-.race-form-table th {
-  background-color: #e0e0e0;
-  padding: 4px 6px;
-  text-align: center;
-  font-weight: bold;
-  border: 1px solid #ccc;
-}
-
-.race-form-table td {
-  padding: 4px 6px;
-  text-align: center;
-  border: 1px solid #ddd;
-}
-
-.race-form-table tr:nth-child(even) {
-  background-color: #f0f0f0;
-}
-
-/* Column widths for 8 columns */
+/* Column widths for race form table (8 columns) */
 .race-form-table th:nth-child(1),
 .race-form-table td:nth-child(1) {
-  width: 10%;
+  width: 7%;
 }
 
-/* 日期 */
 .race-form-table th:nth-child(2),
 .race-form-table td:nth-child(2) {
-  width: 35%;
+  width: 30%;
 }
 
-/* 賽事資料 */
 .race-form-table th:nth-child(3),
 .race-form-table td:nth-child(3) {
   width: 7%;
 }
 
-/* 重量 */
 .race-form-table th:nth-child(4),
 .race-form-table td:nth-child(4) {
-  width: 8%;
+  width: 25%;
 }
 
-/* 賽果 */
 .race-form-table th:nth-child(5),
 .race-form-table td:nth-child(5) {
-  width: 8%;
+  width: 15%;
 }
 
-/* 騎師 */
 .race-form-table th:nth-child(6),
 .race-form-table td:nth-child(6) {
-  width: 7%;
+  width: 3%;
 }
 
-/* OR */
 .race-form-table th:nth-child(7),
 .race-form-table td:nth-child(7) {
-  width: 8%;
+  width: 3%;
 }
 
-/* TS */
 .race-form-table th:nth-child(8),
 .race-form-table td:nth-child(8) {
-  width: 17%;
+  width: 3%;
 }
 
-/* RPR */
 
+
+
+/* RPR */
 
 /* Horse Silk Images */
 .horse-silk {

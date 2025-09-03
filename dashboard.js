@@ -38,51 +38,6 @@ function buildMasterMaps(data) {
   });
 }
 
-// Load race form data
-function loadRaceFormData() {
-  Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/raceform2.csv?cb=" + Date.now(), {
-    download: true,
-    complete: function (results) {
-      const data = results.data;
-      if (!data || data.length === 0) return;
-
-      let currentHorse = '';
-      raceFormData = {};
-
-      for (let i = 1; i < data.length; i++) {
-        const row = data[i];
-        const horseName = row[0] ? row[0].trim() : '';
-
-        if (horseName !== '') {
-          // New horse found → start new array
-          currentHorse = horseName;
-          raceFormData[currentHorse] = [];
-          // Add this first row for the horse
-          raceFormData[currentHorse].push({
-            date: row[1] || '',
-            colC: row[2] || '',
-            colD: row[3] || '',
-            colE: row[4] || '',
-            colG: row[6] || '',
-            colH: row[7] || '',
-            colI: row[8] || ''
-          });
-        } else if (currentHorse !== '' && row[1] && row[1].trim() !== '') {
-          // Subsequent rows for the same horse
-          raceFormData[currentHorse].push({
-            date: row[1] || '',
-            colC: row[2] || '',
-            colD: row[3] || '',
-            colE: row[4] || '',
-            colG: row[6] || '',
-            colH: row[7] || '',
-            colI: row[8] || ''
-          });
-        }
-      }
-    }
-  });
-}
 
 
 // ==============================
@@ -186,21 +141,68 @@ function updateRaceArrow() {
   }
 }
 
-// ==============================
-// Clean CSV cell (for column J like ="9-6")
-// Clean column J value
-// Clean Excel CSV-style weight
-function cleanWeight(value) {
-  if (!value) return '';
-  // Remove leading =' and trailing '
-  if (value.startsWith("='") && value.endsWith("'")) {
-    return value.slice(2, -1);
-  }
-  return value;
+
+function loadRaceFormData() {
+  Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/raceform2.csv?cb=" + Date.now(), {
+    download: true,
+    encoding: "UTF-8",
+    complete: function (results) {
+      const data = results.data;
+      if (!data || data.length === 0) return;
+
+      raceFormData = {};
+      let currentHorse = '';
+
+      for (let i = 1; i < data.length; i++) {
+        const row = data[i];
+
+        const horseName = row[0] ? row[0].trim() : '';
+
+        // Map the CSV columns to properties we need
+        const raceEntry = {
+          date: row[1] || '',
+          colC: row[2] || '',    // merged info
+          colD: row[3] || '',
+          colE: row[4] || '',
+          colG: row[6] || '',
+          colH: row[7] || '',
+          colI: row[8] || '',
+          colJ: row[9] || '',    // weight
+          colK: row[10] || '',   // for column 4 condition
+          colL: row[11] || '',
+          colN: row[13] || '',
+          colO: row[14] || '',
+          colP: row[15] || '',
+          colQ: row[16] || '',
+          colX: row[23] || '',   // column 5
+          colZ: row[25] || '',   // column 6
+          colAA: row[26] || '',  // column 7
+          colAB: row[27] || ''   // column 8
+        };
+
+        if (horseName !== '') {
+          // New horse → start new array
+          currentHorse = horseName;
+          raceFormData[currentHorse] = [];
+          raceFormData[currentHorse].push(raceEntry);
+        } else if (currentHorse !== '') {
+          // Additional row for current horse
+          raceFormData[currentHorse].push(raceEntry);
+        }
+      }
+    }
+  });
 }
 
-// ==============================
-// Create Race Form Table with column 3 fixed
+
+// Helper to replace invalid characters with '-'
+function cleanText(str) {
+  if (!str) return '';
+  // replace any non-standard dash-like characters with a simple "-"
+  return str.replace(/[^\x20-\x7E]/g, '-');
+}
+
+
 function createRaceFormTable(horseName) {
   const formData = raceFormData[horseName] || [];
   if (formData.length === 0) {
@@ -219,32 +221,66 @@ function createRaceFormTable(horseName) {
   html += '</tr></thead><tbody>';
 
   formData.slice(0, 6).forEach(race => {
-    // Format date
-    let formattedDate = race.date || '';
+    // Column 1 → format date mm/dd/yyyy → dd/mm/yyyy
+    let formattedDate = '';
+    if (race.date) {
+      const parts = race.date.split('/');
+      if (parts.length === 3) {
+        formattedDate = `${parts[1].padStart(2, '0')}/${parts[0].padStart(2, '0')}/${parts[2]}`;
+      } else {
+        formattedDate = race.date; // fallback
+      }
+    }
 
-    // Column 2 → merged data as before
+    // Column 2 → merged info
     const merged = [race.colC, race.colH, race.colI, race.colD, race.colE]
       .filter(x => x && x.toString().trim() !== '')
+      .map(cleanText)
       .join(' ');
 
-    // Column 3 → weight from colJ
-    const weight = cleanWeight(race.colJ);
+    // Column 3 → weight
+    const weight = cleanText(race.colJ || '');
+
+    // Column 4 → your logic with K/L
+    let col4 = '';
+    if (race.colK === '1') {
+      const kL = `${race.colK}/${race.colL}`;
+      const qL = race.colQ ? race.colQ + 'L' : '';
+      const p = race.colP || '';
+      col4 = [kL, qL, p].filter(Boolean).map(cleanText).join(' ');
+    } else {
+      const kL = `${race.colK}/${race.colL}`;
+      const nL = race.colN ? race.colN + 'L' : '';
+      const o = race.colO || '';
+      col4 = [kL, nL, o].filter(Boolean).map(cleanText).join(' ');
+    }
+
+    // Columns 5–8
+    const col5 = cleanText(race.colX);
+    const col6 = cleanText(race.colZ);
+    const col7 = cleanText(race.colAA);
+    const col8 = cleanText(race.colAB);
 
     html += `<tr>
       <td>${formattedDate}</td>
       <td>${merged}</td>
       <td>${weight}</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>${col4}</td>
+      <td>${col5}</td>
+      <td>${col6}</td>
+      <td>${col7}</td>
+      <td>${col8}</td>
     </tr>`;
   });
 
   html += '</tbody></table>';
   return html;
 }
+
+
+
+
+
 
 
 
@@ -264,10 +300,23 @@ function displayRace(raceRows, raceKey) {
   const prizeValue = rawPrize.replace(/[^0-9]/g, '');
   const formattedPrize = prizeValue ? `£${parseInt(prizeValue).toLocaleString()}` : 'N/A';
 
+  // ✅ Get date from column 2 (index 1) and format as dd/mm/yyyy
+  const rawDate = raceData[1] || '';
+  let formattedDate = '';
+  if (rawDate) {
+    const parts = rawDate.split('/');
+    if (parts.length === 3) {
+      // CSV format is mm/dd/yyyy → convert to dd/mm/yyyy
+      formattedDate = `${parts[1].padStart(2, '0')}/${parts[0].padStart(2, '0')}/${parts[2]}`;
+    } else {
+      formattedDate = rawDate; // fallback
+    }
+  }
+
   const raceHeader = document.createElement('div');
   raceHeader.className = 'race-header';
   raceHeader.innerHTML = `
-        <div class="race-title">${raceKey}</div>
+        <div class="race-title">${raceKey} ${formattedDate ? `(${formattedDate})` : ''}</div>
         <div class="race-meta">
             <span>距離: ${distance} Furlong </span>
             <span>班數: ${raceClass}</span>
@@ -281,13 +330,16 @@ function displayRace(raceRows, raceKey) {
   const table = document.createElement('table');
   table.className = 'race-table';
 
+  const thead = document.createElement('thead');
   const headerRow = document.createElement('tr');
   ['號碼(檔位)', '', '馬名/資訊', '年齡', '近戰績', '隔夜', '最近', '練馬師', '騎師', '繁育者'].forEach(text => {
     const th = document.createElement('th');
     th.textContent = text;
     headerRow.appendChild(th);
   });
-  table.appendChild(headerRow);
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
 
   const horseRows = raceRows.filter(row => {
     const horseNumber = row[32];
@@ -303,8 +355,8 @@ function displayRace(raceRows, raceKey) {
     const age = row[22] || '';
     const form = row[43] || '';
     const owner = row[31] || '';
-    const sire = row[27] || '';
-    const dam = row[28] || '';
+    const sire = row[28] || '';
+    const dam = row[2] || '';
     const damsire = row[29] || '';
     const silkUrl = row[41] || '';
     const lastRun = row[42] || '';
@@ -321,7 +373,7 @@ function displayRace(raceRows, raceKey) {
     const trainerData = masterTrainerMap[trainer] || { raceCount: '0', races: [] };
 
     const horseRow = document.createElement('tr');
-    horseRow.style.backgroundColor = index % 2 === 0 ? 'white' : '#f9f9f9';
+    horseRow.style.backgroundColor = 'white';
 
     const col1 = document.createElement('td');
     col1.innerHTML = `<div style="font-weight:bold">${horseNumber} (${draw})</div><div>${form}</div>`;
@@ -366,7 +418,7 @@ function displayRace(raceRows, raceKey) {
     table.appendChild(horseRow);
 
     const detailsRow = document.createElement('tr');
-    detailsRow.style.backgroundColor = index % 2 === 0 ? 'white' : '#f9f9f9';
+    detailsRow.style.backgroundColor = 'white';
     const detailsCell = document.createElement('td');
     detailsCell.colSpan = 10;
     detailsCell.style.textAlign = 'left';
@@ -414,6 +466,7 @@ function displayRace(raceRows, raceKey) {
     });
   }
 }
+
 
 
 // ==============================
