@@ -58,11 +58,10 @@ body {
   width: 100%;
   padding-bottom: 18px;
   flex-wrap: nowrap;
-
 }
 
 #race-details-wrapper {
-  padding-left: 3px;
+  padding-left: 0px;
 }
 
 #main-content {
@@ -120,152 +119,259 @@ body {
   font-weight: bold;
 }
 
-/* Top Race Table Header (馬匹資料表) */
-/* Top Race Table Header */
-/* === Top Race Table === */
-/* === Race Table & Race Form Table Fix === */
-#race-details,
-.race-table-wrapper {
-  width: 95%;
-  /* same width for both tables */
+/* Container for both tables - ensures same width */
+#race-details {
+  width: 98%;
   min-width: 800px;
   margin: 0 auto;
   padding: 0;
   overflow-x: auto;
 }
 
-/* Tables fill parent container */
-.race-table,
-.race-form-table {
+/* ===============================
+   MAIN RACE TABLE
+   =============================== */
+.race-table {
   width: 100%;
+  table-layout: auto;
+  /* ensure widths work properly */
   border-collapse: collapse;
-  border-spacing: 0;
+  margin-bottom: 20px;
+  border: none;
+  /* remove table border */
+  min-width: 100%;
+  max-width: 100%;
+}
+
+
+
+.race-table th,
+.race-table td {
+  padding: 8px;
+  text-align: left;
+  border: none;
+  /* no borders */
   font-size: 14px;
 }
 
-/* Cells styling */
-.race-table th,
-.race-table td,
-.race-form-table th,
-.race-form-table td {
-  margin: 0;
-  padding: 4px 6px;
+.race-table td {
+  vertical-align: top;
+  padding: 4px 8px;
+  /* adjust padding as needed */
+}
+
+/* Column 1: Horse Number + Draw */
+.race-table th:nth-child(1),
+.race-table td:nth-child(1) {
+  width: 20px;
+  font-size: 14px;
+}
+
+/* Column 2: Horse Silk */
+.race-table th:nth-child(2),
+.race-table td:nth-child(2) {
+  width: 40px;
+  /* smaller column for silk */
   text-align: left;
-  word-break: normal;
-  border: 1px solid transparent;
-  /* ensures borders render */
+  font-size: 14px;
+  padding-right: 2px;
+  /* minimal space to next column */
 }
 
-/* Race Table Header (very top table) */
-.race-table thead th {
-  background-color: #ffffff;
-  /* grey header */
-  color: black;
-  border-bottom: 2px solid #000;
-  /* black line under header */
-  position: sticky;
-  top: 0;
-  z-index: 10;
+.race-table td:nth-child(2) img {
+  width: 78px;
+  /* shrink silk image */
+  height: auto;
+  /* keep aspect ratio */
+  display: block;
+  /* remove extra inline spacing */
+}
+
+/* Column 3: Horse Name + Gender/Color/Nationality */
+.race-table th:nth-child(3),
+.race-table td:nth-child(3) {
+  width: 140px;
+  /* pulled closer to silk column */
+  font-size: 14px;
+  padding-left: 4px;
+  /* pull it closer */
+}
+
+/* Column 4 */
+.race-table th:nth-child(4),
+.race-table td:nth-child(4) {
+  width: 30px;
+  font-size: 14px;
+}
+
+/* Column 5 */
+.race-table th:nth-child(5),
+.race-table td:nth-child(5) {
+  width: 100px;
+  font-size: 14px;
+}
+
+/* Column 6 */
+.race-table th:nth-child(6),
+.race-table td:nth-child(6) {
+  text-align: left;
+  width: 100px;
+  font-size: 14px;
+}
+
+/* Column 7 */
+.race-table th:nth-child(7),
+.race-table td:nth-child(7) {
+  text-align: left;
+  font-size: 14px;
+  width: 100px;
+}
+
+/* Column 8 */
+.race-table th:nth-child(8),
+.race-table td:nth-child(8) {
+  width: 10px;
+}
+
+/* Column 9 */
+.race-table th:nth-child(9),
+.race-table td:nth-child(9) {
+  width: 10px;
 }
 
 
-
-/* Race Form Table Header */
-.race-form-table th {
-  background-color: #ffffff;
-  /* white header */
-  text-align: center;
+/* Special styling inside race table */
+.race-table td .horse-num-draw {
+  font-size: 20px;
+  /* larger text for horse number + draw */
   font-weight: bold;
-  border-bottom: 2px solid #000;
 }
 
-/* Alternating row colors for race form table */
+.race-table td div:not(.horse-num-draw) {
+  font-size: 14px;
+  /* second line smaller */
+  font-weight: normal;
+}
+
+/* Add a grey line above each horse row */
+.race-table tbody tr td {
+  border-top: 1px solid #ccc;
+  /* light grey line */
+}
+
+/* Optional: remove top border for the very first row */
+.race-table tbody tr:first-child td {
+  border-top: none;
+}
+
+
+/* ===============================
+   RACE FORM TABLE
+   =============================== */
+.race-form-table {
+  width: 100%;
+  table-layout: fixed;
+  /* ensures column widths respected */
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 14px;
+  border: none;
+  /* remove table border */
+  min-width: 100%;
+  max-width: 100%;
+  border-bottom: 2px solid #2e7d32
+    /* grey bottom border */
+}
+
+/* Race form table header */
+.race-form-table thead th {
+  background: #e0e0e0;
+  /* medium grey */
+  font-weight: 600;
+}
+
+/* Zebra striping for rows */
 .race-form-table tbody tr:nth-child(odd) {
-  background-color: #ffffff;
+  background: #ffffff;
+  /* white */
 }
 
 .race-form-table tbody tr:nth-child(even) {
-  background-color: #f8f8f8;
+  background: #f5f5f5;
+  /* light grey */
 }
 
-/* Column widths for race form table (8 columns) */
-.race-form-table th:nth-child(1),
-.race-form-table td:nth-child(1) {
-  width: 7%;
+/* Column widths for race form table */
+.race-form-table td:nth-child(1),
+.race-form-table th:nth-child(1) {
+  width: 13%;
+  /* Horse No */
 }
 
-.race-form-table th:nth-child(2),
-.race-form-table td:nth-child(2) {
-  width: 30%;
+.race-form-table td:nth-child(2),
+.race-form-table th:nth-child(2) {
+  width: 60%;
+  /* Horse Name */
 }
 
-.race-form-table th:nth-child(3),
-.race-form-table td:nth-child(3) {
-  width: 7%;
+.race-form-table td:nth-child(3),
+.race-form-table th:nth-child(3) {
+  width: 13%;
+  /* Weight */
 }
 
-.race-form-table th:nth-child(4),
-.race-form-table td:nth-child(4) {
-  width: 25%;
+.race-form-table td:nth-child(4),
+.race-form-table th:nth-child(4) {
+  width: 50%;
+  /* Jockey */
 }
 
-.race-form-table th:nth-child(5),
-.race-form-table td:nth-child(5) {
-  width: 15%;
+.race-form-table td:nth-child(5),
+.race-form-table th:nth-child(5) {
+  width: 28%;
+  /* Trainer */
 }
 
-.race-form-table th:nth-child(6),
-.race-form-table td:nth-child(6) {
-  width: 3%;
+.race-form-table td:nth-child(6),
+.race-form-table th:nth-child(6) {
+  width: 4%;
+  /* Draw */
 }
 
-.race-form-table th:nth-child(7),
-.race-form-table td:nth-child(7) {
-  width: 3%;
+.race-form-table td:nth-child(7),
+.race-form-table th:nth-child(7) {
+  width: 4%;
+  /* Odds */
 }
 
-.race-form-table th:nth-child(8),
-.race-form-table td:nth-child(8) {
-  width: 3%;
+.race-form-table td:nth-child(8),
+.race-form-table th:nth-child(8) {
+  width: 4%;
+  /* Comments / Extra Info */
+}
+
+
+/* ===============================
+   EXTRA FORMATTING
+   =============================== */
+/* Smaller Chinese text */
+.last-run {
+  font-size: 14px;
+  font-weight: bold;
+  color: #080808;
+}
+
+/* Larger, bold number */
+.last-run-number {
+  font-size: 14px;
+  font-weight: bold;
+  color: #1f7924;
+  margin: 0 2px;
 }
 
 
 
 
-/* RPR */
-
-/* Horse Silk Images */
-.horse-silk {
-  height: 50px;
-  width: auto;
-  display: block;
-  margin: 2px auto;
-  border: 1px solid #eee;
-  border-radius: 2px;
-  object-fit: contain;
-}
-
-/* Owner and Pedigree Info */
-.owner-info,
-.pedigree-info {
-  font-size: 0.85em;
-  color: #666;
-  line-height: 1.3;
-}
-
-/* Jockey and Trainer badges */
-.jockey-badge,
-.trainer-badge {
-  font-size: 0.85em;
-  color: #7f8c8d;
-  display: block;
-  line-height: 1.4;
-}
-
-/* Horse Highlight */
-.horse-highlight {
-  background-color: #fffb91 !important;
-}
 
 /* Fix for sticky header in drop odds table */
 #drop-odds-container {
