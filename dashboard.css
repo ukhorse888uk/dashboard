@@ -561,63 +561,55 @@ html {
   }
 }
 
-/* Utility Classes */
-.error,
-.loading {
-  text-align: center;
-  padding: 20px;
-  color: #666;
-  font-style: italic;
+/* Extra small screen adjustments (phones, portrait) */
+@media (max-width: 480px) {
+  .tab {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+
+  .race-table th,
+  .race-table td,
+  .race-form-table th,
+  .race-form-table td,
+  .drop-odds-table th,
+  .drop-odds-table td {
+    font-size: 11px;
+    padding: 3px;
+  }
+
+  .race-meta {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  #race-details,
+  .race-form-table,
+  .drop-odds-table {
+    min-width: unset;
+    width: 100%;
+    overflow-x: auto;
+  }
 }
 
-/* Race Header Styles */
-.race-header {
-  background-color: #ffffff;
-  color: black;
-  padding: 0px;
-  border-radius: 5px 5px 0 0;
-  margin-bottom: 1px;
-}
+/* Landscape view on small devices */
+@media (max-width: 768px) and (orientation: landscape) {
 
-.race-title {
-  font-size: 1.5em;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
+  .race-table th,
+  .race-table td,
+  .race-form-table th,
+  .race-form-table td,
+  .drop-odds-table th,
+  .drop-odds-table td {
+    font-size: 13px;
+    /* bump font back up */
+    padding: 6px;
+    /* give more breathing room */
+  }
 
-.race-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  font-size: 0.9em;
-  margin-bottom: 5px;
-}
-
-.race-name {
-  font-style: italic;
-  margin-top: 5px;
-}
-
-.race-table th {
-  background: #ffffff;
-  color: black;
-  padding: 10px 8px;
-  text-align: left;
-  border-bottom: 2px solid #999;
-}
-
-/* Toggle button for race form */
-.toggle-race-form {
-  background-color: #4a7c59;
-  color: white;
-  border: none;
-  padding: 4px 8px;
-  border-radius: 3px;
-  cursor: pointer;
-  font-size: 11px;
-  margin-top: 4px;
-}
-
-.toggle-race-form:hover {
-  background-color: #3a6348;
+  .race-meta {
+    flex-direction: row;
+    /* lay out side by side again */
+    gap: 12px;
+  }
 }
