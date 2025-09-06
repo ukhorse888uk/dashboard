@@ -262,6 +262,27 @@ function updateAllRaceForms() {
 // ==============================
 // The rest of your existing code remains exactly the same...
 // ==============================
+function formatWeight(weightStr) {
+  if (!weightStr) return '';
+
+  // Case 1: Already in "9-4" style
+  if (weightStr.includes('-')) {
+    const parts = weightStr.split('-');
+    if (parts.length === 2) {
+      return `${parts[0]} st ${parts[1]} lb`;
+    }
+  }
+
+  // Case 2: Pure number in pounds (e.g. "130")
+  const lbs = parseInt(weightStr, 10);
+  if (!isNaN(lbs)) {
+    const stones = Math.floor(lbs / 14);
+    const pounds = lbs % 14;
+    return `${stones} st ${pounds} lb`;
+  }
+
+  return weightStr; // fallback
+}
 
 
 function createRaceFormTable(horseName) {
@@ -319,8 +340,8 @@ function createRaceFormTable(horseName) {
     // Columns 5–8
     const col5 = cleanText(race.colX);
     const col6 = cleanText(race.colZ);
-    const col7 = cleanText(race.colAA);
-    const col8 = cleanText(race.colAB);
+    const col7 = cleanText(race.colAB);
+    const col8 = cleanText(race.colAA);
 
     html += `<tr>
       <td>${formattedDate}</td>
@@ -388,7 +409,7 @@ function displayRace(raceRows, raceKey) {
   table.className = 'race-table';
   const thead = document.createElement('thead');
   const headerRow = document.createElement('tr');
-  ['號碼(檔位)', '', '馬名/資訊', '年齡', '練馬師', '騎師', '繁育者', '隔夜', '最近'].forEach(text => {
+  ['號碼(檔位)', '', '馬名/資訊', '年齡', '重量', '騎師', '練馬師', '隔夜', '最近'].forEach(text => {
     const th = document.createElement('th');
     th.textContent = text;
     headerRow.appendChild(th);
@@ -405,8 +426,8 @@ function displayRace(raceRows, raceKey) {
   });
 
   // Mapping for Chinese translations
-  const genderMap = { 'h': '雄馬', 'mare': '母馬', 'gelding': '閹馬', 'colt': '小雄駒', 'filly': '小雌馬' };
-  const colorMap = { 'b': '棗色', 'ch': '栗色', 'gr': '灰色', 'bl': '黑色', 'br': '褐色', 'ro': '雜色' };
+  const genderMap = { 'horse': '雄馬', 'mare': '母馬', 'gelding': '閹馬', 'colt': '小雄駒', 'filly': '小雌馬' };
+  const colorMap = { 'b': '棗色', 'ch': '栗色', 'gr': '灰色', 'bl': '黑色', 'br': '棕色', 'ro': '雜色' };
   const nationalityMap = { 'GB': '英國', 'IRE': '愛爾蘭', 'FR': '法國', 'HK': '香港' };
 
   horseRows.forEach((row, index) => {
@@ -426,7 +447,7 @@ function displayRace(raceRows, raceKey) {
     const nationality = row[25] || '';
     const trainer = row[30] || '';
     const jockey = row[40] || '';
-    const rating = row[26] || '';
+    const weights = row[34] || '';
     const lastnightOdds = row[51] || '-';
     const nowOdds = row[52] || '-';
 
@@ -477,7 +498,7 @@ function displayRace(raceRows, raceKey) {
 
     // Apply proper CSS classes
     infoCell.innerHTML = `
-  <div>${horseName}</div>
+  <div class="horse-name">${horseName}</div>
   <div class="last-run">
     上次出賽 <span class="last-run-number">${lastRunDisplay}</span>
   </div>
@@ -492,19 +513,20 @@ function displayRace(raceRows, raceKey) {
     col4.innerHTML = `<div>${age} 歲</div><div>騎師: ${jockeyData.raceCount}</div><div>練馬師: ${trainerData.raceCount}</div>`;
     horseRow.appendChild(col4);
 
-    // Column 5: Trainer
+    // Column 5: Weight
     const col5 = document.createElement('td');
-    col5.textContent = trainer;
+    col5.textContent = formatWeight(weights);
     horseRow.appendChild(col5);
+
 
     // Column 6: Jockey
     const col6 = document.createElement('td');
     col6.textContent = jockey;
     horseRow.appendChild(col6);
 
-    // Column 7: Rating
+    // Column 7: Trainer
     const col7 = document.createElement('td');
-    col7.textContent = rating;
+    col7.textContent = trainer;
     horseRow.appendChild(col7);
 
     // Column 8: Last night odds
@@ -517,6 +539,7 @@ function displayRace(raceRows, raceKey) {
     col9.textContent = nowOdds;
     horseRow.appendChild(col9);
 
+
     table.appendChild(horseRow);
 
     // ===== Always show race form directly
@@ -526,7 +549,7 @@ function displayRace(raceRows, raceKey) {
     formCell.style.padding = '8px';
     formCell.innerHTML = `
       <div>馬主: ${owner}</div>
-      <div>父 ${sire} - 母 ${dam} (母父 ${damsire})</div>
+      <div>父系 ${sire} - 母系 ${dam} (外祖父 ${damsire})</div>
       ${createRaceFormTable(horseName)}
     `;
     formRow.appendChild(formCell);

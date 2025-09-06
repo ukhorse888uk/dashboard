@@ -143,6 +143,10 @@ body {
   max-width: 100%;
 }
 
+.race-table thead tr {
+  border-bottom: 2px solid #444;
+}
+
 
 
 .race-table th,
@@ -207,7 +211,7 @@ body {
 /* Column 5 */
 .race-table th:nth-child(5),
 .race-table td:nth-child(5) {
-  width: 100px;
+  width: 30px;
   font-size: 14px;
 }
 
@@ -251,6 +255,20 @@ body {
   font-size: 14px;
   /* second line smaller */
   font-weight: normal;
+}
+
+.horse-name {
+  font-weight: bold !important;
+  font-size: 20px !important;
+  color: #080808 !important;
+  margin-bottom: 4px;
+}
+
+
+/* Last run row */
+.last-run {
+  font-size: 13px;
+  color: #444;
 }
 
 /* Add a grey line above each horse row */
