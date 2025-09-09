@@ -11,10 +11,10 @@ function buildMasterMaps(data) {
   masterTrainerMap = {};
 
   data.forEach(row => {
-    const jockeyName = row[34] || '';
-    const jockeyCount = row[35] || '0';
+    const jockeyName = row[63] || '';
+    const jockeyCount = row[64] || '0';
     if (jockeyName && jockeyName.trim() !== '' && jockeyName.trim().toUpperCase() !== 'NON-RUNNER') {
-      const jockeyRaces = row.slice(36, 47)
+      const jockeyRaces = row.slice(65, 76)
         .filter(r => r && r.trim() !== '')
         .map(raceStr => {
           const parts = raceStr.split('|').map(p => p.trim());
@@ -32,8 +32,8 @@ function buildMasterMaps(data) {
       };
     }
 
-    const trainerName = row[47] || '';
-    const trainerCount = row[48] || '0';
+    const trainerName = row[76] || '';
+    const trainerCount = row[77] || '0';
     if (trainerName && trainerName.trim() !== '' && trainerName.trim().toUpperCase() !== 'NON-RUNNER') {
       masterTrainerMap[trainerName.trim()] = { raceCount: trainerCount };
     }
@@ -450,6 +450,16 @@ function displayRace(raceRows, raceKey) {
     const weights = row[34] || '';
     const lastnightOdds = row[51] || '-';
     const nowOdds = row[52] || '-';
+    const region = row[45] || '';     // AT
+    const reach14 = row[44] || '';    // AS
+    const runs14 = row[46] || '';     // AU
+    const wins14 = row[47] || '';     // AV
+
+    // Calculate win percentage (防止除以零)
+    let winPct = '-';
+    if (runs14 && !isNaN(runs14) && runs14 !== '0') {
+      winPct = ((parseInt(wins14, 10) / parseInt(runs14, 10)) * 100).toFixed(1) + '%';
+    }
 
     const jockeyData = masterJockeyMap[jockey] || { raceCount: '0', races: [] };
     const trainerData = masterTrainerMap[trainer] || { raceCount: '0', races: [] };
@@ -508,9 +518,9 @@ function displayRace(raceRows, raceKey) {
     horseRow.appendChild(infoCell);
 
 
-    // Column 4: Age + Jockey & Trainer races
+    // Column 4: Age
     const col4 = document.createElement('td');
-    col4.innerHTML = `<div>${age} 歲</div><div>騎師: ${jockeyData.raceCount}</div><div>練馬師: ${trainerData.raceCount}</div>`;
+    col4.textContent = age;
     horseRow.appendChild(col4);
 
     // Column 5: Weight
@@ -518,15 +528,24 @@ function displayRace(raceRows, raceKey) {
     col5.textContent = formatWeight(weights);
     horseRow.appendChild(col5);
 
-
-    // Column 6: Jockey
+    // Column 6: Jockey (with race count)
     const col6 = document.createElement('td');
-    col6.textContent = jockey;
+    col6.innerHTML = `
+  <div>${jockey}</div>
+  <div>今日騎師策騎: ${jockeyData.raceCount} 匹</div>
+`;
     horseRow.appendChild(col6);
 
-    // Column 7: Trainer
+    // Column 7: Trainer (with race count + extra rows)
     const col7 = document.createElement('td');
-    col7.textContent = trainer;
+    col7.innerHTML = `
+  <div>${trainer}</div>
+  <div>今日練馬師出賽: ${trainerData.raceCount}匹</div>
+  <div>過去14天：</div>
+  <div>達標: ${reach14}%</div>
+  <div>參賽: ${runs14}匹  勝出: ${wins14}匹  勝出%: ${winPct}</div>
+  <div>地區: ${region}</div>
+`;
     horseRow.appendChild(col7);
 
     // Column 8: Last night odds

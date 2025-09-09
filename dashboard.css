@@ -175,43 +175,41 @@ body {
 .race-table th:nth-child(2),
 .race-table td:nth-child(2) {
   width: 40px;
-  /* smaller column for silk */
-  text-align: left;
-  font-size: 14px;
-  padding-right: 2px;
-  /* minimal space to next column */
+  /* match silk image width */
+  text-align: center;
+  padding-right: 0;
+
 }
 
 .race-table td:nth-child(2) img {
-  width: 78px;
-  /* shrink silk image */
+  width: 80px;
+  /* silk image width */
   height: auto;
-  /* keep aspect ratio */
   display: block;
-  /* remove extra inline spacing */
+  margin: 0;
 }
 
 /* Column 3: Horse Name + Gender/Color/Nationality */
 .race-table th:nth-child(3),
 .race-table td:nth-child(3) {
-  width: 140px;
-  /* pulled closer to silk column */
-  font-size: 14px;
-  padding-left: 4px;
-  /* pull it closer */
+  width: 100px;
+  padding-left: 2px;
+  /* tiny gap so text doesn’t touch silk */
 }
 
-/* Column 4 */
+/* Column 5 */
 .race-table th:nth-child(4),
 .race-table td:nth-child(4) {
-  width: 30px;
+  width: 28px;
   font-size: 14px;
 }
+
+
 
 /* Column 5 */
 .race-table th:nth-child(5),
 .race-table td:nth-child(5) {
-  width: 30px;
+  width: 60px;
   font-size: 14px;
 }
 
@@ -228,7 +226,7 @@ body {
 .race-table td:nth-child(7) {
   text-align: left;
   font-size: 14px;
-  width: 100px;
+  width: 160px;
 }
 
 /* Column 8 */
@@ -246,7 +244,7 @@ body {
 
 /* Special styling inside race table */
 .race-table td .horse-num-draw {
-  font-size: 20px;
+  font-size: 16px;
   /* larger text for horse number + draw */
   font-weight: bold;
 }
@@ -259,7 +257,7 @@ body {
 
 .horse-name {
   font-weight: bold !important;
-  font-size: 20px !important;
+  font-size: 16px !important;
   color: #080808 !important;
   margin-bottom: 4px;
 }
