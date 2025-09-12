@@ -15,7 +15,6 @@
     <div class="tab" data-tab="races">
       賽程列表 <span class="arrow">▼</span>
     </div>
-
     <div class="tab" data-tab="drops">落飛馬</div>
     <div class="tab" data-tab="results">賽果</div>
   </div>
@@ -30,12 +29,20 @@
       <!-- Course + times will be inserted here -->
     </div>
   </div>
+
   <div class="container">
     <!-- Main Content -->
     <div id="main-content">
+      <!-- Wrapper for race details and sub-bar -->
       <div id="race-details-wrapper">
+        <!-- Sub-bar for same-course races -->
+        <div id="race-subbar-container"></div>
+
+        <!-- Race details table -->
         <div id="race-details"></div>
       </div>
+
+      <!-- Drop odds section -->
       <div id="drop-odds" style="display:none;">
         <div id="drop-odds-container"></div>
       </div>

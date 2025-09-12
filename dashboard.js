@@ -69,10 +69,10 @@ window.toggleRaceForm = function () {
 // ==============================
 // Load Racecard and Build Dropdown
 // ==============================
+// ==============================
+// Load Racecard
+// ==============================
 function loadRacecard() {
-  // Save scroll position before refresh
-  scrollPosition = window.scrollY || document.documentElement.scrollTop;
-
   Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/racecard2.csv?cb=" + Date.now(), {
     download: true,
     complete: function (results) {
@@ -91,18 +91,14 @@ function loadRacecard() {
         if (!raceTime) return;
 
         const raceKey = `${raceTime}  ${course}`;
-
         if (!courseMap[course]) courseMap[course] = {};
         if (!courseMap[course][raceKey]) courseMap[course][raceKey] = [];
         courseMap[course][raceKey].push(row);
       });
 
       const dropdown = document.getElementById('race-dropdown');
-
-      // Preserve active race key
       const activeRaceKey = localStorage.getItem('activeRace');
 
-      // Clear dropdown but rebuild DOM nodes directly
       dropdown.innerHTML = '';
       Object.keys(courseMap).forEach(course => {
         const courseRow = document.createElement('div');
@@ -120,25 +116,22 @@ function loadRacecard() {
           timeSpan.textContent = timeOnly;
           timeSpan.setAttribute('data-race-key', raceKey);
 
-          if (activeRaceKey === raceKey) {
-            timeSpan.classList.add('selected-race');
-          }
+          if (activeRaceKey === raceKey) timeSpan.classList.add('selected-race');
 
           if (timeOnly.toLowerCase() !== "off_time") {
             timeSpan.addEventListener('click', () => {
+              const scrollTop = window.scrollY || document.documentElement.scrollTop;
               document.querySelectorAll('#race-dropdown .race-time').forEach(t => t.classList.remove('selected-race'));
               timeSpan.classList.add('selected-race');
-
-              displayRace(courseMap[course][raceKey], raceKey);
               localStorage.setItem('activeRace', raceKey);
-
+              displayRace(courseMap[course][raceKey], raceKey);
+              showCourseSubbar(course, courseMap);
               dropdown.classList.remove('open');
               updateRaceArrow();
-
-              if (showRaceForm) {
-                document.querySelectorAll('.race-form-container').forEach(c => c.style.display = 'block');
-              }
+              if (showRaceForm) document.querySelectorAll('.race-form-container').forEach(c => c.style.display = 'block');
+              setTimeout(() => window.scrollTo(0, scrollTop), 0); // restore scroll
             });
+
           }
 
           courseRow.appendChild(timeSpan);
@@ -149,19 +142,61 @@ function loadRacecard() {
       });
 
       if (activeRaceKey) {
-        Object.keys(courseMap).forEach(course => {
-          if (courseMap[course][activeRaceKey]) {
-            displayRace(courseMap[course][activeRaceKey], activeRaceKey);
-          }
-        });
+        const courseName = activeRaceKey.split('  ')[1];
+        showCourseSubbar(courseName, courseMap);
+        if (courseMap[courseName][activeRaceKey]) displayRace(courseMap[courseName][activeRaceKey], activeRaceKey);
       }
 
-      setTimeout(() => {
-        window.scrollTo(0, scrollPosition);
-      }, 0);
+      // --- Sub-bar ---
+      function showCourseSubbar(courseName, courseMap) {
+        let subbar = document.getElementById('race-subbar-container');
+        if (!subbar) {
+          subbar = document.createElement('div');
+          subbar.id = 'race-subbar-container';
+          subbar.style.display = 'flex';
+          subbar.style.alignItems = 'center';
+          subbar.style.gap = '5px';
+          subbar.style.margin = '10px 0';
+          const wrapper = document.getElementById('race-details-wrapper');
+          wrapper.insertBefore(subbar, wrapper.firstChild);
+        }
+        subbar.innerHTML = '';
+
+        const courseLabel = document.createElement('span');
+        courseLabel.textContent = courseName;
+        courseLabel.style.fontWeight = 'bold';
+        courseLabel.style.marginRight = '10px';
+        subbar.appendChild(courseLabel);
+
+        Object.keys(courseMap[courseName] || {}).sort().forEach(raceKey => {
+          const timeOnly = raceKey.split('  ')[0];
+          const btn = document.createElement('button');
+          btn.textContent = timeOnly;
+          btn.className = 'subbar-btn';
+          if (raceKey === localStorage.getItem('activeRace')) btn.classList.add('active');
+
+          btn.addEventListener('click', () => {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            subbar.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            localStorage.setItem('activeRace', raceKey);
+            displayRace(courseMap[courseName][raceKey], raceKey);
+            setTimeout(() => window.scrollTo(0, scrollTop), 0); // restore scroll
+          });
+
+
+          subbar.appendChild(btn);
+        });
+
+        subbar.style.display = 'flex';
+      }
     }
   });
 }
+
+
+
+
 
 function updateRaceArrow() {
   const raceTab = document.querySelector('.tab[data-tab="races"]');
@@ -172,15 +207,41 @@ function updateRaceArrow() {
 
   if (dropdown.classList.contains('open')) {
     arrow.classList.add('open');
-  } else {
-    arrow.classList.remove('open');
-  }
-
-  if (dropdown.classList.contains('open')) {
     raceTab.classList.add('active');
   } else {
+    arrow.classList.remove('open');
     raceTab.classList.remove('active');
   }
+}
+
+// Intercept scroll side effect globally for the race tab dropdown
+const raceTab = document.querySelector('.tab[data-tab="races"]');
+raceTab.addEventListener('click', (e) => {
+  // Save current scroll
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+  // Allow all existing handlers to run (do NOT preventDefault)
+  // Just restore scroll immediately
+  setTimeout(() => {
+    window.scrollTo(0, scrollTop);
+  }, 0);
+});
+
+
+
+
+
+function decimalToFraction(decimal) {
+  if (!decimal) return '';
+  const tolerance = 1.0E-6;
+  let h1 = 1, h2 = 0, k1 = 0, k2 = 1, b = decimal;
+  do {
+    const a = Math.floor(b);
+    let temp = h1; h1 = a * h1 + h2; h2 = temp;
+    temp = k1; k1 = a * k1 + k2; k2 = temp;
+    b = 1 / (b - a);
+  } while (Math.abs(decimal - h1 / k1) > decimal * tolerance);
+  return h1 + '/' + k1;
 }
 
 function loadRaceFormData() {
@@ -217,8 +278,10 @@ function loadRaceFormData() {
           colX: row[23] || '',
           colZ: row[25] || '',
           colAA: row[26] || '',
-          colAB: row[27] || ''
+          colAB: row[27] || '',
+          colT: row[19] || ''  // <<< added column T
         };
+
 
         if (horseName !== '') {
           currentHorse = horseName;
@@ -303,14 +366,14 @@ function createRaceFormTable(horseName) {
   html += '</tr></thead><tbody>';
 
   formData.slice(0, 6).forEach(race => {
-    // Column 1 → format date mm/dd/yyyy → dd/mm/yyyy
+    // Format date mm/dd/yyyy → dd/mm/yyyy
     let formattedDate = '';
     if (race.date) {
       const parts = race.date.split('/');
       if (parts.length === 3) {
         formattedDate = `${parts[1].padStart(2, '0')}/${parts[0].padStart(2, '0')}/${parts[2]}`;
       } else {
-        formattedDate = race.date; // fallback
+        formattedDate = race.date;
       }
     }
 
@@ -323,18 +386,32 @@ function createRaceFormTable(horseName) {
     // Column 3 → weight
     const weight = cleanText(race.colJ || '');
 
-    // Column 4 → your logic with K/L
-    let col4 = '';
+    // Column 4 → placing + (distance horseName weight) + column T as fraction
+    const kL = `${race.colK}/${race.colL}`;
+
+    function stripCountry(name) {
+      return name ? name.replace(/\s*\([A-Z]{2,3}\)/g, '').trim() : '';
+    }
+
+    let details = '';
     if (race.colK === '1') {
-      const kL = `${race.colK}/${race.colL}`;
       const qL = race.colQ ? race.colQ + 'L' : '';
-      const p = race.colP || '';
-      col4 = [kL, qL, p].filter(Boolean).map(cleanText).join(' ');
+      const p = stripCountry(race.colP_name || race.colP || '');
+      const w = race.colP_weight || ''; // or just race.colP if weight is stored there
+      details = [qL, p, w].filter(Boolean).join(' ');
     } else {
-      const kL = `${race.colK}/${race.colL}`;
       const nL = race.colN ? race.colN + 'L' : '';
-      const o = race.colO || '';
-      col4 = [kL, nL, o].filter(Boolean).map(cleanText).join(' ');
+      const o = stripCountry(race.colO_name || race.colO || '');
+      const w = race.colO_weight || ''; // or just race.colO if weight is stored there
+      details = [nL, o, w].filter(Boolean).join(' ');
+    }
+
+    let col4 = details ? `${kL}(${details})` : kL;
+
+    // Append column T value as fraction after parentheses
+    if (race.colT) {
+      const fraction = decimalToFraction(parseFloat(race.colT) - 1);
+      col4 += ' ' + fraction;
     }
 
     // Columns 5–8
@@ -359,8 +436,12 @@ function createRaceFormTable(horseName) {
   return html;
 }
 
+
 // ==============================
 // Display Race Table
+// ==============================
+// ==============================
+// Display Race Table (fixed to prevent automatic jump)
 // ==============================
 function displayRace(raceRows, raceKey) {
   const raceDetails = document.getElementById('race-details');
@@ -450,10 +531,10 @@ function displayRace(raceRows, raceKey) {
     const weights = row[34] || '';
     const lastnightOdds = row[51] || '-';
     const nowOdds = row[52] || '-';
-    const region = row[45] || '';     // AT
-    const reach14 = row[44] || '';    // AS
-    const runs14 = row[46] || '';     // AU
-    const wins14 = row[47] || '';     // AV
+    const region = row[45] || '';
+    const reach14 = row[44] || '';
+    const runs14 = row[46] || '';
+    const wins14 = row[47] || '';
 
     // Calculate win percentage (防止除以零)
     let winPct = '-';
@@ -479,15 +560,12 @@ function displayRace(raceRows, raceKey) {
     col2.innerHTML = silkUrl ? `<img src="${silkUrl}" class="horse-silk">` : '';
     horseRow.appendChild(col2);
 
-    // ===== Column 3: Horse Name + Gender / Color / Nationality (multi-line)
+    // Column 3: Horse Name + Gender / Color / Nationality (multi-line)
     const infoCell = document.createElement('td');
-
-    // Translate gender, color, nationality
     const genderCN = genderMap[gender] || gender;
     const colorCN = colorMap[color] || color;
     const nationalityCN = nationalityMap[nationality] || nationality;
 
-    // Format lastRun properly
     let lastRunDisplay = '-';
     if (lastRun) {
       const match = lastRun.match(/^(\d+)\s*\(?(\d+)?([A-Z])?\)?$/i);
@@ -506,17 +584,14 @@ function displayRace(raceRows, raceKey) {
       }
     }
 
-    // Apply proper CSS classes
     infoCell.innerHTML = `
-  <div class="horse-name">${horseName}</div>
-  <div class="last-run">
-    上次出賽 <span class="last-run-number">${lastRunDisplay}</span>
-  </div>
-  <div>${genderCN} | ${colorCN} | ${nationalityCN}</div>
-`;
-
+      <div class="horse-name">${horseName}</div>
+      <div class="last-run">
+        上次出賽 <span class="last-run-number">${lastRunDisplay}</span>
+      </div>
+      <div>${genderCN} | ${colorCN} | ${nationalityCN}</div>
+    `;
     horseRow.appendChild(infoCell);
-
 
     // Column 4: Age
     const col4 = document.createElement('td');
@@ -530,36 +605,52 @@ function displayRace(raceRows, raceKey) {
 
     // Column 6: Jockey (with race count)
     const col6 = document.createElement('td');
-    col6.innerHTML = `
-  <div>${jockey}</div>
-  <div>今日騎師策騎: ${jockeyData.raceCount} 匹</div>
-`;
+    col6.innerHTML = `<div>${jockey}</div><div>今日騎師策騎: ${jockeyData.raceCount} 匹</div>`;
     horseRow.appendChild(col6);
 
     // Column 7: Trainer (with race count + extra rows)
     const col7 = document.createElement('td');
     col7.innerHTML = `
-  <div>${trainer}</div>
-  <div>今日練馬師出賽: ${trainerData.raceCount}匹</div>
-  <div>過去14天：</div>
-  <div>達標: ${reach14}%</div>
-  <div>參賽: ${runs14}匹  勝出: ${wins14}匹  勝出%: ${winPct}</div>
-  <div>地區: ${region}</div>
-`;
+      <div>${trainer}</div>
+      <div>今日練馬師出賽: ${trainerData.raceCount}匹</div>
+      <div>過去14天：</div>
+      <div>達標: ${reach14}%</div>
+      <div>參賽: ${runs14}匹  勝出: ${wins14}匹  勝出%: ${winPct}</div>
+      <div>地區: ${region}</div>
+    `;
     horseRow.appendChild(col7);
+
+    // Function to convert decimal odds to fractional
+    function decimalToFraction(decimal) {
+      if (!decimal || isNaN(decimal)) return '';
+      const gcd = (a, b) => (b < 0.0000001 ? a : gcd(b, Math.floor(a % b)));
+      const tolerance = 1.0E-6;
+      let h1 = 1, h2 = 0, k1 = 0, k2 = 1;
+      let b = decimal;
+      do {
+        let a = Math.floor(b);
+        let aux = h1; h1 = a * h1 + h2; h2 = aux;
+        aux = k1; k1 = a * k1 + k2; k2 = aux;
+        b = 1 / (b - a);
+      } while (Math.abs(decimal - h1 / k1) > decimal * tolerance);
+
+      return `${h1 - k1}/${k1}`;
+    }
 
     // Column 8: Last night odds
     const col8 = document.createElement('td');
-    col8.textContent = lastnightOdds;
+    col8.textContent = decimalToFraction(parseFloat(lastnightOdds));
     horseRow.appendChild(col8);
 
     // Column 9: Now odds
     const col9 = document.createElement('td');
-    col9.textContent = nowOdds;
+    col9.innerHTML = `<span class="red-odd">${decimalToFraction(parseFloat(nowOdds))}</span>`;
     horseRow.appendChild(col9);
 
-
     table.appendChild(horseRow);
+
+
+
 
     // ===== Always show race form directly
     const formRow = document.createElement('tr');
@@ -576,7 +667,12 @@ function displayRace(raceRows, raceKey) {
   });
 
   raceDetails.appendChild(table);
+
+  // 🔹 Prevent any auto-scroll when race is displayed
+  raceDetails.addEventListener('mousedown', e => e.preventDefault());
 }
+
+
 
 // ==============================
 // Load Drop Odds
@@ -740,6 +836,7 @@ document.addEventListener('DOMContentLoaded', function () {
     tab.addEventListener('click', () => {
       const activeTabName = tab.dataset.tab;
 
+      // Set active class
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
 
@@ -761,9 +858,22 @@ document.addEventListener('DOMContentLoaded', function () {
         raceDetails.style.display = 'none';
         dropOddsDiv.style.display = 'none';
       } else {
+        // ==== RACES TAB ====
         raceDetails.style.display = 'block';
         dropOddsDiv.style.display = 'none';
-        if (typeof loadRacecard === 'function') loadRacecard();
+
+        if (typeof loadRacecard === 'function') {
+          // Save current scroll position
+          const prevScroll = window.scrollY || document.documentElement.scrollTop;
+
+          // Load racecard normally, do NOT scroll to prevActiveRace
+          loadRacecard();
+
+          // Restore previous scroll position (optional)
+          setTimeout(() => {
+            window.scrollTo(0, prevScroll);
+          }, 200);
+        }
 
         if (showRaceForm) {
           document.querySelectorAll('.race-form-container').forEach(c => {
@@ -776,9 +886,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       }
 
+      // Save active tab
       localStorage.setItem('activeTab', activeTabName);
     });
   });
+
 
   const savedTab = localStorage.getItem('activeTab') || 'races';
   document.querySelector(`.tab-bar .tab[data-tab="${savedTab}"]`)?.click();
