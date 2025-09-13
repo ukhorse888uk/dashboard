@@ -6,14 +6,22 @@ let raceFormData = {}; // Store race form data by horse name
 let scrollPosition = 0; // Store scroll position
 let raceFormVisibilityState = {}; // 添加全局变量来保存赛绩表可见性状态
 
+// --- No longer remove brackets, keep names exactly as in CSV ---
+function cleanName(name) {
+  return name ? name.trim() : '';
+}
+
 function buildMasterMaps(data) {
   masterJockeyMap = {};
   masterTrainerMap = {};
 
   data.forEach(row => {
-    const jockeyName = row[63] || '';
+    // --- Jockey ---
+    let jockeyNameRaw = row[63] || ''; // BL
+    const jockeyName = cleanName(jockeyNameRaw); // keep brackets
     const jockeyCount = row[64] || '0';
-    if (jockeyName && jockeyName.trim() !== '' && jockeyName.trim().toUpperCase() !== 'NON-RUNNER') {
+
+    if (jockeyName && jockeyName.toUpperCase() !== 'NON-RUNNER') {
       const jockeyRaces = row.slice(65, 76)
         .filter(r => r && r.trim() !== '')
         .map(raceStr => {
@@ -26,19 +34,42 @@ function buildMasterMaps(data) {
           };
         });
 
-      masterJockeyMap[jockeyName.trim()] = {
+      masterJockeyMap[jockeyName] = {
         raceCount: jockeyCount,
         races: jockeyRaces
       };
     }
 
-    const trainerName = row[76] || '';
+    // --- Trainer ---
+    let trainerNameRaw = row[76] || ''; // BY
+    const trainerName = cleanName(trainerNameRaw); // keep brackets
     const trainerCount = row[77] || '0';
-    if (trainerName && trainerName.trim() !== '' && trainerName.trim().toUpperCase() !== 'NON-RUNNER') {
-      masterTrainerMap[trainerName.trim()] = { raceCount: trainerCount };
+
+    if (trainerName && trainerName.toUpperCase() !== 'NON-RUNNER') {
+      masterTrainerMap[trainerName] = { raceCount: trainerCount };
     }
   });
 }
+
+// --- Lookup functions ---
+// If site names may still include brackets, you can remove brackets for matching
+function getJockeyRaceCount(siteName) {
+  const key = siteName.replace(/\s*\([^)]*\)/g, '').trim().toLowerCase(); // clean site name
+  for (let name in masterJockeyMap) {
+    if (name.toLowerCase().startsWith(key)) return masterJockeyMap[name].raceCount;
+  }
+  return 0;
+}
+
+function getTrainerRaceCount(siteName) {
+  const key = siteName.replace(/\s*\([^)]*\)/g, '').trim().toLowerCase();
+  for (let name in masterTrainerMap) {
+    if (name.toLowerCase().startsWith(key)) return masterTrainerMap[name].raceCount;
+  }
+  return 0;
+}
+
+
 
 // ==============================
 // Persistent Race Form Toggle
@@ -125,14 +156,18 @@ function loadRacecard() {
               timeSpan.classList.add('selected-race');
               localStorage.setItem('activeRace', raceKey);
               displayRace(courseMap[course][raceKey], raceKey);
-              showCourseSubbar(course, courseMap);
+
+              if (activeTab === 'races') {
+                showCourseSubbar(course, courseMap);
+              }
+
               dropdown.classList.remove('open');
               updateRaceArrow();
               if (showRaceForm) document.querySelectorAll('.race-form-container').forEach(c => c.style.display = 'block');
-              setTimeout(() => window.scrollTo(0, scrollTop), 0); // restore scroll
+              setTimeout(() => window.scrollTo(0, scrollTop), 0);
             });
-
           }
+
 
           courseRow.appendChild(timeSpan);
           courseRow.appendChild(document.createTextNode(' '));
@@ -143,8 +178,12 @@ function loadRacecard() {
 
       if (activeRaceKey) {
         const courseName = activeRaceKey.split('  ')[1];
-        showCourseSubbar(courseName, courseMap);
-        if (courseMap[courseName][activeRaceKey]) displayRace(courseMap[courseName][activeRaceKey], activeRaceKey);
+        if (activeTab === 'races') {
+          showCourseSubbar(courseName, courseMap);
+        }
+        if (courseMap[courseName][activeRaceKey]) {
+          displayRace(courseMap[courseName][activeRaceKey], activeRaceKey);
+        }
       }
 
       // --- Sub-bar ---
@@ -371,7 +410,8 @@ function createRaceFormTable(horseName) {
     if (race.date) {
       const parts = race.date.split('/');
       if (parts.length === 3) {
-        formattedDate = `${parts[1].padStart(2, '0')}/${parts[0].padStart(2, '0')}/${parts[2]}`;
+        formattedDate = `${parts[1].padStart(2, '0')}/${parts[0].padStart(2, '0')}/${parts[2].slice(-2)}`;
+
       } else {
         formattedDate = race.date;
       }
@@ -437,12 +477,6 @@ function createRaceFormTable(horseName) {
 }
 
 
-// ==============================
-// Display Race Table
-// ==============================
-// ==============================
-// Display Race Table (fixed to prevent automatic jump)
-// ==============================
 function displayRace(raceRows, raceKey) {
   const raceDetails = document.getElementById('race-details');
   raceDetails.innerHTML = '';
@@ -450,17 +484,80 @@ function displayRace(raceRows, raceKey) {
   if (!raceRows || raceRows.length === 0) return;
 
   const raceData = raceRows[0];
-  const distance = raceData[4] || 'N/A';
-  const raceClass = raceData[6] || 'N/A';
-  const going = raceData[12] || 'N/A';
-  const raceName = raceData[3] || '';
-  const rawPrize = raceData[10] || '';
+
+  // --- Chinese Mapping ---
+  const labelCN = {
+    distance: '距離',
+    class: '班數',
+    going: '地質',
+    prize: '獎金',
+    furlong: 'Furlong',
+    runners: '參賽者',
+    ground: '地質',
+    surface: '地種'
+  };
+
+  // --- Country Translation ---
+  const countryMap = { GB: '英國', IRE: '愛爾蘭', CAN: '加拿大', USA: '美國' };
+  const country = raceData[5] || '';    // Column F
+  const translatedCountry = countryMap[country] || country;
+
+  // --- Going Translation Map ---
+  const goingMap = {
+    "Firm": "快地",
+    "Good To Firm": "好至快地",
+    "Good": "好地",
+    "Good To Yield": "好至黏地",
+    "Yield": "黏地",
+    "Yield To Soft": "黏至軟地",
+    "Soft": "軟地",
+    "Heavy": "大爛地",
+    "Good To Soft": "好至軟地"
+  };
+
+  // --- Class Translation ---
+  const classMap = {
+    "Class 1": "一班",
+    "Class 2": "二班",
+    "Class 3": "三班",
+    "Class 4": "四班",
+    "Class 5": "五班",
+    "Class 6": "六班",
+    "Class 7": "七班",
+    "Class 8": "八班",
+    "Class 9": "九班"
+  };
+
+  // --- Surface Translation ---
+  const surfaceMap = {
+    "Turf": "草地",
+    "AW": "全天候"
+  };
+
+  // --- Extract CSV Data ---
+  const raceTime = raceData[2] || '';      // Column A
+  const courseName = raceData[0] || '';    // Column D
+  const rawDate = raceData[1] || '';       // Column B
+  const distance = raceData[4] || 'N/A';   // Column E
+  const rawClass = raceData[6] || 'N/A';   // Column G
+  const rawGoing = raceData[12] || 'N/A';  // Column M
+  const rawPrize = raceData[10] || '';     // Column K
+  const raceName = raceData[3] || '';      // Column D, last line (race name)
+  const runners = raceData[11] || '';      // Column L
+  const ground = raceData[12] || '';       // Column M
+  const surface = raceData[13] || '';      // Column N
+
+  // --- Translate ---
+  const translatedGoing = goingMap[rawGoing] || rawGoing;
+  const translatedClass = classMap[rawClass] || rawClass;
+  const translatedSurface = surfaceMap[surface] || surface;
+
+  // --- Format prize ---
   const prizeValue = rawPrize.replace(/[^0-9]/g, '');
   const formattedPrize = prizeValue ? `£${parseInt(prizeValue).toLocaleString()}` : 'N/A';
 
-  // Format race date dd/mm/yyyy
+  // --- Format date dd/mm/yyyy ---
   let formattedDate = '';
-  const rawDate = raceData[1] || '';
   if (rawDate) {
     const parts = rawDate.split('/');
     if (parts.length === 3) {
@@ -470,20 +567,66 @@ function displayRace(raceRows, raceKey) {
     }
   }
 
-  // Race header
+  // --- Create race header ---
   const raceHeader = document.createElement('div');
   raceHeader.className = 'race-header';
-  raceHeader.innerHTML = `
-    <div class="race-title">${raceKey} ${formattedDate ? `(${formattedDate})` : ''}</div>
-    <div class="race-meta">
-      <span>距離: ${distance} Furlong </span>
-      <span>班數: ${raceClass}</span>
-      <span>地質: ${going}</span>
-      <span>獎金: ${formattedPrize}</span>
+  raceHeader.style.display = 'flex';
+  raceHeader.style.justifyContent = 'space-between';
+  raceHeader.style.alignItems = 'flex-start';
+  raceHeader.style.marginBottom = '16px';
+
+  // --- Left side (race info) ---
+  const leftDiv = document.createElement('div');
+  leftDiv.innerHTML = `
+    <div class="race-title" style="font-size: 20px; font-weight: bold; margin-bottom: 8px;">
+      ${raceTime ? raceTime + ' ' : ''}${translatedCountry ? translatedCountry + ' ' : ''}${courseName} ${formattedDate ? `(${formattedDate})` : ''}
     </div>
-    ${raceName ? `<div class="race-name">${raceName}</div>` : ''}
+    <div class="race-meta" style="font-size: 20px; margin-bottom: 8px;">
+      <span> ${distance} ${labelCN.furlong}</span>
+      <span>${translatedClass}</span>
+      <span> ${translatedGoing}</span>
+      <span>${labelCN.prize}: ${formattedPrize}</span>
+    </div>
+    <div class="race-name" style="font-size: 20px;">
+      ${raceName}
+    </div>
   `;
+  raceHeader.appendChild(leftDiv);
+
+  // --- Right side (rectangle) ---
+  const rightDiv = document.createElement('div');
+  rightDiv.style.border = '2px solid #007bff';
+  rightDiv.style.borderRadius = '8px';
+  rightDiv.style.padding = '12px';
+  rightDiv.style.background = '#f0f8ff';
+  rightDiv.style.fontSize = '18px';
+  rightDiv.style.minWidth = '180px';
+  rightDiv.style.lineHeight = '1.6';
+  rightDiv.innerHTML = `
+    <div>${labelCN.runners}:${runners}</div>
+    <span>${labelCN.going}: ${translatedGoing}</span>
+    <div>${labelCN.surface}: ${translatedSurface}</div>
+  `;
+  raceHeader.appendChild(rightDiv);
+
   raceDetails.appendChild(raceHeader);
+
+
+
+
+
+
+
+
+
+
+  // ... rest of displayRace code
+
+
+
+  // ... rest of your displayRace code
+
+
 
   // Main race table
   const table = document.createElement('table');
@@ -508,8 +651,8 @@ function displayRace(raceRows, raceKey) {
 
   // Mapping for Chinese translations
   const genderMap = { 'horse': '雄馬', 'mare': '母馬', 'gelding': '閹馬', 'colt': '小雄駒', 'filly': '小雌馬' };
-  const colorMap = { 'b': '棗色', 'ch': '栗色', 'gr': '灰色', 'bl': '黑色', 'br': '棕色', 'ro': '雜色' };
-  const nationalityMap = { 'GB': '英國', 'IRE': '愛爾蘭', 'FR': '法國', 'HK': '香港' };
+  const colorMap = { 'b': '棗色', 'ch': '栗色', 'gr': '灰色', 'bl': '黑色', 'br': '棕色', 'ro': '雜色', 'b/br': '黑棕色', 'gr/ro': '雜灰色', 'b/ro': '雜棗色', 'ch/ro': '雜栗色', 'br/ro': '雜棕色' };
+  const nationalityMap = { 'GB': '英國', 'IRE': '愛爾蘭', 'FR': '法國', 'HK': '香港', 'USA': '美國' };
 
   horseRows.forEach((row, index) => {
     const horseNumber = row[32] || '';
@@ -803,6 +946,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const dropdown = document.getElementById('race-dropdown');
   const raceDetails = document.getElementById('race-details');
   const dropOddsDiv = document.getElementById('drop-odds');
+  const subbar = document.getElementById('race-subbar-container');
 
   dropdown.classList.remove('open');
   updateRaceArrow();
@@ -832,6 +976,12 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   const tabs = document.querySelectorAll('.tab-bar .tab');
+
+  function updateSubbarVisibility(activeTabName) {
+    if (!subbar) return;
+    subbar.style.display = activeTabName === 'races' ? 'flex' : 'none';
+  }
+
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const activeTabName = tab.dataset.tab;
@@ -839,6 +989,9 @@ document.addEventListener('DOMContentLoaded', function () {
       // Set active class
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
+
+      // Show/hide subbar
+      updateSubbarVisibility(activeTabName);
 
       if (activeTabName === 'drops') {
         raceDetails.style.display = 'none';
@@ -863,16 +1016,9 @@ document.addEventListener('DOMContentLoaded', function () {
         dropOddsDiv.style.display = 'none';
 
         if (typeof loadRacecard === 'function') {
-          // Save current scroll position
           const prevScroll = window.scrollY || document.documentElement.scrollTop;
-
-          // Load racecard normally, do NOT scroll to prevActiveRace
           loadRacecard();
-
-          // Restore previous scroll position (optional)
-          setTimeout(() => {
-            window.scrollTo(0, prevScroll);
-          }, 200);
+          setTimeout(() => window.scrollTo(0, prevScroll), 200);
         }
 
         if (showRaceForm) {
@@ -891,11 +1037,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-
   const savedTab = localStorage.getItem('activeTab') || 'races';
   document.querySelector(`.tab-bar .tab[data-tab="${savedTab}"]`)?.click();
-
-  // ✅ Removed the 30-second interval here
 });
 
 // Save scroll position before page refresh
@@ -924,3 +1067,4 @@ setInterval(() => {
     loadDropOdds();
   }
 }, 600000); // every 10 minutes
+
