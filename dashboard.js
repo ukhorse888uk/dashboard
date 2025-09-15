@@ -187,7 +187,10 @@ function loadRacecard() {
       }
 
       // --- Sub-bar ---
+      // --- Sub-bar ---
       function showCourseSubbar(courseName, courseMap) {
+        if (!courseMap[courseName]) return; // no races for this course
+
         let subbar = document.getElementById('race-subbar-container');
         if (!subbar) {
           subbar = document.createElement('div');
@@ -199,36 +202,49 @@ function loadRacecard() {
           const wrapper = document.getElementById('race-details-wrapper');
           wrapper.insertBefore(subbar, wrapper.firstChild);
         }
+
+        // Clear old buttons
         subbar.innerHTML = '';
 
+        // Add course label
         const courseLabel = document.createElement('span');
         courseLabel.textContent = courseName;
         courseLabel.style.fontWeight = 'bold';
         courseLabel.style.marginRight = '10px';
         subbar.appendChild(courseLabel);
 
-        Object.keys(courseMap[courseName] || {}).sort().forEach(raceKey => {
-          const timeOnly = raceKey.split('  ')[0];
-          const btn = document.createElement('button');
-          btn.textContent = timeOnly;
-          btn.className = 'subbar-btn';
-          if (raceKey === localStorage.getItem('activeRace')) btn.classList.add('active');
+        // Loop through all races in this course
+        Object.keys(courseMap[courseName])
+          .sort()
+          .forEach(raceKey => {
+            const timeOnly = raceKey.split('  ')[0];
+            if (!timeOnly || timeOnly.toLowerCase() === 'off_time') return;
 
-          btn.addEventListener('click', () => {
-            const scrollTop = window.scrollY || document.documentElement.scrollTop;
-            subbar.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            localStorage.setItem('activeRace', raceKey);
-            displayRace(courseMap[courseName][raceKey], raceKey);
-            setTimeout(() => window.scrollTo(0, scrollTop), 0); // restore scroll
+            const btn = document.createElement('button');
+            btn.textContent = timeOnly;
+            btn.className = 'subbar-btn';
+            if (raceKey === localStorage.getItem('activeRace')) btn.classList.add('active');
+
+            btn.addEventListener('click', () => {
+              const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+              // Remove active from other buttons
+              subbar.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+              btn.classList.add('active');
+
+              // Set active race and display
+              localStorage.setItem('activeRace', raceKey);
+              displayRace(courseMap[courseName][raceKey], raceKey);
+
+              setTimeout(() => window.scrollTo(0, scrollTop), 0); // restore scroll
+            });
+
+            subbar.appendChild(btn);
           });
-
-
-          subbar.appendChild(btn);
-        });
 
         subbar.style.display = 'flex';
       }
+
     }
   });
 }
@@ -367,24 +383,25 @@ function updateAllRaceForms() {
 function formatWeight(weightStr) {
   if (!weightStr) return '';
 
-  // Case 1: Already in "9-4" style
-  if (weightStr.includes('-')) {
-    const parts = weightStr.split('-');
-    if (parts.length === 2) {
-      return `${parts[0]} st ${parts[1]} lb`;
-    }
+  // If already in "X st Y lb" format
+  const match = weightStr.match(/(\d+)\s*st\s*(\d+)\s*lb/i);
+  if (match) {
+    const stones = match[1];
+    const pounds = match[2];
+    return `${stones}-${pounds}`;
   }
 
-  // Case 2: Pure number in pounds (e.g. "130")
+  // Fallback: try parsing number as lbs
   const lbs = parseInt(weightStr, 10);
   if (!isNaN(lbs)) {
     const stones = Math.floor(lbs / 14);
     const pounds = lbs % 14;
-    return `${stones} st ${pounds} lb`;
+    return `${stones}-${pounds}`;
   }
 
-  return weightStr; // fallback
+  return weightStr; // fallback if not recognized
 }
+
 
 
 function createRaceFormTable(horseName) {
@@ -411,7 +428,6 @@ function createRaceFormTable(horseName) {
       const parts = race.date.split('/');
       if (parts.length === 3) {
         formattedDate = `${parts[1].padStart(2, '0')}/${parts[0].padStart(2, '0')}/${parts[2].slice(-2)}`;
-
       } else {
         formattedDate = race.date;
       }
@@ -424,7 +440,7 @@ function createRaceFormTable(horseName) {
       .join(' ');
 
     // Column 3 → weight
-    const weight = cleanText(race.colJ || '');
+    const weight = formatWeight(race.colJ || '');
 
     // Column 4 → placing + (distance horseName weight) + column T as fraction
     const kL = `${race.colK}/${race.colL}`;
@@ -437,18 +453,17 @@ function createRaceFormTable(horseName) {
     if (race.colK === '1') {
       const qL = race.colQ ? race.colQ + 'L' : '';
       const p = stripCountry(race.colP_name || race.colP || '');
-      const w = race.colP_weight || ''; // or just race.colP if weight is stored there
+      const w = race.colP_weight || '';
       details = [qL, p, w].filter(Boolean).join(' ');
     } else {
       const nL = race.colN ? race.colN + 'L' : '';
       const o = stripCountry(race.colO_name || race.colO || '');
-      const w = race.colO_weight || ''; // or just race.colO if weight is stored there
+      const w = race.colO_weight || '';
       details = [nL, o, w].filter(Boolean).join(' ');
     }
 
     let col4 = details ? `${kL}(${details})` : kL;
 
-    // Append column T value as fraction after parentheses
     if (race.colT) {
       const fraction = decimalToFraction(parseFloat(race.colT) - 1);
       col4 += ' ' + fraction;
@@ -477,6 +492,7 @@ function createRaceFormTable(horseName) {
 }
 
 
+
 function displayRace(raceRows, raceKey) {
   const raceDetails = document.getElementById('race-details');
   raceDetails.innerHTML = '';
@@ -491,7 +507,7 @@ function displayRace(raceRows, raceKey) {
     class: '班數',
     going: '地質',
     prize: '獎金',
-    furlong: 'Furlong',
+    furlong: 'F',
     runners: '參賽者',
     ground: '地質',
     surface: '地種'
@@ -507,7 +523,7 @@ function displayRace(raceRows, raceKey) {
     "Firm": "快地",
     "Good To Firm": "好至快地",
     "Good": "好地",
-    "Good To Yield": "好至黏地",
+    "Good To Yielding": "好至黏地",
     "Yield": "黏地",
     "Yield To Soft": "黏至軟地",
     "Soft": "軟地",
@@ -582,7 +598,7 @@ function displayRace(raceRows, raceKey) {
       ${raceTime ? raceTime + ' ' : ''}${translatedCountry ? translatedCountry + ' ' : ''}${courseName} ${formattedDate ? `(${formattedDate})` : ''}
     </div>
     <div class="race-meta" style="font-size: 20px; margin-bottom: 8px;">
-      <span> ${distance} ${labelCN.furlong}</span>
+      <span> ${distance}${labelCN.furlong}</span>
       <span>${translatedClass}</span>
       <span> ${translatedGoing}</span>
       <span>${labelCN.prize}: ${formattedPrize}</span>
@@ -595,15 +611,16 @@ function displayRace(raceRows, raceKey) {
 
   // --- Right side (rectangle) ---
   const rightDiv = document.createElement('div');
-  rightDiv.style.border = '2px solid #007bff';
+
   rightDiv.style.borderRadius = '8px';
   rightDiv.style.padding = '12px';
   rightDiv.style.background = '#f0f8ff';
-  rightDiv.style.fontSize = '18px';
+  rightDiv.style.fontSize = '14px';
   rightDiv.style.minWidth = '180px';
   rightDiv.style.lineHeight = '1.6';
   rightDiv.innerHTML = `
-    <div>${labelCN.runners}:${runners}</div>
+   <div>${labelCN.runners}: ${runners} 匹</div>
+
     <span>${labelCN.going}: ${translatedGoing}</span>
     <div>${labelCN.surface}: ${translatedSurface}</div>
   `;
@@ -817,9 +834,6 @@ function displayRace(raceRows, raceKey) {
 
 
 
-// ==============================
-// Load Drop Odds
-// ==============================
 function loadDropOdds() {
   const container = document.getElementById("drop-odds-container");
 
@@ -867,20 +881,30 @@ function loadDropOdds() {
         return;
       }
 
+      // Check if we're on mobile portrait
+      const isMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
+
       let tableHTML = `
         <table class="drop-odds-table">
           <thead>
             <tr>
-              <th>賽時</th>
-              <th>場地</th>
-              <th>號碼</th>
+              <th>${isMobilePortrait ? '賽時/場地' : '賽時'}</th>
+      `;
+
+      // Only show the course column header if not on mobile portrait
+      if (!isMobilePortrait) {
+        tableHTML += `<th>場地</th>`;
+      }
+
+      tableHTML += `
+              <th>號</th>
               <th>馬名</th>
-              <th>隔夜價格</th>
-              <th>現時價格</th>
+              <th>隔夜</th>
+              <th>最近</th>
               <th>變動</th>
-              <th>變動 %</th>
+              <th>變動%</th>
               <th>賽果</th>
-              <th>跑出賠率</th>
+              <th>贏賠率</th>
             </tr>
           </thead>
           <tbody>
@@ -893,16 +917,28 @@ function loadDropOdds() {
         const pctChange = parseFloat(row['%']) || (original ? (change / original) * 100 : 0);
         const colorClass = pctChange <= -48 ? 'green' : pctChange >= 48 ? 'red' : '';
 
+        // For mobile portrait, combine time and course in first column
+        const timeCellContent = isMobilePortrait
+          ? `<span class="time-with-course">${row['Time'] || '--'}</span><span class="course-name">${row['Course'] || '--'}</span>`
+          : (row['Time'] || '--');
+
         tableHTML += `
           <tr>
-            <td>${row['Time'] || '--'}</td>
-            <td>${row['Course'] || '--'}</td>
+            <td class="time-cell">${timeCellContent}</td>
+        `;
+
+        // Only show the course column if not on mobile portrait
+        if (!isMobilePortrait) {
+          tableHTML += `<td class="course-cell">${row['Course'] || '--'}</td>`;
+        }
+
+        tableHTML += `
             <td>${row['Num'] || '--'}</td>
             <td>${row['Horse Name']}</td>
             <td>${original.toFixed(2)}</td>
             <td>${now.toFixed(2)}</td>
             <td class="${colorClass}">${change.toFixed(2)}</td>
-            <td class="${colorClass}">${pctChange.toFixed(2)}%</td>
+            <td class="${colorClass}">${pctChange.toFixed(1)}%</td>
             <td>${row['FIN'] || '--'}</td>
             <td>${row['SP Odds'] || '--'}</td>
           </tr>
@@ -911,6 +947,15 @@ function loadDropOdds() {
 
       tableHTML += '</tbody></table>';
       container.innerHTML = tableHTML;
+
+      // Add event listener for orientation changes
+      window.addEventListener('resize', function () {
+        // Check if orientation changed and reload if needed
+        const newIsMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
+        if (isMobilePortrait !== newIsMobilePortrait) {
+          loadDropOdds();
+        }
+      });
 
       // Restore scroll position after table is rendered
       setTimeout(() => {
@@ -923,6 +968,9 @@ function loadDropOdds() {
     }
   });
 }
+
+// Initial load
+loadDropOdds();
 
 // ==============================
 // Tab Switching & Auto Refresh
