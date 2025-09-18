@@ -120,11 +120,12 @@ body {
 
 .race-name {
   font-size: 20px;
+  display: none;
 }
 
 .race-right {
   position: relative;
-  right: -360px;
+  right: -830px;
   /* move it 40px more right */
 }
 
