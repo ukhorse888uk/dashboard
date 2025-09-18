@@ -582,43 +582,36 @@ function displayRace(raceRows, raceKey) {
   // --- Create race header ---
   const raceHeader = document.createElement('div');
   raceHeader.className = 'race-header';
-  raceHeader.style.display = 'flex';
-  raceHeader.style.justifyContent = 'space-between';
-  raceHeader.style.alignItems = 'flex-start';
-  raceHeader.style.marginBottom = '16px';
 
   // --- Left side (race info) ---
   const leftDiv = document.createElement('div');
+  leftDiv.className = 'race-left';  // add class for CSS control
   leftDiv.innerHTML = `
-    <div class="race-title" style="font-size: 20px; font-weight: bold; margin-bottom: 8px;">
-      ${raceTime ? raceTime + ' ' : ''}${translatedCountry ? translatedCountry + ' ' : ''}${courseName} ${formattedDate ? `(${formattedDate})` : ''}
-    </div>
-    <div class="race-meta" style="font-size: 20px; margin-bottom: 8px;">
-      <span> ${distance}${labelCN.furlong}</span>
-      <span>${translatedClass}</span>
-      <span> ${translatedGoing}</span>
-      <span>${labelCN.prize}: ${formattedPrize}</span>
-    </div>
-    <div class="race-name" style="font-size: 20px;">
-      ${raceName}
-    </div>
-  `;
+  <div class="race-title">
+    ${raceTime ? raceTime + ' ' : ''}${translatedCountry ? translatedCountry + ' ' : ''}${courseName} ${formattedDate ? `(${formattedDate})` : ''}
+  </div>
+  <div class="race-meta">
+    <span>${distance}${labelCN.furlong}</span>
+    <span>${translatedClass}</span>
+    <span>${translatedGoing}</span>
+    <span>${labelCN.prize}: ${formattedPrize}</span>
+  </div>
+  <div class="race-name">
+    ${raceName}
+  </div>
+`;
   raceHeader.appendChild(leftDiv);
 
   // --- Right side (rectangle) ---
   const rightDiv = document.createElement('div');
-  rightDiv.style.borderRadius = '8px';
-  rightDiv.style.padding = '12px';
-  rightDiv.style.background = '#f0f8ff';
-  rightDiv.style.fontSize = '14px';
-  rightDiv.style.minWidth = '180px';
-  rightDiv.style.lineHeight = '1.6';
+  rightDiv.className = 'race-right';  // add class for CSS control
   rightDiv.innerHTML = `
-   <div>${labelCN.runners}: ${runners} 匹</div>
-    <span>${labelCN.going}: ${translatedGoing}</span>
-    <div>${labelCN.surface}: ${translatedSurface}</div>
-  `;
+  <div>${labelCN.runners}: ${runners}匹</div>
+  <span>${labelCN.going}: ${translatedGoing}</span>
+  <div>${labelCN.surface}: ${translatedSurface}</div>
+`;
   raceHeader.appendChild(rightDiv);
+
 
   raceDetails.appendChild(raceHeader);
 
@@ -690,7 +683,7 @@ function displayRace(raceRows, raceKey) {
     // Column 1
     const col1 = document.createElement('td');
     const drawDisplay = (draw && draw !== '0') ? `(${draw})` : '';
-    col1.innerHTML = `<div class="horse-num-draw">${horseNumber} ${drawDisplay}</div>最近戰績<div>${form}</div>`;
+    col1.innerHTML = `<div class="horse-num-draw">${horseNumber} ${drawDisplay}</div>記錄<div>${form}</div>`;
     horseRow.appendChild(col1);
 
     // Column 2: Silk
