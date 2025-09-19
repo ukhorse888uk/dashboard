@@ -780,13 +780,26 @@ function displayRace(raceRows, raceKey) {
 
 function loadDropOdds() {
   const container = document.getElementById("drop-odds-container");
-
-  // Save scroll position before refresh
-  scrollPosition = window.scrollY || document.documentElement.scrollTop;
-
+  const scrollPosition = window.scrollY || document.documentElement.scrollTop;
   container.innerHTML = '<div class="loading">載入中...</div>';
 
   const csvUrl = "https://ukhorse888uk.github.io/dashboard/csv/dropodds.csv?cb=" + Date.now();
+
+  // Convert decimal odds to fractional string (for display only)
+  function decimalToFraction(decimal) {
+    if (!decimal || decimal <= 1) return '--';
+    const fractionValue = decimal - 1; // subtract 1 to get profit fraction
+    if (fractionValue % 1 === 0) return fractionValue + '/1';
+    const denominator = 2; // simplest fractions
+    const numerator = Math.round(fractionValue * denominator);
+    return numerator + '/' + denominator;
+  }
+
+  // Format change numbers (14.00 -> 14, 4.50 -> 4.5)
+  function formatDecimal(num) {
+    if (num % 1 === 0) return num.toString();
+    return num.toFixed(2).replace(/\.?0+$/, '');
+  }
 
   Papa.parse(csvUrl, {
     download: true,
@@ -816,16 +829,13 @@ function loadDropOdds() {
           row['NOW'] && row['NOW'] !== ''
         );
 
-      data.sort((a, b) =>
-        a['Time'].localeCompare(b['Time'], undefined, { numeric: true, sensitivity: 'base' })
-      );
+      data.sort((a, b) => a['Time'].localeCompare(b['Time'], undefined, { numeric: true }));
 
       if (data.length === 0) {
         container.innerHTML = '<div class="error">沒有有效馬匹數據</div>';
         return;
       }
 
-      // Detect mobile portrait only
       const isMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
 
       let tableHTML = `
@@ -835,10 +845,7 @@ function loadDropOdds() {
               <th>${isMobilePortrait ? '賽時/場地' : '賽時'}</th>
       `;
 
-      // Only hide Course column in mobile portrait
-      if (!isMobilePortrait) {
-        tableHTML += `<th>場地</th>`;
-      }
+      if (!isMobilePortrait) tableHTML += `<th>場地</th>`;
 
       tableHTML += `
               <th>號</th>
@@ -855,51 +862,43 @@ function loadDropOdds() {
       `;
 
       data.forEach(row => {
-        const original = parseFloat(row['Original']) || 0;
-        const now = parseFloat(row['NOW']) || 0;
-        const change = parseFloat(row['Change']) || (now - original);
-        const pctChange = parseFloat(row['%']) || (original ? (change / original) * 100 : 0);
+        const originalDec = parseFloat(row['Original']) || 0;
+        const nowDec = parseFloat(row['NOW']) || 0;
+        const changeDec = parseFloat(row['Change']) || (nowDec - originalDec);
+        const pctChange = parseFloat(row['%']) || (originalDec ? (changeDec / originalDec) * 100 : 0);
         const colorClass = pctChange <= -48 ? 'green' : pctChange >= 48 ? 'red' : '';
 
-        // For mobile portrait, combine time and course in first column
+        const originalFrac = decimalToFraction(originalDec);
+        const nowFrac = decimalToFraction(nowDec);
+        const spFrac = decimalToFraction(parseFloat(row['SP Odds'])); // Convert SP Odds
         const timeCellContent = isMobilePortrait
           ? `<span class="time-with-course">${row['Time'] || '--'}</span><span class="course-name">${row['Course'] || '--'}</span>`
           : (row['Time'] || '--');
 
         tableHTML += `
-          <tr>
-            <td class="time-cell">${timeCellContent}</td>
-        `;
-
-        if (!isMobilePortrait) {
-          tableHTML += `<td class="course-cell">${row['Course'] || '--'}</td>`;
-        }
-
-        tableHTML += `
-            <td>${row['Num'] || '--'}</td>
-            <td>${row['Horse Name']}</td>
-            <td>${original.toFixed(2)}</td>
-            <td>${now.toFixed(2)}</td>
-            <td class="${colorClass}">${change.toFixed(2)}</td>
-            <td class="${colorClass}">${pctChange.toFixed(1)}%</td>
-            <td>${row['FIN'] || '--'}</td>
-            <td>${row['SP Odds'] || '--'}</td>
-          </tr>
-        `;
+  <tr>
+    <td class="time-cell">${timeCellContent}</td>
+    ${!isMobilePortrait ? `<td class="course-cell">${row['Course'] || '--'}</td>` : ''}
+    <td>${row['Num'] || '--'}</td>
+    <td>${row['Horse Name']}</td>
+    <td>${originalFrac}</td>
+    <td>${nowFrac}</td>
+    <td class="${colorClass}">${formatDecimal(changeDec)}</td>
+    <td class="${colorClass}">${Math.round(pctChange)}%</td>
+    <td>${row['FIN'] || '--'}</td>
+    <td>${spFrac || '--'}</td>
+  </tr>
+`;
       });
 
       tableHTML += '</tbody></table>';
       container.innerHTML = tableHTML;
 
-      // Add event listener for orientation changes
       window.addEventListener('resize', function () {
         const newIsMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
-        if (isMobilePortrait !== newIsMobilePortrait) {
-          loadDropOdds();
-        }
+        if (isMobilePortrait !== newIsMobilePortrait) loadDropOdds();
       });
 
-      // Restore scroll position after table is rendered
       setTimeout(() => {
         window.scrollTo(0, scrollPosition);
       }, 0);
@@ -911,8 +910,10 @@ function loadDropOdds() {
   });
 }
 
-// Initial load
 loadDropOdds();
+
+
+
 
 
 
