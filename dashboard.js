@@ -621,7 +621,7 @@ function displayRace(raceRows, raceKey) {
 
   const thead = document.createElement('thead');
   const headerRow = document.createElement('tr');
-  ['號碼(檔位)', '', '馬名/資訊', '年齡', '重量', '騎師', '練馬師', '隔夜', '最近'].forEach(text => {
+  ['號碼(檔)', '', '馬名/資訊', '年齡', '重量', '騎師', '練馬師', '隔夜', '最近'].forEach(text => {
     const th = document.createElement('th');
     th.textContent = text;
     headerRow.appendChild(th);

@@ -606,32 +606,62 @@ html {
   scroll-behavior: smooth;
 }
 
+
 /* =============================== MOBILE PORTRAIT VERSION =============================== */
 @media (max-width: 768px) and (orientation: portrait) {
 
-  /* Fix scrolling for the entire page */
   html,
   body {
+    margin: 0;
+    padding: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
-    -webkit-overflow-scrolling: touch;
-    position: relative;
+    /* Add this */
+    max-width: 100%;
+    overflow-x: hidden;
+    /* no horizontal scroll */
   }
 
-  /* Main container should handle scrolling */
   .container {
-    flex-direction: column;
-    height: 100vh;
+    width: 100%;
+    max-width: 100%;
+    min-height: 100vh;
+    /* Ensure container reaches bottom */
+    overflow-x: hidden;
     overflow-y: auto;
+    /* Enable vertical scrolling */
+  }
+
+  #main-content {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    min-height: 100vh;
+    /* Ensure content reaches bottom */
+  }
+
+  #race-subbar-container {
+    overflow-x: auto;
+    /* Allow horizontal scrolling if needed */
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Ensure content expands properly */
-  #main-content {
-    flex: 1;
-    overflow: visible;
+  /* ✅ Only shrink the race card table, not all tables */
+  #race-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed;
   }
+
+  #race-card th,
+  #race-card td {
+    white-space: normal;
+    word-wrap: break-word;
+    font-size: 12px;
+    /* smaller text helps fit */
+  }
+
+
 
   /* === Dropdown Panel (like web version) === */
   #race-dropdown {
@@ -741,38 +771,56 @@ html {
   }
 
   .race-right {
-    position: static;
-    margin-left: auto;
-    pointer-events: auto;
+    position: relative;
+    right: -1550px;
+  }
+
+  /* Force race table to fit screen */
+  .race-table {
+    width: 100%;
+    max-width: 100%;
+    table-layout: fixed;
+  }
+
+  .race-table th,
+  .race-table td {
+    padding: 2px 4px;
   }
 
   .race-table th:nth-child(1),
   .race-table td:nth-child(1) {
-    width: 12%;
-    font-size: 14px;
+    width: 6%;
+    font-size: 11px;
   }
 
   .race-table th:nth-child(2),
   .race-table td:nth-child(2) {
     width: 6%;
-    text-align: left;
+    text-align: center;
   }
 
   .race-table td:nth-child(2) img {
-    width: 40px;
+    width: 45px;
+    /* smaller image in portrait */
+    height: auto;
   }
 
   .race-table th:nth-child(3),
   .race-table td:nth-child(3) {
-    width: 18%;
-    font-size: 14px;
+    width: 15%;
+    font-size: 11px;
   }
 
-  /* Hide cols 4–7 */
+  /* Hide cols 4–7 in portrait */
   .race-table th:nth-child(4),
   .race-table td:nth-child(4),
   .race-table th:nth-child(5),
-  .race-table td:nth-child(5),
+  .race-table td:nth-child(5) {
+    width: 3%;
+    font-size: 11px;
+    text-align: center;
+  }
+
   .race-table th:nth-child(6),
   .race-table td:nth-child(6),
   .race-table th:nth-child(7),
@@ -782,20 +830,40 @@ html {
 
   .race-table th:nth-child(8),
   .race-table td:nth-child(8) {
-    width: 60px;
+    width: 5%;
     text-align: center;
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .race-table th:nth-child(9),
   .race-table td:nth-child(9) {
-    width: 100px;
-    font-size: 14px;
+    width: 7%;
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .race-table td .horse-num-draw {
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  .race-table td div:not(.horse-num-draw) {
+    font-size: 11px;
+    font-weight: normal;
   }
 
   .horse-name {
-    font-size: 14px !important;
+    font-weight: bold !important;
+    font-size: 13px !important;
+    color: #080808 !important;
+    margin-bottom: 4px;
   }
+
+  .last-run {
+    font-size: 11px;
+    color: #444;
+  }
+
 
   /* === Race Form Table Portrait === */
   .race-form-table {
@@ -967,6 +1035,7 @@ html {
 }
 
 /* End of MOBILE PORTRAIT MEDIA QUERY */
+
 /* =============================== MOBILE LANDSCAPE VERSION =============================== */
 @media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
 
@@ -974,7 +1043,11 @@ html {
   html,
   body {
     height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
     overflow: hidden;
+    /* Keep this to prevent body scroll */
     -webkit-overflow-scrolling: touch;
     position: relative;
   }
@@ -982,13 +1055,18 @@ html {
   /* Main container should handle scrolling */
   .container {
     height: 100vh;
+    width: 100%;
     overflow-y: auto;
+    /* Changed from auto to scroll for consistency */
     -webkit-overflow-scrolling: touch;
+    position: relative;
   }
 
   /* Ensure content expands properly */
   #main-content {
-    flex: 1;
+    width: 100%;
+    min-height: 100vh;
+    /* Ensure content reaches bottom */
     overflow: visible;
   }
 
