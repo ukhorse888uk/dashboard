@@ -368,6 +368,19 @@ body {
   border-top: 1px solid #d6d6d6;
 }
 
+.horse-info {
+  font-size: 11px;
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.horse-pedigree {
+  font-size: 11px;
+  color: #5c965b;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
 /* =============================== RACE FORM TABLE - WEB VERSION =============================== */
 .race-form-table {
   width: 100%;
@@ -864,6 +877,18 @@ html {
     color: #444;
   }
 
+  .horse-info {
+    font-size: 11px;
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+
+  .horse-pedigree {
+    font-size: 11px;
+    color: #5c965b;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
 
   /* === Race Form Table Portrait === */
   .race-form-table {
@@ -1046,29 +1071,31 @@ html {
     width: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
-    /* Keep this to prevent body scroll */
+    overflow-x: hidden;
+    /* prevent sideways scroll */
+    overflow-y: auto;
+    /* enable vertical scroll */
     -webkit-overflow-scrolling: touch;
-    position: relative;
   }
+
 
   /* Main container should handle scrolling */
   .container {
-    height: 100vh;
     width: 100%;
-    overflow-y: auto;
-    /* Changed from auto to scroll for consistency */
-    -webkit-overflow-scrolling: touch;
-    position: relative;
+    max-width: 100%;
+    min-height: 100vh;
+    overflow: visible;
+    /* let it expand */
   }
+
 
   /* Ensure content expands properly */
   #main-content {
     width: 100%;
     min-height: 100vh;
-    /* Ensure content reaches bottom */
     overflow: visible;
   }
+
 
   /* Race header container */
   .race-header {
@@ -1209,6 +1236,19 @@ html {
   .race-table td:nth-child(9) {
     width: 8% !important;
     text-align: center;
+  }
+
+  .horse-info {
+    font-size: 11px;
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+
+  .horse-pedigree {
+    font-size: 11px;
+    color: #5c965b;
+    margin-bottom: 8px;
+    line-height: 1.2;
   }
 
   /* ============================== Race Form Table Landscape ============================== */

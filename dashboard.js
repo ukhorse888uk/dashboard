@@ -745,10 +745,10 @@ function displayRace(raceRows, raceKey) {
     const formRow = document.createElement('tr');
     const formCell = document.createElement('td');
     formCell.colSpan = 9;
-    formCell.style.padding = '8px';
+
     formCell.innerHTML = `
-      <div>馬主: ${owner}</div>
-      <div>父系 ${sire} - 母系 ${dam} (外祖父 ${damsire})</div>
+        <div class="horse-info">馬主: ${owner}</div>
+         <div class="horse-pedigree">父系 ${sire} - 母系 ${dam} (外祖父 ${damsire})</div>
       ${createRaceFormTable(horseName)}
     `;
     formRow.appendChild(formCell);
