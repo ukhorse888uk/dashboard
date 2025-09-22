@@ -90,8 +90,8 @@ body {
 /* Race header container */
 .race-header {
   display: flex;
-  justify-content: flex-start;
-  /* left on left, right box on right */
+  justify-content: space-between;
+  /* pushes left & right apart */
   align-items: flex-start;
   margin-bottom: 16px;
 }
@@ -115,18 +115,19 @@ body {
 
 .race-meta span {
   margin-right: 10px;
-  /* spacing between details */
 }
 
 .race-name {
   font-size: 20px;
-  display: none;
+
 }
 
+/* Right section */
 .race-right {
   position: relative;
-  right: -750px;
-  /* move it 40px more right */
+  /* remove right:-750px */
+  margin-left: auto;
+  /* ensures it stays at the far right */
 }
 
 /* === Container & Main Content === */
@@ -238,7 +239,7 @@ body {
 /* =============================== MAIN RACE TABLE - WEB VERSION =============================== */
 .race-table {
   width: 100%;
-  table-layout: auto;
+  table-layout: fixed;
   border-collapse: collapse;
   margin-top: 30px;
   margin-bottom: 20px;
@@ -322,19 +323,19 @@ body {
   /* Column 7 */
   text-align: left;
   font-size: 14px;
-  width: 160px;
+  width: 130px;
 }
 
 .race-table th:nth-child(8),
 .race-table td:nth-child(8) {
   /* Column 8 */
-  width: 10px;
+  width: 30px;
 }
 
 .race-table th:nth-child(9),
 .race-table td:nth-child(9) {
   /* Column 9 */
-  width: 10px;
+  width: 30px;
 }
 
 /* Special styling inside race table */
@@ -379,6 +380,37 @@ body {
   color: #5c965b;
   margin-bottom: 8px;
   line-height: 1.2;
+}
+
+.red-odd {
+  display: inline-flex;
+  /* center text inside */
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  /* circle size */
+  height: 62px;
+  border-radius: 80%;
+  /* makes it a circle */
+  background-color: rgb(58, 134, 34);
+  /* circle color */
+  color: #fff;
+  /* text color */
+  font-size: 25px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.nr-row {
+  background-color: #d3d3d3 !important;
+  /* light grey */
+  color: #555 !important;
+  /* dim text */
+}
+
+.nr-row img {
+  opacity: 0.5;
+  /* dim silks too */
 }
 
 /* =============================== RACE FORM TABLE - WEB VERSION =============================== */
@@ -462,6 +494,23 @@ body {
   width: 3%;
   text-align: center;
 }
+
+.race-table,
+.race-form-table {
+  margin-left: 0;
+  /* no outside spacing */
+  padding-left: 0;
+  /* no inside spacing */
+}
+
+.race-table th:first-child,
+.race-table td:first-child,
+.race-form-table th:first-child,
+.race-form-table td:first-child {
+  padding-left: 0;
+  /* flush left edge */
+}
+
 
 /* =============================== DROP ODDS TABLE - WEB VERSION =============================== */
 #drop-odds-container {
@@ -878,16 +927,35 @@ html {
   }
 
   .horse-info {
-    font-size: 11px;
+    font-size: 8px !important;
     margin-bottom: 4px;
     line-height: 1.2;
   }
 
   .horse-pedigree {
-    font-size: 11px;
-    color: #5c965b;
+    font-size: 8px !important;
+    color: #6b5b96;
     margin-bottom: 8px;
     line-height: 1.2;
+  }
+
+  .red-odd {
+    display: inline-flex;
+    /* center text inside */
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    /* circle size */
+    height: 28px;
+    border-radius: 50%;
+    /* makes it a circle */
+    background-color: rgb(58, 134, 34);
+    /* circle color */
+    color: #fff;
+    /* text color */
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
   }
 
   /* === Race Form Table Portrait === */

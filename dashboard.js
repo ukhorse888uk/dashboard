@@ -546,6 +546,26 @@ function displayRace(raceRows, raceKey) {
     "AW": "全天候"
   };
 
+  // --- Fractional Odds Mapping ---
+  const fractionalOddsMap = {
+    "333/100": "10/3",
+    "500/100": "5/1",
+    "100/33": "3/1",
+    "250/100": "5/2",
+    "163/100": "13/8",
+    "3/2": "6/4",
+    "69/50": "11/8",
+    "47/25": "15/8",
+    "91/100": "10/11",
+
+    // add more here as needed
+  };
+
+  function mapFractionalOdds(fractionStr) {
+    if (!fractionStr) return fractionStr;
+    return fractionalOddsMap[fractionStr] || fractionStr;
+  }
+
   // --- Extract CSV Data ---
   const raceTime = raceData[2] || '';
   const courseName = raceData[0] || '';
@@ -583,9 +603,8 @@ function displayRace(raceRows, raceKey) {
   const raceHeader = document.createElement('div');
   raceHeader.className = 'race-header';
 
-  // --- Left side (race info) ---
   const leftDiv = document.createElement('div');
-  leftDiv.className = 'race-left';  // add class for CSS control
+  leftDiv.className = 'race-left';
   leftDiv.innerHTML = `
   <div class="race-title">
     ${raceTime ? raceTime + ' ' : ''}${translatedCountry ? translatedCountry + ' ' : ''}${courseName} ${formattedDate ? `(${formattedDate})` : ''}
@@ -602,16 +621,14 @@ function displayRace(raceRows, raceKey) {
 `;
   raceHeader.appendChild(leftDiv);
 
-  // --- Right side (rectangle) ---
   const rightDiv = document.createElement('div');
-  rightDiv.className = 'race-right';  // add class for CSS control
+  rightDiv.className = 'race-right';
   rightDiv.innerHTML = `
   <div>${labelCN.runners}: ${runners}匹</div>
   <span>${labelCN.going}: ${translatedGoing}</span>
   <div>${labelCN.surface}: ${translatedSurface}</div>
 `;
   raceHeader.appendChild(rightDiv);
-
 
   raceDetails.appendChild(raceHeader);
 
@@ -642,7 +659,14 @@ function displayRace(raceRows, raceKey) {
   const colorMap = { 'b': '棗色', 'ch': '栗色', 'gr': '灰色', 'bl': '黑色', 'br': '棕色', 'ro': '雜色', 'b/br': '黑棕色', 'gr/ro': '雜灰色', 'b/ro': '雜棗色', 'ch/ro': '雜栗色', 'br/ro': '雜棕色' };
   const nationalityMap = { 'GB': '英國', 'IRE': '愛爾蘭', 'FR': '法國', 'HK': '香港', 'USA': '美國' };
 
-  horseRows.forEach((row) => {
+  // Sort horseRows by current odds
+  const sortedHorseRows = horseRows.sort((a, b) => {
+    const oddsA = parseFloat(a[52]) || Number.MAX_VALUE;
+    const oddsB = parseFloat(b[52]) || Number.MAX_VALUE;
+    return oddsA - oddsB;
+  });
+
+  sortedHorseRows.forEach((row) => {
     const horseNumber = row[32] || '';
     const draw = row[33] || '';
     const horseName = row[20] || '';
@@ -667,7 +691,6 @@ function displayRace(raceRows, raceKey) {
     const runs14 = row[46] || '';
     const wins14 = row[47] || '';
 
-    // Calculate win percentage
     let winPct = '-';
     if (runs14 && !isNaN(runs14) && runs14 !== '0') {
       winPct = ((parseInt(wins14, 10) / parseInt(runs14, 10)) * 100).toFixed(1) + '%';
@@ -678,7 +701,11 @@ function displayRace(raceRows, raceKey) {
 
     // ===== Horse row
     const horseRow = document.createElement('tr');
-    horseRow.style.backgroundColor = 'white';
+    const isNR = horseNumber.trim().toUpperCase() === "NR";
+    if (isNR) horseRow.classList.add("nr-row");
+
+    horseRow.style.backgroundColor = isNR ? "#d3d3d3" : "white";
+    horseRow.style.color = isNR ? "#555" : "black";
 
     // Column 1
     const col1 = document.createElement('td');
@@ -716,12 +743,12 @@ function displayRace(raceRows, raceKey) {
     }
 
     infoCell.innerHTML = `
-      <div class="horse-name">${horseName}</div>
-      <div class="last-run">
-        上次出賽 <span class="last-run-number">${lastRunDisplay}</span>
-      </div>
-      <div>${genderCN} | ${colorCN} | ${nationalityCN}</div>
-    `;
+    <div class="horse-name">${horseName}</div>
+    <div class="last-run">
+      上次出賽 <span class="last-run-number">${lastRunDisplay}</span>
+    </div>
+    <div>${genderCN} | ${colorCN} | ${nationalityCN}</div>
+  `;
     horseRow.appendChild(infoCell);
 
     // Column 4-9
@@ -729,36 +756,52 @@ function displayRace(raceRows, raceKey) {
     const col5 = document.createElement('td'); col5.textContent = formatWeight(weights); horseRow.appendChild(col5);
     const col6 = document.createElement('td'); col6.innerHTML = `<div>${jockey}</div><div>今日騎師策騎: ${jockeyData.raceCount} 匹</div>`; horseRow.appendChild(col6);
     const col7 = document.createElement('td'); col7.innerHTML = `
-      <div>${trainer}</div>
-      <div>今日練馬師出賽: ${trainerData.raceCount}匹</div>
-      <div>過去14天：</div>
-      <div>達標: ${reach14}%</div>
-      <div>參賽: ${runs14}匹  勝出: ${wins14}匹  勝出%: ${winPct}</div>
-      <div>地區: ${region}</div>
-    `; horseRow.appendChild(col7);
-    const col8 = document.createElement('td'); col8.textContent = decimalToFraction(parseFloat(lastnightOdds)); horseRow.appendChild(col8);
-    const col9 = document.createElement('td'); col9.innerHTML = `<span class="red-odd">${decimalToFraction(parseFloat(nowOdds))}</span>`; horseRow.appendChild(col9);
+    <div>${trainer}</div>
+    <div>今日練馬師出賽: ${trainerData.raceCount}匹</div>
+    <div>過去14天：</div>
+    <div>達標: ${reach14}%</div>
+    <div>參賽: ${runs14}匹  勝出: ${wins14}匹  勝出%: ${winPct}</div>
+    <div>地區: ${region}</div>
+  `; horseRow.appendChild(col7);
+
+    const col8 = document.createElement('td');
+    col8.textContent = mapFractionalOdds(decimalToFraction(parseFloat(lastnightOdds)));
+    horseRow.appendChild(col8);
+
+    const col9 = document.createElement('td');
+    if (!isNR) {
+      col9.innerHTML = `<span class="red-odd">${mapFractionalOdds(decimalToFraction(parseFloat(nowOdds)))}</span>`;
+    } else {
+      col9.innerHTML = `<span style="color:#777;">-</span>`;
+    }
+    horseRow.appendChild(col9);
 
     table.appendChild(horseRow);
 
-    // ===== Always show race form directly
+    // ===== Race form row
     const formRow = document.createElement('tr');
     const formCell = document.createElement('td');
     formCell.colSpan = 9;
 
-    formCell.innerHTML = `
-        <div class="horse-info">馬主: ${owner}</div>
-         <div class="horse-pedigree">父系 ${sire} - 母系 ${dam} (外祖父 ${damsire})</div>
-      ${createRaceFormTable(horseName)}
-    `;
+    if (!isNR) {
+      formCell.innerHTML = `
+    <div class="horse-info">馬主: ${owner}</div>
+    <div class="horse-pedigree">父系 ${sire} - 母系 ${dam} (外祖父 ${damsire})</div>
+    ${createRaceFormTable(horseName)}
+  `;
+    } else {
+      formCell.innerHTML = `
+    <div class="horse-info">馬主: ${owner}</div>
+    <div class="horse-pedigree">父系 ${sire} - 母系 ${dam} (外祖父 ${damsire})</div>
+  `;
+      formRow.classList.add("nr-row");
+    }
+
     formRow.appendChild(formCell);
     table.appendChild(formRow);
   });
 
-  console.log('race-details container before append:', raceDetails.innerHTML);
   raceDetails.appendChild(table);
-  console.log('race-details container after append:', raceDetails.innerHTML);
-
 
   // ===== Helper Function =====
   function decimalToFraction(decimal) {
@@ -776,6 +819,7 @@ function displayRace(raceRows, raceKey) {
     return `${h1 - k1}/${k1}`;
   }
 }
+
 
 
 function loadDropOdds() {
