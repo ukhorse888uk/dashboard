@@ -390,7 +390,6 @@ function formatWeight(weightStr) {
 
 
 function createRaceFormTable(horseName) {
-  // Add this check at the beginning of the function
   if (Object.keys(raceFormData).length === 0) {
     return '<div class="loading-race-form">Race form data loading...</div>';
   }
@@ -398,6 +397,39 @@ function createRaceFormTable(horseName) {
   const formData = raceFormData[horseName] || [];
   if (formData.length === 0) {
     return '<div class="no-race-form">No race form data available for ' + horseName + '</div>';
+  }
+
+  // --- Full phrase translation mapping ---
+  const translationMap = {
+    // Race type
+    Hurdle: '跨欄',
+    Flat: '平路',
+    Chase: '跨欄',
+
+    // Going
+    Firm: '快地',
+    'Good To Firm': '好至快地',
+    Good: '好地',
+    'Good To Yielding': '好至黏地',
+    Yielding: '黏地',
+    'Yield To Soft': '黏至軟地',
+    Soft: '軟地',
+    Heavy: '大爛地',
+    'Good To Soft': '好至軟地',
+    'To': '至',
+    Standard: '標準沙地',
+
+    // Surface
+    Turf: '草地',
+    AW: '全天候'
+  };
+
+  // --- Translation helper ---
+  function translatePhrase(str) {
+    if (!str) return '';
+    // Replace " To " with " 至 " before mapping
+    const adjusted = str.replace(/\s+To\s+/g, ' 至 ');
+    return translationMap[adjusted] || adjusted; // fallback to adjusted string
   }
 
   let html = '<table class="race-form-table"><thead><tr>';
@@ -412,7 +444,7 @@ function createRaceFormTable(horseName) {
   html += '</tr></thead><tbody>';
 
   formData.slice(0, 6).forEach(race => {
-    // Format date mm/dd/yyyy → dd/mm/yyyy
+    // Format date mm/dd/yyyy → dd/mm/yy
     let formattedDate = '';
     if (race.date) {
       const parts = race.date.split('/');
@@ -424,15 +456,21 @@ function createRaceFormTable(horseName) {
     }
 
     // Column 2 → merged info
-    const merged = [race.colC, race.colH, race.colI, race.colD, race.colE]
+    const mergedRaw = [race.colC, race.colH, race.colI, race.colD, race.colE]
       .filter(x => x && x.toString().trim() !== '')
       .map(cleanText)
+      .join(' ');
+
+    // Translate merged string using helper
+    const mergedTranslated = mergedRaw
+      .split(' ')
+      .map(word => translatePhrase(word))
       .join(' ');
 
     // Column 3 → weight
     const weight = formatWeight(race.colJ || '');
 
-    // Column 4 → placing + (distance horseName weight) + column T as fraction
+    // Column 4 → placing + details
     const kL = `${race.colK}/${race.colL}`;
 
     function stripCountry(name) {
@@ -453,7 +491,6 @@ function createRaceFormTable(horseName) {
     }
 
     let col4 = details ? `${kL}(${details})` : kL;
-
     if (race.colT) {
       const fraction = decimalToFraction(parseFloat(race.colT) - 1);
       col4 += ' ' + fraction;
@@ -467,7 +504,7 @@ function createRaceFormTable(horseName) {
 
     html += `<tr>
       <td>${formattedDate}</td>
-      <td>${merged}</td>
+      <td>${mergedTranslated}</td>
       <td>${weight}</td>
       <td>${col4}</td>
       <td>${col5}</td>
@@ -483,13 +520,43 @@ function createRaceFormTable(horseName) {
 
 
 
+
+
 // 🔹 Attach once on page load to prevent auto-scroll
 document.addEventListener('DOMContentLoaded', () => {
   const raceDetails = document.getElementById('race-details');
   raceDetails.addEventListener('mousedown', e => e.preventDefault());
 });
 
-function displayRace(raceRows, raceKey) {
+
+
+async function translateToChinese(text) {
+  if (!text) return "";
+  try {
+    const response = await fetch("https://translate.argosopentech.com/translate", {
+      method: "POST",
+      body: JSON.stringify({
+        q: text,
+        source: "en",
+        target: "zh",
+        format: "text"
+      }),
+      headers: { "Content-Type": "application/json" }
+    });
+    const data = await response.json();
+    return data.translatedText;
+  } catch (err) {
+    console.error("Translation error:", err);
+    return text;
+  }
+}
+
+
+
+
+
+function displayRace(raceRows, raceKey, courseMap) {
+
   const raceDetails = document.getElementById('race-details');
   raceDetails.innerHTML = '';
 
@@ -520,7 +587,7 @@ function displayRace(raceRows, raceKey) {
     "Good To Firm": "好至快地",
     "Good": "好地",
     "Good To Yielding": "好至黏地",
-    "Yield": "黏地",
+    "Yielding": "黏地",
     "Yield To Soft": "黏至軟地",
     "Soft": "軟地",
     "Heavy": "大爛地",
@@ -545,7 +612,12 @@ function displayRace(raceRows, raceKey) {
     "Turf": "草地",
     "AW": "全天候"
   };
-
+  // --- Race type mapping ---
+  const typeMap = {
+    "Hurdle": "跨欄",
+    "Flat": "平路",
+    "Chase": "跨欄"
+  };
   // --- Fractional Odds Mapping ---
   const fractionalOddsMap = {
     "333/100": "10/3",
@@ -557,8 +629,10 @@ function displayRace(raceRows, raceKey) {
     "69/50": "11/8",
     "47/25": "15/8",
     "91/100": "10/11",
-
-    // add more here as needed
+    "73/100": "8/13",
+    "4/2": "7/4",
+    "3/2": "11/8",
+    "6/2": "11/4",
   };
 
   function mapFractionalOdds(fractionStr) {
@@ -578,17 +652,16 @@ function displayRace(raceRows, raceKey) {
   const runners = raceData[11] || '';
   const ground = raceData[12] || '';
   const surface = raceData[13] || '';
+  const typeText = raceData[7] || '';
+  const translatedType = typeMap[typeText] || typeText;
 
-  // --- Translate ---
   const translatedGoing = goingMap[rawGoing] || rawGoing;
   const translatedClass = classMap[rawClass] || rawClass;
   const translatedSurface = surfaceMap[surface] || surface;
 
-  // --- Format prize ---
   const prizeValue = rawPrize.replace(/[^0-9]/g, '');
   const formattedPrize = prizeValue ? `£${parseInt(prizeValue).toLocaleString()}` : 'N/A';
 
-  // --- Format date dd/mm/yyyy ---
   let formattedDate = '';
   if (rawDate) {
     const parts = rawDate.split('/');
@@ -602,32 +675,29 @@ function displayRace(raceRows, raceKey) {
   // --- Create race header ---
   const raceHeader = document.createElement('div');
   raceHeader.className = 'race-header';
-
   const leftDiv = document.createElement('div');
   leftDiv.className = 'race-left';
   leftDiv.innerHTML = `
-  <div class="race-title">
-    ${raceTime ? raceTime + ' ' : ''}${translatedCountry ? translatedCountry + ' ' : ''}${courseName} ${formattedDate ? `(${formattedDate})` : ''}
-  </div>
-  <div class="race-meta">
-    <span>${distance}${labelCN.furlong}</span>
-    <span>${translatedClass}</span>
-    <span>${translatedGoing}</span>
-    <span>${labelCN.prize}: ${formattedPrize}</span>
-  </div>
-  <div class="race-name">
-    ${raceName}
-  </div>
-`;
+    <div class="race-title">
+      ${raceTime ? raceTime + ' ' : ''}${translatedCountry ? translatedCountry + ' ' : ''}${courseName} ${formattedDate ? `(${formattedDate})` : ''}
+    </div>
+    <div class="race-meta">
+      <span>${distance}${labelCN.furlong}</span>
+      <span>${translatedClass}</span>
+      <span>${translatedGoing}</span>
+      <span>${translatedType}</span>
+      <span>${labelCN.prize}: ${formattedPrize}</span>
+    </div>
+  `;
   raceHeader.appendChild(leftDiv);
 
   const rightDiv = document.createElement('div');
   rightDiv.className = 'race-right';
   rightDiv.innerHTML = `
-  <div>${labelCN.runners}: ${runners}匹</div>
-  <span>${labelCN.going}: ${translatedGoing}</span>
-  <div>${labelCN.surface}: ${translatedSurface}</div>
-`;
+    <div>${labelCN.runners}: ${runners}匹</div>
+    <span>${labelCN.going}: ${translatedGoing}</span>
+    <div>${labelCN.surface}: ${translatedSurface}</div>
+  `;
   raceHeader.appendChild(rightDiv);
 
   raceDetails.appendChild(raceHeader);
@@ -635,7 +705,6 @@ function displayRace(raceRows, raceKey) {
   // ===== Main race table =====
   const table = document.createElement('table');
   table.className = 'race-table';
-
   const thead = document.createElement('thead');
   const headerRow = document.createElement('tr');
   ['號碼(檔)', '', '馬名/資訊', '年齡', '重量', '騎師', '練馬師', '隔夜', '最近'].forEach(text => {
@@ -645,8 +714,13 @@ function displayRace(raceRows, raceKey) {
   });
   thead.appendChild(headerRow);
   table.appendChild(thead);
+  raceDetails.appendChild(table);
 
-  // Filter valid horse rows
+  // --- NOW show sub-bar safely ---
+  if (courseName && courseMap) {
+    showCourseSubbar(courseName, courseMap);
+  }
+
   const horseRows = raceRows.filter(row => {
     const horseNumber = row[32];
     return horseNumber && horseNumber.toString().trim() !== '' &&
@@ -654,171 +728,141 @@ function displayRace(raceRows, raceKey) {
       horseNumber.toString().trim() !== 'Trainer';
   });
 
-  // Mapping for Chinese translations
+  // --- Chinese mapping for horse ---
   const genderMap = { 'horse': '雄馬', 'mare': '母馬', 'gelding': '閹馬', 'colt': '小雄駒', 'filly': '小雌馬' };
   const colorMap = { 'b': '棗色', 'ch': '栗色', 'gr': '灰色', 'bl': '黑色', 'br': '棕色', 'ro': '雜色', 'b/br': '黑棕色', 'gr/ro': '雜灰色', 'b/ro': '雜棗色', 'ch/ro': '雜栗色', 'br/ro': '雜棕色' };
   const nationalityMap = { 'GB': '英國', 'IRE': '愛爾蘭', 'FR': '法國', 'HK': '香港', 'USA': '美國' };
 
-  // Sort horseRows by current odds
-  const sortedHorseRows = horseRows.sort((a, b) => {
-    const oddsA = parseFloat(a[52]) || Number.MAX_VALUE;
-    const oddsB = parseFloat(b[52]) || Number.MAX_VALUE;
-    return oddsA - oddsB;
-  });
+  // --- Sort horseRows by current odds ---
+  horseRows.sort((a, b) => (parseFloat(a[52]) || Number.MAX_VALUE) - (parseFloat(b[52]) || Number.MAX_VALUE));
 
-  sortedHorseRows.forEach((row) => {
-    const horseNumber = row[32] || '';
-    const draw = row[33] || '';
-    const horseName = row[20] || '';
-    const age = row[22] || '';
-    const form = row[43] || '';
-    const owner = row[31] || '';
-    const sire = row[28] || '';
-    const dam = row[27] || '';
-    const damsire = row[29] || '';
-    const silkUrl = row[41] || '';
-    const lastRun = row[42] || '';
-    const gender = row[23] || '';
-    const color = row[24] || '';
-    const nationality = row[25] || '';
-    const trainer = row[30] || '';
-    const jockey = row[40] || '';
-    const weights = row[34] || '';
-    const lastnightOdds = row[51] || '-';
-    const nowOdds = row[52] || '-';
-    const region = row[45] || '';
-    const reach14 = row[44] || '';
-    const runs14 = row[46] || '';
-    const wins14 = row[47] || '';
+  for (let i = 0; i < horseRows.length; i++) {
+    let row = horseRows[i];
+    let horseNumber = row[32] || '';
+    let draw = row[33] || '';
+    let horseName = row[20] || '';
+    let age = row[22] || '';
+    let form = row[43] || '';
+    let owner = row[31] || '';
+    let sire = row[28] || '';
+    let dam = row[27] || '';
+    let damsire = row[29] || '';
+    let horsecomment = row[35] || '';
+    let silkUrl = row[41] || '';
+    let lastRun = row[42] || '';
+    let gender = row[23] || '';
+    let color = row[24] || '';
+    let nationality = row[25] || '';
+    let trainer = row[30] || '';
+    let jockey = row[40] || '';
+    let weights = row[34] || '';
+    let lastnightOdds = row[51] || '-';
+    let nowOdds = row[52] || '-';
+    let region = row[45] || '';
+    let reach14 = row[44] || '';
+    let runs14 = row[46] || '';
+    let wins14 = row[47] || '';
 
     let winPct = '-';
     if (runs14 && !isNaN(runs14) && runs14 !== '0') {
-      winPct = ((parseInt(wins14, 10) / parseInt(runs14, 10)) * 100).toFixed(1) + '%';
+      winPct = ((parseInt(wins14) / parseInt(runs14)) * 100).toFixed(1) + '%';
     }
 
-    const jockeyData = masterJockeyMap[jockey] || { raceCount: '0', races: [] };
-    const trainerData = masterTrainerMap[trainer] || { raceCount: '0', races: [] };
+    let jockeyData = masterJockeyMap[jockey] || { raceCount: '0', races: [] };
+    let trainerData = masterTrainerMap[trainer] || { raceCount: '0', races: [] };
 
-    // ===== Horse row
-    const horseRow = document.createElement('tr');
-    const isNR = horseNumber.trim().toUpperCase() === "NR";
+    // ===== Horse row =====
+    let horseRow = document.createElement('tr');
+    let isNR = horseNumber.trim().toUpperCase() === "NR";
     if (isNR) horseRow.classList.add("nr-row");
-
     horseRow.style.backgroundColor = isNR ? "#d3d3d3" : "white";
     horseRow.style.color = isNR ? "#555" : "black";
 
     // Column 1
-    const col1 = document.createElement('td');
-    const drawDisplay = (draw && draw !== '0') ? `(${draw})` : '';
+    let col1 = document.createElement('td');
+    let drawDisplay = (draw && draw !== '0') ? `(${draw})` : '';
     col1.innerHTML = `<div class="horse-num-draw">${horseNumber} ${drawDisplay}</div>記錄<div>${form}</div>`;
     horseRow.appendChild(col1);
 
     // Column 2: Silk
-    const col2 = document.createElement('td');
+    let col2 = document.createElement('td');
     col2.innerHTML = silkUrl ? `<img src="${silkUrl}" class="horse-silk">` : '';
     horseRow.appendChild(col2);
 
     // Column 3: Horse info
-    const infoCell = document.createElement('td');
+    let infoCell = document.createElement('td');
     const genderCN = genderMap[gender] || gender;
     const colorCN = colorMap[color] || color;
     const nationalityCN = nationalityMap[nationality] || nationality;
 
-    let lastRunDisplay = '-';
-    if (lastRun) {
-      const match = lastRun.match(/^(\d+)\s*\(?(\d+)?([A-Z])?\)?$/i);
-      if (match) {
-        const mainDays = match[1];
-        const otherDays = match[2];
-        const letter = match[3];
-        if (otherDays && letter && letter.toUpperCase() === 'F') {
-          lastRunDisplay = `${mainDays} 天前同類 <br>（${otherDays} 天前不同類賽事）`;
-        } else {
-          lastRunDisplay = `${mainDays} 天前`;
-          if (otherDays && letter) lastRunDisplay += ` (${otherDays}${letter})`;
-        }
-      } else {
-        lastRunDisplay = `${lastRun}天前`;
-      }
-    }
-
     infoCell.innerHTML = `
-    <div class="horse-name">${horseName}</div>
-    <div class="last-run">
-      上次出賽 <span class="last-run-number">${lastRunDisplay}</span>
-    </div>
-    <div>${genderCN} | ${colorCN} | ${nationalityCN}</div>
-  `;
+      <div class="horse-name">${horseName}</div>
+      <div>${genderCN} | ${colorCN} | ${nationalityCN}</div>
+    `;
     horseRow.appendChild(infoCell);
 
     // Column 4-9
-    const col4 = document.createElement('td'); col4.textContent = age; horseRow.appendChild(col4);
-    const col5 = document.createElement('td'); col5.textContent = formatWeight(weights); horseRow.appendChild(col5);
-    const col6 = document.createElement('td'); col6.innerHTML = `<div>${jockey}</div><div>今日騎師策騎: ${jockeyData.raceCount} 匹</div>`; horseRow.appendChild(col6);
-    const col7 = document.createElement('td'); col7.innerHTML = `
-    <div>${trainer}</div>
-    <div>今日練馬師出賽: ${trainerData.raceCount}匹</div>
-    <div>過去14天：</div>
-    <div>達標: ${reach14}%</div>
-    <div>參賽: ${runs14}匹  勝出: ${wins14}匹  勝出%: ${winPct}</div>
-    <div>地區: ${region}</div>
-  `; horseRow.appendChild(col7);
+    horseRow.appendChild(createTd(age));
+    horseRow.appendChild(createTd(formatWeight(weights)));
+    horseRow.appendChild(createTd(`<div>${jockey}</div><div>今日騎師策騎: ${jockeyData.raceCount} 匹</div>`));
+    horseRow.appendChild(createTd(`
+  <div>${trainer}</div>
+  <div>今日練馬師出賽: ${trainerData.raceCount}匹</div>
+  <div>達標: ${reach14}%</div>
+  <div>參賽: ${runs14}匹  勝出: ${wins14}匹  勝出%: ${winPct}</div>
+  <div>地區: ${region}</div>
+`));
 
-    const col8 = document.createElement('td');
-    col8.textContent = mapFractionalOdds(decimalToFraction(parseFloat(lastnightOdds)));
-    horseRow.appendChild(col8);
+    // Column 8: Last night odds (subtract 1 before converting)
+    const lastnightDecimal = parseFloat(lastnightOdds) - 1;
+    horseRow.appendChild(createTd(mapFractionalOdds(decimalToFraction(lastnightDecimal))));
 
-    const col9 = document.createElement('td');
-    if (!isNR) {
-      col9.innerHTML = `<span class="red-odd">${mapFractionalOdds(decimalToFraction(parseFloat(nowOdds)))}</span>`;
-    } else {
-      col9.innerHTML = `<span style="color:#777;">-</span>`;
-    }
-    horseRow.appendChild(col9);
+    // Column 9: Now odds with red highlight (subtract 1 before converting)
+    const nowDecimal = parseFloat(nowOdds) - 1;
+    const nowOddsFraction = mapFractionalOdds(decimalToFraction(nowDecimal));
+    horseRow.appendChild(createTd(`<span class="red-odd">${nowOddsFraction}</span>`));
 
     table.appendChild(horseRow);
 
-    // ===== Race form row
-    const formRow = document.createElement('tr');
-    const formCell = document.createElement('td');
+    // ===== Race form row =====
+    let formRow = document.createElement('tr');
+    let formCell = document.createElement('td');
     formCell.colSpan = 9;
-
-    if (!isNR) {
-      formCell.innerHTML = `
-    <div class="horse-info">馬主: ${owner}</div>
-    <div class="horse-pedigree">父系 ${sire} - 母系 ${dam} (外祖父 ${damsire})</div>
-    ${createRaceFormTable(horseName)}
-  `;
-    } else {
-      formCell.innerHTML = `
-    <div class="horse-info">馬主: ${owner}</div>
-    <div class="horse-pedigree">父系 ${sire} - 母系 ${dam} (外祖父 ${damsire})</div>
-  `;
-      formRow.classList.add("nr-row");
-    }
-
+    formCell.innerHTML = `<div class="horse-comment">翻譯中…</div>`; // placeholder
     formRow.appendChild(formCell);
     table.appendChild(formRow);
-  });
 
-  raceDetails.appendChild(table);
+    // --- Async translation using LibreTranslate ---
+    (async function (cell, isNR, owner, sire, dam, damsire, horseName, horsecomment, formRow) {
+      const translatedComment = await translateToChinese(horsecomment || '');
 
-  // ===== Helper Function =====
-  function decimalToFraction(decimal) {
-    if (!decimal || isNaN(decimal)) return '';
-    const gcd = (a, b) => (b < 0.0000001 ? a : gcd(b, Math.floor(a % b)));
-    const tolerance = 1.0E-6;
-    let h1 = 1, h2 = 0, k1 = 0, k2 = 1;
-    let b = decimal;
-    do {
-      let a = Math.floor(b);
-      let aux = h1; h1 = a * h1 + h2; h2 = aux;
-      aux = k1; k1 = a * k1 + k2; k2 = aux;
-      b = 1 / (b - a);
-    } while (Math.abs(decimal - h1 / k1) > decimal * tolerance);
-    return `${h1 - k1}/${k1}`;
+      if (!isNR) {
+        cell.innerHTML = `
+      <div class="horse-info">馬主: ${owner}</div>
+      <div class="horse-pedigree">父系 ${sire} - 母系 ${dam} (外祖父 ${damsire})</div>
+     
+      ${createRaceFormTable(horseName)}
+    `;
+      } else {
+        cell.innerHTML = `
+      <div class="horse-info">馬主: ${owner}</div>
+      <div class="horse-pedigree">父系 ${sire} - 母系 ${dam} (外祖父 ${damsire})</div>
+    
+    `;
+        formRow.classList.add("nr-row");
+      }
+    })(formCell, isNR, owner, sire, dam, damsire, horseName, horsecomment, formRow);
+
+  }
+
+  function createTd(content) {
+    let td = document.createElement('td');
+    td.innerHTML = content;
+    return td;
   }
 }
+
+
 
 
 
@@ -829,14 +873,45 @@ function loadDropOdds() {
 
   const csvUrl = "https://ukhorse888uk.github.io/dashboard/csv/dropodds.csv?cb=" + Date.now();
 
+  // --- Fractional Odds Mapping ---
+  const fractionalOddsMap = {
+    "333/100": "10/3",
+    "500/100": "5/1",
+    "100/33": "3/1",
+    "250/100": "5/2",
+    "163/100": "13/8",
+    "3/2": "6/4",
+    "69/50": "11/8",
+    "47/25": "15/8",
+    "91/100": "10/11",
+    "73/100": "8/13",
+    "4/2": "7/4",
+    "6/2": "11/4"
+  };
+
   // Convert decimal odds to fractional string (for display only)
   function decimalToFraction(decimal) {
     if (!decimal || decimal <= 1) return '--';
-    const fractionValue = decimal - 1; // subtract 1 to get profit fraction
-    if (fractionValue % 1 === 0) return fractionValue + '/1';
-    const denominator = 2; // simplest fractions
-    const numerator = Math.round(fractionValue * denominator);
-    return numerator + '/' + denominator;
+
+    const target = decimal - 1; // betting odds = decimal - 1
+    const tolerance = 1.0E-6;
+    let h1 = 1, h2 = 0, k1 = 0, k2 = 1, b = target;
+
+    do {
+      const a = Math.floor(b);
+      let temp = h1; h1 = a * h1 + h2; h2 = temp;
+      temp = k1; k1 = a * k1 + k2; k2 = temp;
+      b = 1 / (b - a);
+    } while (Math.abs(target - h1 / k1) > target * tolerance);
+
+    let frac = h1 + "/" + k1;
+
+    // --- Apply bookmaker-friendly mapping ---
+    if (fractionalOddsMap[frac]) {
+      return fractionalOddsMap[frac];
+    }
+
+    return frac;
   }
 
   // Format change numbers (14.00 -> 14, 4.50 -> 4.5)
@@ -871,7 +946,13 @@ function loadDropOdds() {
           row['Time'] && row['Time'] !== '' &&
           row['Horse Name'] !== 'Horse Name' &&
           row['NOW'] && row['NOW'] !== ''
-        );
+        )
+        // 🚨 NEW FILTER: only include horses where NOW ≤ Original
+        .filter(row => {
+          const originalDec = parseFloat(row['Original']) || 0;
+          const nowDec = parseFloat(row['NOW']) || 0;
+          return nowDec <= originalDec;   // keep only drops
+        });
 
       data.sort((a, b) => a['Time'].localeCompare(b['Time'], undefined, { numeric: true }));
 
@@ -1113,7 +1194,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!raceTab.classList.contains('active')) raceTab.click();
 
         if (typeof displayRace === 'function') {
-          displayRace(raceRows[raceKey], raceKey);
+          displayRace(race.rows, race.key, courseMap);
           showRaceForms();
         }
 
