@@ -947,19 +947,20 @@ function loadDropOdds() {
           row['Horse Name'] !== 'Horse Name' &&
           row['NOW'] && row['NOW'] !== ''
         )
-        // 🚨 NEW FILTER: only include horses where NOW ≤ Original
+        // 🚨 Only keep horses with drop ≥ 52%
         .filter(row => {
           const originalDec = parseFloat(row['Original']) || 0;
           const nowDec = parseFloat(row['NOW']) || 0;
-          return nowDec <= originalDec;   // keep only drops
+          if (!originalDec || !nowDec) return false;
+
+          const pctDrop = ((nowDec - originalDec) / originalDec) * 100;
+          return pctDrop <= -52;   // require at least 52% drop
         });
 
+      // still sort by earlier Time
       data.sort((a, b) => a['Time'].localeCompare(b['Time'], undefined, { numeric: true }));
 
-      if (data.length === 0) {
-        container.innerHTML = '<div class="error">沒有有效馬匹數據</div>';
-        return;
-      }
+
 
       const isMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
 
