@@ -886,7 +886,8 @@ function loadDropOdds() {
     "91/100": "10/11",
     "73/100": "8/13",
     "4/2": "7/4",
-    "6/2": "11/4"
+    "6/2": "11/4",
+    "213/100": "21/10"
   };
 
   // Convert decimal odds to fractional string (for display only)
@@ -954,7 +955,7 @@ function loadDropOdds() {
           if (!originalDec || !nowDec) return false;
 
           const pctDrop = ((nowDec - originalDec) / originalDec) * 100;
-          return pctDrop <= -52;   // require at least 52% drop
+          return pctDrop <= -48;   // require at least 52% drop
         });
 
       // still sort by earlier Time
