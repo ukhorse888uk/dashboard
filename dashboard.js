@@ -955,7 +955,7 @@ function loadDropOdds() {
           if (!originalDec || !nowDec) return false;
 
           const pctDrop = ((nowDec - originalDec) / originalDec) * 100;
-          return pctDrop <= -48;   // require at least 52% drop
+          return pctDrop <= -48;   // require at least 48% drop
         });
 
       // still sort by earlier Time
