@@ -887,7 +887,9 @@ function loadDropOdds() {
     "73/100": "8/13",
     "4/2": "7/4",
     "6/2": "11/4",
-    "213/100": "21/10"
+    "213/100": "21/10",
+    "57/100": "4/7",
+    "53/100": "8/15"
   };
 
   // Convert decimal odds to fractional string (for display only)
@@ -954,8 +956,14 @@ function loadDropOdds() {
           const nowDec = parseFloat(row['NOW']) || 0;
           if (!originalDec || !nowDec) return false;
 
-          const pctDrop = ((nowDec - originalDec) / originalDec) * 100;
-          return pctDrop <= -48;   // require at least 48% drop
+          // --- Use real fractional drop method ---
+          const origFracVal = originalDec > 1 ? originalDec - 1 : 0;
+          const nowFracVal = nowDec > 1 ? nowDec - 1 : 0;
+          if (!origFracVal || !nowFracVal) return false;
+
+          const pctDrop = ((origFracVal - nowFracVal) / origFracVal) * 100;
+          return pctDrop >= 50;  // real fractional drop ≥48%
+
         });
 
       // still sort by earlier Time
@@ -992,7 +1000,10 @@ function loadDropOdds() {
         const originalDec = parseFloat(row['Original']) || 0;
         const nowDec = parseFloat(row['NOW']) || 0;
         const changeDec = parseFloat(row['Change']) || (nowDec - originalDec);
-        const pctChange = parseFloat(row['%']) || (originalDec ? (changeDec / originalDec) * 100 : 0);
+        const origFracVal = originalDec > 1 ? originalDec - 1 : 0;
+        const nowFracVal = nowDec > 1 ? nowDec - 1 : 0;
+        const pctChange = parseFloat(row['%']) || (origFracVal ? ((nowFracVal - origFracVal) / origFracVal) * 100 : 0);
+
         const colorClass = pctChange <= -48 ? 'green' : pctChange >= 48 ? 'red' : '';
 
         const originalFrac = decimalToFraction(originalDec);
