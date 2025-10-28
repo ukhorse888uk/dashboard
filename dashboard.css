@@ -1465,13 +1465,13 @@ html {
 
   .drop-odds-table th:nth-child(2),
   .drop-odds-table td:nth-child(2) {
-    width: 15% !important;
+    width: 18% !important;
     text-align: left !important;
   }
 
   .drop-odds-table th:nth-child(3),
   .drop-odds-table td:nth-child(3) {
-    width: 8% !important;
+    width: 2% !important;
     text-align: left !important;
   }
 
@@ -1483,25 +1483,25 @@ html {
 
   .drop-odds-table th:nth-child(5),
   .drop-odds-table td:nth-child(5) {
-    width: 8% !important;
+    width: 5% !important;
     text-align: center !important;
   }
 
   .drop-odds-table th:nth-child(6),
   .drop-odds-table td:nth-child(6) {
-    width: 8% !important;
+    width: 5% !important;
     text-align: center !important;
   }
 
   .drop-odds-table th:nth-child(7),
   .drop-odds-table td:nth-child(7) {
-    width: 8% !important;
+    width: 5% !important;
     text-align: center !important;
   }
 
   .drop-odds-table th:nth-child(8),
   .drop-odds-table td:nth-child(8) {
-    width: 8% !important;
+    width: 6% !important;
     text-align: center !important;
   }
 
