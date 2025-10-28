@@ -889,7 +889,10 @@ function loadDropOdds() {
     "6/2": "11/4",
     "213/100": "21/10",
     "57/100": "4/7",
-    "53/100": "8/15"
+    "53/100": "8/15",
+    "31/50": "8/13",
+    "83/100": "5/6",
+    "53/25": "85/40"
   };
 
   // Convert decimal odds to fractional string (for display only)
