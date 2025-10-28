@@ -562,7 +562,7 @@ body {
 
 .drop-odds-table th:nth-child(2),
 .drop-odds-table td:nth-child(2) {
-  width: 15%;
+  width: 20%;
   /* Add minimum width to ensure visibility */
   text-align: left;
   white-space: normal;
@@ -641,13 +641,13 @@ body {
 }
 
 .green {
-  background-color: #e6ffea;
-  color: #006400;
+  background-color: #ffd966;
+  color: #ffffff;
   font-weight: bold;
 }
 
 .red {
-  background-color: #34cc3c;
+  background-color: #27c22c;
   color: hsl(0, 0%, 100%);
   font-weight: bold;
 }

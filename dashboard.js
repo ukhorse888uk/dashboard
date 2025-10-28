@@ -571,7 +571,7 @@ function displayRace(raceRows, raceKey, courseMap) {
     going: '地質',
     prize: '獎金',
     furlong: 'F',
-    runners: '參賽者',
+    runners: '參賽',
     ground: '地質',
     surface: '地種'
   };
@@ -1004,7 +1004,7 @@ function loadDropOdds() {
         const nowFracVal = nowDec > 1 ? nowDec - 1 : 0;
         const pctChange = parseFloat(row['%']) || (origFracVal ? ((nowFracVal - origFracVal) / origFracVal) * 100 : 0);
 
-        const colorClass = pctChange <= -48 ? 'green' : pctChange >= 48 ? 'red' : '';
+        const colorClass = pctChange >= 60 ? 'green' : pctChange >= 48 ? 'red' : '';
 
         const originalFrac = decimalToFraction(originalDec);
         const nowFrac = decimalToFraction(nowDec);
