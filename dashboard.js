@@ -1007,7 +1007,7 @@ function loadDropOdds() {
         const nowFracVal = nowDec > 1 ? nowDec - 1 : 0;
         const pctChange = parseFloat(row['%']) || (origFracVal ? ((nowFracVal - origFracVal) / origFracVal) * 100 : 0);
 
-        const colorClass = pctChange >= 60 ? 'green' : pctChange >= 48 ? 'red' : '';
+        const colorClass = pctChange >= 70 ? 'gold' : pctChange >= 60 ? 'red' : pctChange >= 48 ? 'green' : '';
 
         const originalFrac = decimalToFraction(originalDec);
         const nowFrac = decimalToFraction(nowDec);

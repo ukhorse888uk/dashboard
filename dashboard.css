@@ -640,17 +640,25 @@ body {
   background-color: #f0f0f0;
 }
 
-.green {
-  background-color: #fc0606;
+.gold {
+  background-color: #ffc002;
   color: #ffffff;
   font-weight: bold;
 }
 
 .red {
+  background-color: #ff0101;
+  color: hsl(0, 0%, 100%);
+  font-weight: bold;
+}
+
+.green {
   background-color: #27c22c;
   color: hsl(0, 0%, 100%);
   font-weight: bold;
 }
+
+
 
 /* Optional: vertical line between column 7 and 8 */
 .drop-odds-table td:nth-child(7),
