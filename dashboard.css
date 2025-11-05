@@ -1471,7 +1471,7 @@ html {
 
   .drop-odds-table th:nth-child(3),
   .drop-odds-table td:nth-child(3) {
-    width: 2% !important;
+    width: 5% !important;
     text-align: left !important;
   }
 

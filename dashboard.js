@@ -991,7 +991,7 @@ function loadDropOdds() {
               <th>隔夜</th>
               <th>最近</th>
               <th>變動</th>
-              <th>變動%</th>
+              <th>變 %</th>
               <th>賽果</th>
               <th>贏賠率</th>
             </tr>
