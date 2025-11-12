@@ -456,7 +456,7 @@ body {
 .race-form-table td:nth-child(3),
 .race-form-table th:nth-child(3) {
   /* Weight: max 5 characters */
-  width: 3%;
+  width: 6%;
   text-align: center;
 }
 

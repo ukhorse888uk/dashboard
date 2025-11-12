@@ -404,7 +404,7 @@ function createRaceFormTable(horseName) {
     // Race type
     Hurdle: '跨欄',
     Flat: '平路',
-    Chase: '跨欄',
+    Chase: '追逐赛',
 
     // Going
     Firm: '快地',
@@ -428,7 +428,7 @@ function createRaceFormTable(horseName) {
   function translatePhrase(str) {
     if (!str) return '';
     // Replace " To " with " 至 " before mapping
-    const adjusted = str.replace(/\s+To\s+/g, ' 至 ');
+    const adjusted = str.replace(/\s+To\s+/g, '');
     return translationMap[adjusted] || adjusted; // fallback to adjusted string
   }
 
@@ -570,7 +570,7 @@ function displayRace(raceRows, raceKey, courseMap) {
     class: '班數',
     going: '地質',
     prize: '獎金',
-    furlong: 'F',
+    furlong: 'f',
     runners: '參賽',
     ground: '地質',
     surface: '地種'
@@ -616,7 +616,7 @@ function displayRace(raceRows, raceKey, courseMap) {
   const typeMap = {
     "Hurdle": "跨欄",
     "Flat": "平路",
-    "Chase": "跨欄"
+    "Chase": "追逐赛"
   };
   // --- Fractional Odds Mapping ---
   const fractionalOddsMap = {
