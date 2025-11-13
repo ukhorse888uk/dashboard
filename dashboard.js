@@ -415,9 +415,9 @@ function createRaceFormTable(horseName) {
     Yielding: '黏地',
     'Yield To Soft': '黏至軟地',
     Soft: '軟地',
-    Heavy: '大爛地',
+    Heavy: '爛地',
     'Good To Soft': '好至軟地',
-    'To': '至',
+    To: '至',
     Standard: '標準沙地',
 
     // Surface
@@ -428,9 +428,22 @@ function createRaceFormTable(horseName) {
   // --- Translation helper ---
   function translatePhrase(str) {
     if (!str) return '';
-    // Replace " To " with " 至 " before mapping
-    const adjusted = str.replace(/\s+To\s+/g, '');
-    return translationMap[adjusted] || adjusted; // fallback to adjusted string
+
+    const normalized = str.trim();
+
+    // Step 1: exact match in map
+    if (translationMap[normalized]) {
+      return translationMap[normalized];
+    }
+
+    // Step 2: normalize spacing around "To"
+    const adjusted = normalized.replace(/\s+To\s+/gi, ' To ');
+    if (translationMap[adjusted]) {
+      return translationMap[adjusted];
+    }
+
+    // Step 3: fallback to single-word translation
+    return translationMap[normalized] || normalized;
   }
 
   let html = '<table class="race-form-table"><thead><tr>';
@@ -462,11 +475,52 @@ function createRaceFormTable(horseName) {
       .map(cleanText)
       .join(' ');
 
-    // Translate merged string using helper
-    const mergedTranslated = mergedRaw
-      .split(' ')
-      .map(word => translatePhrase(word))
-      .join(' ');
+    // Enhanced translator with multi-word phrase handling
+    function translatePhrase(text) {
+      const phrases = {
+
+        "Good To Soft": "好至軟地",
+        "Good To Firm": "好至快地",
+        "Soft To Heavy": "軟至爛地",
+        "Good To Yielding": "好至黏地",
+        "Yield To Soft": "黏至軟地",
+        "Good": "好地",
+        "Soft": "軟地",
+        "Firm": "快地",
+        "Heavy": "爛地",
+        "To": "至",
+        "Hurdle": "跨欄",
+        "Flat": "平路",
+        "Chase": "追逐赛",
+        "NH": "無障",
+        "Class 1": "一班",
+        "Class 2": "二班",
+        "Class 3": "三班",
+        "Class 4": "四班",
+        "Class 5": "五班",
+        "Class 6": "六班",
+      };
+
+      let result = text;
+
+      // 1️⃣ Replace multi-word phrases first (case-insensitive)
+      for (const phrase in phrases) {
+        const regex = new RegExp(`\\b${phrase}\\b`, 'gi');
+        result = result.replace(regex, phrases[phrase]);
+      }
+
+      // 2️⃣ Then replace any single words that remain
+      for (const phrase in phrases) {
+        const regex = new RegExp(`\\b${phrase}\\b`, 'gi');
+        result = result.replace(regex, phrases[phrase]);
+      }
+
+      return result;
+    }
+
+    const mergedTranslated = translatePhrase(mergedRaw);
+
+
 
     // Column 3 → weight
     const weight = formatWeight(race.colJ || '');
@@ -504,20 +558,21 @@ function createRaceFormTable(horseName) {
     const col8 = cleanText(race.colAA);
 
     html += `<tr>
-      <td>${formattedDate}</td>
-      <td>${mergedTranslated}</td>
-      <td>${weight}</td>
-      <td>${col4}</td>
-      <td>${col5}</td>
-      <td>${col6}</td>
-      <td>${col7}</td>
-      <td>${col8}</td>
-    </tr>`;
+        <td>${formattedDate}</td>
+        <td>${mergedTranslated}</td>
+        <td>${weight}</td>
+        <td>${col4}</td>
+        <td>${col5}</td>
+        <td>${col6}</td>
+        <td>${col7}</td>
+        <td>${col8}</td>
+      </tr>`;
   });
 
   html += '</tbody></table>';
   return html;
 }
+
 
 
 
