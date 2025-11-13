@@ -1292,7 +1292,7 @@ html {
 
   .race-table th:nth-child(5),
   .race-table td:nth-child(5) {
-    width: 5% !important;
+    width: 7% !important;
     text-align: center;
   }
 
