@@ -450,7 +450,7 @@ function createRaceFormTable(horseName) {
   html += '<th>日期</th>';
   html += '<th>賽事資料</th>';
   html += '<th>重量</th>';
-  html += '<th>賽果</th>';
+  html += '<th>賽果（1L = 1個馬位）</th>';
   html += '<th>騎師</th>';
   html += '<th>OR</th>';
   html += '<th>TS</th>';
