@@ -405,6 +405,7 @@ function createRaceFormTable(horseName) {
     Hurdle: '跨欄',
     Flat: '平路',
     Chase: '追逐赛',
+    NH: '無障',
 
     // Going
     Firm: '快地',
