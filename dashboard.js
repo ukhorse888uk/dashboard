@@ -485,6 +485,7 @@ function createRaceFormTable(horseName) {
         "Good To Yielding": "好至黏地",
         "Yield To Soft": "黏至軟地",
         "Standard To Slow": "標準至慢",
+        "Yielding": "黏地",
         "Good": "好地",
         "Soft": "軟地",
         "Firm": "快地",
