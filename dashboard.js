@@ -495,6 +495,7 @@ function createRaceFormTable(horseName) {
         "Flat": "平路",
         "Chase": "追逐赛",
         "NH": "無障",
+        "(IRE)": "愛爾蘭",
         "(AW)": "沙地",
         "Standard": "標準",
         "Class 1": "一班",
