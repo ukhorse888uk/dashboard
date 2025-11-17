@@ -1,13 +1,14 @@
 // ===============================
-// 🔵 GLOBAL VARIABLES (must be at top)
+// 🔵 GLOBAL VARIABLES
 // ===============================
 let activeTab = localStorage.getItem('activeTab') || 'races';
 let masterJockeyMap = {};
 let masterTrainerMap = {};
-let raceNumberMap = {}; // Maps race keys to assigned numbers
-let raceFormData = {}; // Store race form data by horse name
-let scrollPosition = 0; // Store scroll position
-let raceFormVisibilityState = {}; // Save visibility state for each race form
+let raceNumberMap = {};
+let raceFormData = {};
+let scrollPosition = 0;
+let raceFormVisibilityState = {};
+let showRaceForm = localStorage.getItem('showRaceForm') === 'true';
 
 
 // ===============================
@@ -26,15 +27,104 @@ document.addEventListener("DOMContentLoaded", function () {
     showTab("drop");
   });
 
-  // --- RESULT TAB (Your new code added here) ---
+  // --- RESULT TAB ---
   document.getElementById("tab-result").addEventListener("click", function () {
     showTab("result");
     loadResultCSV();
   });
 
-});
+  // ==============================
+  // 🔵 Persistent Race Form Toggle
+  // ==============================
+  const raceDetails = document.getElementById('race-details');
 
-// --- No longer remove brackets, keep names exactly as in CSV ---
+  function updateRaceFormDisplay() {
+    if (showRaceForm) {
+      raceDetails.style.display = 'block';
+    } else {
+      raceDetails.style.display = 'none';
+    }
+  }
+
+  // first-time load
+  updateRaceFormDisplay();
+
+  // expose toggle globally
+  window.toggleRaceForm = function () {
+    showRaceForm = !showRaceForm;
+    localStorage.setItem('showRaceForm', showRaceForm);
+    updateRaceFormDisplay();
+  };
+
+}); // END DOMContentLoaded
+
+
+
+// =========================
+// RESULTS TAB FUNCTIONALITY
+// =========================
+function loadResultCSV() {
+  const resultDetails = document.getElementById("result-details");
+
+  // Clear previous content
+  resultDetails.innerHTML = '<div class="loading-race-form">Loading results...</div>';
+
+  // Fetch your CSV (adjust URL if needed)
+  const csvUrl = "https://ukhorse888uk.github.io/dashboard/csv/result.csv?cb=" + Date.now();
+
+  Papa.parse(csvUrl, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function (results) {
+      const data = results.data;
+
+      if (!data || data.length === 0) {
+        resultDetails.innerHTML = '<div class="loading-race-form">No results found.</div>';
+        return;
+      }
+
+      // Create table
+      const table = document.createElement("table");
+      table.className = "race-table";
+
+      // Table header
+      const header = table.insertRow();
+      const headers = Object.keys(data[0]); // use CSV headers
+      headers.forEach(h => {
+        const th = document.createElement("th");
+        th.textContent = h;
+        header.appendChild(th);
+      });
+
+      // Table rows
+      data.forEach(row => {
+        const tr = table.insertRow();
+        headers.forEach(h => {
+          const td = tr.insertCell();
+          td.textContent = row[h] || ""; // fallback empty string
+        });
+      });
+
+      // Replace loading with table
+      resultDetails.innerHTML = "";
+      resultDetails.appendChild(table);
+    },
+    error: function (err) {
+      resultDetails.innerHTML = '<div class="loading-race-form">Error loading results CSV.</div>';
+      console.error("Error loading results CSV:", err);
+    }
+  });
+}
+
+
+
+
+
+
+// ===============================
+// 🔵 CLEAN NAME & MASTER MAPS
+// ===============================
 function cleanName(name) {
   return name ? name.trim() : '';
 }
@@ -44,9 +134,8 @@ function buildMasterMaps(data) {
   masterTrainerMap = {};
 
   data.forEach(row => {
-    // --- Jockey ---
-    let jockeyNameRaw = row[63] || ''; // BL
-    const jockeyName = cleanName(jockeyNameRaw); // keep brackets
+    let jockeyNameRaw = row[63] || '';
+    const jockeyName = cleanName(jockeyNameRaw);
     const jockeyCount = row[64] || '0';
 
     if (jockeyName && jockeyName.toUpperCase() !== 'NON-RUNNER') {
@@ -68,9 +157,8 @@ function buildMasterMaps(data) {
       };
     }
 
-    // --- Trainer ---
-    let trainerNameRaw = row[76] || ''; // BY
-    const trainerName = cleanName(trainerNameRaw); // keep brackets
+    let trainerNameRaw = row[76] || '';
+    const trainerName = cleanName(trainerNameRaw);
     const trainerCount = row[77] || '0';
 
     if (trainerName && trainerName.toUpperCase() !== 'NON-RUNNER') {
@@ -79,10 +167,12 @@ function buildMasterMaps(data) {
   });
 }
 
-// --- Lookup functions ---
-// If site names may still include brackets, you can remove brackets for matching
+
+// ===============================
+// 🔵 LOOKUPS
+// ===============================
 function getJockeyRaceCount(siteName) {
-  const key = siteName.replace(/\s*\([^)]*\)/g, '').trim().toLowerCase(); // clean site name
+  const key = siteName.replace(/\s*\([^)]*\)/g, '').trim().toLowerCase();
   for (let name in masterJockeyMap) {
     if (name.toLowerCase().startsWith(key)) return masterJockeyMap[name].raceCount;
   }
@@ -99,39 +189,11 @@ function getTrainerRaceCount(siteName) {
 
 
 
-// ==============================
-// Persistent Race Form Toggle
-// ==============================
-const raceDetails = document.getElementById('race-details');
-
-// Load persisted state from localStorage
-let showRaceForm = localStorage.getItem('showRaceForm') === 'true';
-
-// Ensure the race form shows if previously chosen
-updateRaceFormDisplay();
-
-function updateRaceFormDisplay() {
-  if (showRaceForm) {
-    raceDetails.style.display = 'block';
-  } else {
-    raceDetails.style.display = 'none';
-  }
-}
-
-// Function to toggle the race form visibility
-window.toggleRaceForm = function () {
-  showRaceForm = !showRaceForm;
-  localStorage.setItem('showRaceForm', showRaceForm);
-  updateRaceFormDisplay();
-};
-
-// ==============================
-// Load Racecard and Build Dropdown
-// ==============================
-// ==============================
-// Load Racecard
-// ==============================
+// ===============================
+// 🔵 RACE DATA STORAGE
+// ===============================
 let globalRaceRows = {}; // raceKey → array of rows
+
 
 function loadRacecard() {
   Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/racecard2.csv?cb=" + Date.now(), {
@@ -1396,42 +1458,3 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', updateRaceListVisibility);
 });
 
-function loadResultCSV() {
-  Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/RESULT.csv?cb=" + Date.now(), {
-    download: true,
-    encoding: "UTF-8",
-    complete: function (results) {
-      console.log("RESULT.csv loaded:", results.data.length, "rows");
-
-      const data = results.data;
-      if (!data || data.length === 0) {
-        console.error("RESULT.csv is empty or not found");
-        return;
-      }
-
-      let outputHTML = "<h2>Result Page Test Output</h2>";
-
-      // Start at row 1 (skip header)
-      for (let i = 1; i < data.length; i++) {
-        const row = data[i];
-
-        // Column K is index 10
-        const colK = row[10] || "";
-
-        outputHTML += `
-          <div class="result-row">
-            Row ${i}: <strong>${colK}</strong>
-          </div>
-        `;
-      }
-
-      // Push results to dashboard result page
-      const container = document.getElementById("result-output");
-      if (container) {
-        container.innerHTML = outputHTML;
-      } else {
-        console.warn("result-output container not found in HTML");
-      }
-    }
-  });
-}

@@ -7,12 +7,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Versioned CSS to force reload -->
-  <link rel="stylesheet" href="dashboard.css?v=1.35">
+  <link rel="stylesheet" href="dashboard.css?v=1.36">
 
   <!-- PapaParse library -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 </head>
-
 
 <body>
   <!-- Tabs -->
@@ -21,11 +20,9 @@
       賽程列表
       <span class="arrow">▼</span>
     </div>
-
-    <div class="tab" data-tab="drops">落飛馬</div>
-    <div class="tab" data-tab="results">賽果</div>
+    <div class="tab" data-tab="drops" id="drops-tab">落飛馬</div>
+    <div class="tab" data-tab="results" id="results-tab">賽果</div>
   </div>
-
 
   <!-- Dropdown Panel for 賽程列表 -->
   <div id="race-dropdown">
@@ -33,34 +30,34 @@
       <span>賽事</span>
       <button id="close-dropdown">▲</button>
     </div>
-    <div id="race-courses">
-      <!-- Course + times will be inserted here -->
-    </div>
+    <div id="race-courses"></div>
   </div>
 
   <div class="container">
     <!-- Main Content -->
     <div id="main-content">
-      <!-- Wrapper for race details and sub-bar -->
+
+      <!-- Racecard Section -->
       <div id="race-details-wrapper">
-        <!-- Sub-bar for same-course races -->
         <div id="race-subbar-container"></div>
-
-
-        <!-- Race details table -->
         <div id="race-details"></div>
       </div>
 
-      <!-- Drop odds section -->
+      <!-- Drop Odds Section -->
       <div id="drop-odds" style="display:none;">
         <div id="drop-odds-container"></div>
       </div>
+
+      <!-- Results Section (same layout as racecard/drop) -->
+      <div id="result-section" style="display:none;">
+        <div id="result-subbar-container"></div>
+        <div id="result-details"></div>
+      </div>
+
     </div>
   </div>
-  <div id="result-output"></div>
 
   <script src="dashboard.js"></script>
 </body>
-
 
 </html>
