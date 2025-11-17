@@ -1,10 +1,38 @@
+// ===============================
+// 🔵 GLOBAL VARIABLES (must be at top)
+// ===============================
 let activeTab = localStorage.getItem('activeTab') || 'races';
 let masterJockeyMap = {};
 let masterTrainerMap = {};
 let raceNumberMap = {}; // Maps race keys to assigned numbers
 let raceFormData = {}; // Store race form data by horse name
 let scrollPosition = 0; // Store scroll position
-let raceFormVisibilityState = {}; // 添加全局变量来保存赛绩表可见性状态
+let raceFormVisibilityState = {}; // Save visibility state for each race form
+
+
+// ===============================
+// 🔵 DOM READY – TAB CLICK HANDLERS
+// ===============================
+document.addEventListener("DOMContentLoaded", function () {
+
+  // --- RACES TAB ---
+  document.getElementById("tab-races").addEventListener("click", function () {
+    showTab("races");
+    loadRacecard();
+  });
+
+  // --- ODDS DROP TAB ---
+  document.getElementById("tab-drop").addEventListener("click", function () {
+    showTab("drop");
+  });
+
+  // --- RESULT TAB (Your new code added here) ---
+  document.getElementById("tab-result").addEventListener("click", function () {
+    showTab("result");
+    loadResultCSV();
+  });
+
+});
 
 // --- No longer remove brackets, keep names exactly as in CSV ---
 function cleanName(name) {
@@ -1367,3 +1395,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('resize', updateRaceListVisibility);
 });
+
+function loadResultCSV() {
+  Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/RESULT.csv?cb=" + Date.now(), {
+    download: true,
+    encoding: "UTF-8",
+    complete: function (results) {
+      console.log("RESULT.csv loaded:", results.data.length, "rows");
+
+      const data = results.data;
+      if (!data || data.length === 0) {
+        console.error("RESULT.csv is empty or not found");
+        return;
+      }
+
+      let outputHTML = "<h2>Result Page Test Output</h2>";
+
+      // Start at row 1 (skip header)
+      for (let i = 1; i < data.length; i++) {
+        const row = data[i];
+
+        // Column K is index 10
+        const colK = row[10] || "";
+
+        outputHTML += `
+          <div class="result-row">
+            Row ${i}: <strong>${colK}</strong>
+          </div>
+        `;
+      }
+
+      // Push results to dashboard result page
+      const container = document.getElementById("result-output");
+      if (container) {
+        container.innerHTML = outputHTML;
+      } else {
+        console.warn("result-output container not found in HTML");
+      }
+    }
+  });
+}
