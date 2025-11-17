@@ -11,27 +11,48 @@ let raceFormVisibilityState = {};
 let showRaceForm = localStorage.getItem('showRaceForm') === 'true';
 
 
+// =========================================
+// TAB SWITCH FUNCTION — controls page views
+// =========================================
+function showTab(tab) {
+  // Save last opened tab
+  localStorage.setItem("activeTab", tab);
+
+  // Hide all 3 main sections
+  document.getElementById("race-details-wrapper").style.display = "none";
+  document.getElementById("drop-odds").style.display = "none";
+  document.getElementById("result-section").style.display = "none";
+
+  // Show selected section
+  if (tab === "races") {
+    document.getElementById("race-details-wrapper").style.display = "block";
+  }
+  if (tab === "drops") {
+    document.getElementById("drop-odds").style.display = "block";
+  }
+  if (tab === "results") {
+    document.getElementById("result-section").style.display = "block";
+  }
+
+  // Activate tab button
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.getElementById(tab + "-tab").classList.add("active");
+}
+
+
+
 // ===============================
 // 🔵 DOM READY – TAB CLICK HANDLERS
 // ===============================
 document.addEventListener("DOMContentLoaded", function () {
 
-  // --- RACES TAB ---
-  document.getElementById("tab-races").addEventListener("click", function () {
-    showTab("races");
-    loadRacecard();
+  document.getElementById("race-tab").addEventListener("click", () => showTab("races"));
+  document.getElementById("drops-tab").addEventListener("click", () => showTab("drops"));
+  document.getElementById("results-tab").addEventListener("click", () => {
+    showTab("results");
+    loadResultsCSV();   // load when clicking the tab
   });
 
-  // --- ODDS DROP TAB ---
-  document.getElementById("tab-drop").addEventListener("click", function () {
-    showTab("drop");
-  });
-
-  // --- RESULT TAB ---
-  document.getElementById("tab-result").addEventListener("click", function () {
-    showTab("result");
-    loadResultCSV();
-  });
 
   // ==============================
   // 🔵 Persistent Race Form Toggle
@@ -49,6 +70,9 @@ document.addEventListener("DOMContentLoaded", function () {
   // first-time load
   updateRaceFormDisplay();
 
+  // Load correct tab on startup ⭐⭐⭐ IMPORTANT FIX
+  showTab(activeTab);
+
   // expose toggle globally
   window.toggleRaceForm = function () {
     showRaceForm = !showRaceForm;
@@ -60,64 +84,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
 // =========================
 // RESULTS TAB FUNCTIONALITY
 // =========================
-function loadResultCSV() {
-  const resultDetails = document.getElementById("result-details");
-
-  // Clear previous content
-  resultDetails.innerHTML = '<div class="loading-race-form">Loading results...</div>';
-
-  // Fetch your CSV (adjust URL if needed)
-  const csvUrl = "https://ukhorse888uk.github.io/dashboard/csv/result.csv?cb=" + Date.now();
-
-  Papa.parse(csvUrl, {
+function loadResultsCSV() {
+  Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/result.csv?cb=" + Date.now(), {
     download: true,
-    header: true,
     skipEmptyLines: true,
     complete: function (results) {
-      const data = results.data;
-
-      if (!data || data.length === 0) {
-        resultDetails.innerHTML = '<div class="loading-race-form">No results found.</div>';
-        return;
-      }
-
-      // Create table
-      const table = document.createElement("table");
-      table.className = "race-table";
-
-      // Table header
-      const header = table.insertRow();
-      const headers = Object.keys(data[0]); // use CSV headers
-      headers.forEach(h => {
-        const th = document.createElement("th");
-        th.textContent = h;
-        header.appendChild(th);
-      });
-
-      // Table rows
-      data.forEach(row => {
-        const tr = table.insertRow();
-        headers.forEach(h => {
-          const td = tr.insertCell();
-          td.textContent = row[h] || ""; // fallback empty string
-        });
-      });
-
-      // Replace loading with table
-      resultDetails.innerHTML = "";
-      resultDetails.appendChild(table);
-    },
-    error: function (err) {
-      resultDetails.innerHTML = '<div class="loading-race-form">Error loading results CSV.</div>';
-      console.error("Error loading results CSV:", err);
+      displayResultTable(results.data);
     }
   });
 }
 
 
+function displayResultTable(data) {
+  if (!data || data.length === 0) {
+    document.getElementById("result-details").innerHTML =
+      "<div class='loading-race-form'>No result data found.</div>";
+    return;
+  }
+
+  let html = "<table class='result-table'>";
+
+  data.forEach(row => {
+    html += "<tr>";
+    row.forEach(col => html += `<td>${col}</td>`);
+    html += "</tr>";
+  });
+
+  html += "</table>";
+
+  document.getElementById("result-details").innerHTML = html;
+}
 
 
 
