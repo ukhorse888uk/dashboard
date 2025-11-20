@@ -159,61 +159,95 @@ function fixTime12(t) {
 // ----------------------
 // DATE FORMAT
 // ----------------------
-function formatDateDDMMYYYY(yyyymmdd) {
-  if (!yyyymmdd || yyyymmdd.length < 8) return yyyymmdd;
-  const y = yyyymmdd.substring(0, 4);
-  const m = yyyymmdd.substring(4, 6);
-  const d = yyyymmdd.substring(6, 8);
-  return `${d}/${m}/${y}`;
+// ----------------------
+// DATE FORMAT
+// ----------------------
+function formatRaceDate(csvDate) {
+  if (!csvDate) return "";
+
+  csvDate = csvDate.trim();
+  const parts = csvDate.includes("/") ? csvDate.split("/") : csvDate.split("-");
+
+  if (parts.length !== 3) return csvDate;
+
+  const day = parseInt(parts[2], 10);
+  const monthIndex = parseInt(parts[1], 10) - 1;
+  const year = parseInt(parts[0], 10); // make sure it's a number
+
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  let suffix = "th";
+  if (day === 1 || day === 21 || day === 31) suffix = "st";
+  else if (day === 2 || day === 22) suffix = "nd";
+  else if (day === 3 || day === 23) suffix = "rd";
+
+  return `${day}${suffix} ${months[monthIndex]} ${year}`;
 }
 
-// -------------------------------------------------
-// DECIMAL → FRACTION + NUMERIC OVERRIDE MAP
-// -------------------------------------------------
-// Put numeric keys you want to force. Numeric comparison is tolerant.
-const oddsOverrideMap = {
+
+
+
+
+// --- Fractional Odds Mapping (customizable) ---
+const fractionalOddsMap = {
   "6.5": "11/2",
   "17": "16/1",
-  "4.33": "10/3"
-  // add more if needed
+  "4.33": "10/3",
+  "1.5": "6/4",
+  "3/2": "6/4",
+  "2": "1/1",
+  "333/100": "10/3",
+  "500/100": "5/1",
+  "100/33": "3/1",
+  "250/100": "5/2",
+  "163/100": "13/8",
+  "3/2": "6/4",
+  "69/50": "11/8",
+  "47/25": "15/8",
+  "91/100": "10/11",
+  "73/100": "8/13",
+  "4/2": "7/4",
+  "3/2": "11/8",
+  "6/2": "11/4",
+  // add more overrides if needed
 };
 
 function decimalToFractional(raw) {
   if (raw === null || raw === undefined) return "";
-  let s = String(raw).trim();
 
+  let s = String(raw).trim();
   if (s === "") return "";
 
-  // If already a fraction like "11/2" or "6/4", just return it (don't convert)
-  if (s.includes("/")) return s;
-
-  // remove common formatting like commas
-  s = s.replace(/,/g, "");
+  // If already a fraction like "11/2" or "6/4", just return it
+  if (s.includes("/")) {
+    // Apply map if exists
+    return fractionalOddsMap[s] || s;
+  }
 
   // parse numeric value
   const d = parseFloat(s);
   if (isNaN(d)) return s; // not numeric — return original
 
-  // 1) check override map by numeric equivalence with tolerance
+  // Check override map first
   const EPS = 1e-6;
-  for (const k in oddsOverrideMap) {
+  for (const k in fractionalOddsMap) {
     const kn = parseFloat(k);
     if (!isNaN(kn) && Math.abs(kn - d) < EPS) {
-      return oddsOverrideMap[k];
+      return fractionalOddsMap[k];
     }
   }
 
-  // 2) convert decimal -> fractional (fractional odds = decimal - 1)
+  // Convert decimal -> fractional
   const fracVal = d - 1;
-  // handle integer fracVal quickly (e.g., 17 -> 16/1)
   if (Math.abs(fracVal - Math.round(fracVal)) < EPS) {
     return `${Math.round(fracVal)}/1`;
   }
 
-  // convert to integer ratio by scaling
+  // Convert to integer ratio
   let numerator = fracVal;
   let denominator = 1;
-  let limit = 12; // enough to capture common denominators like 2,3,4,8,16,3 etc.
+  let limit = 12;
   while (Math.abs(Math.round(numerator) - numerator) > 1e-9 && limit > 0) {
     numerator *= 10;
     denominator *= 10;
@@ -221,7 +255,7 @@ function decimalToFractional(raw) {
   }
   numerator = Math.round(numerator);
 
-  // gcd to simplify
+  // Simplify fraction
   const gcd = (a, b) => {
     a = Math.abs(a); b = Math.abs(b);
     while (b) {
@@ -232,11 +266,15 @@ function decimalToFractional(raw) {
     return a || 1;
   };
   const g = gcd(numerator, denominator);
-  numerator = numerator / g;
-  denominator = denominator / g;
+  numerator /= g;
+  denominator /= g;
 
-  return `${numerator}/${denominator}`;
+  const frac = `${numerator}/${denominator}`;
+
+  // Apply map if exists
+  return fractionalOddsMap[frac] || frac;
 }
+
 
 // ----------------------
 function lbsToStoneLb(lbs) {
@@ -370,7 +408,11 @@ function updateContentPlaceholder() {
 
   const first = rowsToShow[0];
 
-  const raceDate = first[2];
+  const raceDate = formatRaceDate(first[2]); // call the function here
+
+
+
+
   const fixedTime = fixTime12(first[3]);
   const courseName = first[1];
   const classDistanceGoingSurface = `${first[5]} | ${first[6]} | ${first[7]} | ${first[8]}`;

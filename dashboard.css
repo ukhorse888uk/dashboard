@@ -689,7 +689,7 @@ html {
   background: #fff;
 
   /* Small gap below top tabs */
-  margin-top: 10px;
+  margin-top: 0px;
   padding-top: 0;
 }
 
@@ -781,8 +781,9 @@ html {
   flex: 1;
 
   /* Gap below top tabs */
-  margin-top: 20px;
+  margin-top: 10px;
   padding-top: 0;
+
 }
 
 
@@ -790,12 +791,15 @@ html {
 /* RACE HEADER (no top spacing) */
 /* -------------------------------------------------- */
 .race-container {
-  margin-top: 0;
-  padding-top: 0;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  /* <-- add this */
+  padding-top: 10px;
 }
 
+
 .race-container>*:first-child {
-  margin-top: 0 !important;
+  margin-top: 10px !important;
   padding-top: 0 !important;
 }
 
@@ -804,10 +808,13 @@ html {
 /* RESULTS TABLE */
 /* -------------------------------------------------- */
 .results-table {
+  margin-top: 35px;
+  /* <-- add this */
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
 }
+
 
 .results-table th {
   background-color: #3274ad;
@@ -832,7 +839,7 @@ html {
 /* Keep first column width clean */
 .results-table th:nth-child(1),
 .results-table td:nth-child(1) {
-  width: 40px;
+  width: 80px;
   padding-left: 0px;
   font-weight: bold;
 }
@@ -850,27 +857,39 @@ html {
   width: 8px;
   /* ← adjust this to move number further right */
   display: inline-block;
+
 }
 
 /* Horse column */
 .results-table th:nth-child(2),
 .results-table td:nth-child(2) {
+  width: 280px;
+}
+
+/* Other columns auto-fill */
+.results-table th:nth-child(3),
+.results-table td:nth-child(3) {
+  width: 30px;
+}
+
+/* Other columns auto-fill */
+.results-table th:nth-child(4),
+.results-table td:nth-child(4) {
   width: 220px;
 }
 
 /* Other columns auto-fill */
-.results-table th:nth-child(n+3),
-.results-table td:nth-child(n+3) {
-  width: auto;
+.results-table th:nth-child(5),
+.results-table td:nth-child(5) {
+  width: 280px;
 }
-
 
 /* -------------------------------------------------- */
 /* EXTRA ELEMENTS */
 /* -------------------------------------------------- */
 .silk-icon {
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   vertical-align: middle;
   margin-right: 6px;
 }
