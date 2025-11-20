@@ -7,7 +7,7 @@ $sourceDropOdds    = "C:\Users\cheun\OneDrive\APIPROJ\Dashboard\csv\dropodds.csv
 $sourceDropOdds2   = "C:\Users\cheun\OneDrive\APIPROJ\Dashboard\csv\dropodds2.csv"
 $sourceRacecard2   = "C:\Users\cheun\OneDrive\APIPROJ\Dashboard\csv\racecard2.csv"
 $sourceRaceform2   = "C:\Users\cheun\OneDrive\APIPROJ\Dashboard\csv\raceform2.csv"
-$sourceResult      = "C:\Users\cheun\OneDrive\APIPROJ\Dashboard\csv\RESULT.csv"   # ⭐ NEW
+$sourceResult      = "C:\Users\cheun\OneDrive\APIPROJ\Dashboard\csv\result.csv"   # ⭐ NEW
 
 # Destination CSVs inside GitHub repo folder
 $destinationRacecard    = "$repoPath\csv\racecard.csv"
@@ -15,7 +15,7 @@ $destinationDropOdds    = "$repoPath\csv\dropodds.csv"
 $destinationDropOdds2   = "$repoPath\csv\dropodds2.csv"
 $destinationRacecard2   = "$repoPath\csv\racecard2.csv"
 $destinationRaceform2   = "$repoPath\csv\raceform2.csv"
-$destinationResult      = "$repoPath\csv\RESULT.csv"    # ⭐ NEW
+$destinationResult      = "$repoPath\csv\result.csv"    # ⭐ NEW
 
 # === Change directory to your GitHub repo root ===
 Set-Location $repoPath
@@ -37,7 +37,7 @@ git add "csv\dropodds.csv"
 git add "csv\dropodds2.csv"
 git add "csv\racecard2.csv"
 git add "csv\raceform2.csv"
-git add "csv\RESULT.csv"   # ⭐ NEW
+git add "csv\result.csv"   # ⭐ NEW
 
 # === Commit and push only if changes exist ===
 if (-not (git diff --cached --quiet)) {

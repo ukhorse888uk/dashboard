@@ -96,7 +96,7 @@ let allResultsRows = [];
 // LOAD RESULTS CSV
 // ----------------------
 function loadResultsCSV() {
-  Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/RESULT.csv?cb=" + Date.now(), {
+  Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/result.csv?cb=" + Date.now(), {
     download: true,
     skipEmptyLines: true,
     complete: function (results) {
