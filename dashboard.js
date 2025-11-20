@@ -170,10 +170,26 @@ function formatDateDDMMYYYY(yyyymmdd) {
 // ----------------------
 // CONVERT ODDS & WEIGHT
 // ----------------------
+// Custom odds table: decimal -> fraction
+const customOddsMap = {
+  1.50: "6/4",
+  1.33: "4/3",
+  2.00: "2/1",
+  3.00: "3/1",
+  // add more decimals here
+};
+
+
 function decimalToFractional(decimal) {
   if (!decimal || isNaN(decimal)) return decimal;
+
+  // Check custom table first
+  if (customOddsMap[decimal]) return customOddsMap[decimal];
+
+  // fallback to automatic calculation if not in table
   let d = parseFloat(decimal);
   if (d <= 1) return decimal;
+
   let frac = d - 1;
   let denom = 10000;
   let num = Math.round(frac * denom);
@@ -185,6 +201,7 @@ function decimalToFractional(decimal) {
 
   return `${num}/${denom}`;
 }
+
 
 function lbsToStoneLb(lbs) {
   if (!lbs || isNaN(lbs)) return lbs;
@@ -426,6 +443,12 @@ function updateContentPlaceholder() {
 loadResultsCSV();
 
 
+// ----------------------
+// AUTO REFRESH EVERY 5 MINUTES
+// ----------------------
+setInterval(() => {
+  loadResultsCSV();
+}, 5 * 60 * 1000);
 
 
 

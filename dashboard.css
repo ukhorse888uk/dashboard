@@ -677,10 +677,9 @@ html {
 }
 
 
-
-/* ---------------------- */
+/* -------------------------------------------------- */
 /* MAIN LAYOUT */
-/* ---------------------- */
+/* -------------------------------------------------- */
 .result-layout {
   display: flex;
   width: 100%;
@@ -688,63 +687,16 @@ html {
   border-radius: 6px;
   overflow: hidden;
   background: #fff;
+
+  /* Small gap below top tabs */
+  margin-top: 10px;
+  padding-top: 0;
 }
 
-/* ---------------------- */
-/* SIDE TABS (TIMES) */
-/* ---------------------- */
-.side-tabs {
-  width: 70px;
-  /* fixed width of side tabs */
-  background: #fff;
-  /* same as content */
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  /* flush with top tabs */
-  box-sizing: border-box;
-  border-right: none;
-  /* blend with content */
-}
 
-.side-tab {
-  padding: 8px 5px;
-  margin: 0;
-  /* no gaps */
-  background: #fff;
-  /* default white */
-  text-align: center;
-  cursor: pointer;
-  font-size: 13px;
-  transition: 0.2s;
-  border-bottom: 1px solid #bcd9e6;
-  /* separator line */
-}
-
-.side-tab:last-child {
-  border-bottom: none;
-}
-
-.side-tab:hover {
-  background: #f0f8ff;
-}
-
-.side-tab.active {
-  background: #c5e9ff;
-  /* light blue if selected */
-  font-weight: bold;
-}
-
-.side-tab {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  line-height: 1.2;
-}
-
-/* ---------------------- */
+/* -------------------------------------------------- */
 /* TOP TABS (COURSES) */
-/* ---------------------- */
+/* -------------------------------------------------- */
 .small-tabs-container {
   display: flex;
   flex-wrap: nowrap;
@@ -757,12 +709,10 @@ html {
 
 .small-tab {
   flex: 0 0 auto;
-  /* prevent shrinking */
   background: #f4f4f4;
   padding: 8px 12px;
   border: 1px solid #bcd9e6;
   border-bottom: 1px solid #fff;
-  /* attach to content */
   cursor: pointer;
   font-size: 13px;
   color: #333;
@@ -770,76 +720,102 @@ html {
   text-align: center;
   transition: 0.2s;
   margin: 0;
-  /* no gaps */
 }
 
-/* Only the LATEST tab has fixed width */
 .small-tab.latest-tab {
   width: 45px;
-  /* same as side tabs */
+  /* match side tabs */
 }
 
 .small-tab.active {
   background: #d0eaff;
-  /* light blue for active */
   font-weight: bold;
 }
 
 
+/* -------------------------------------------------- */
+/* SIDE TABS (TIMES) */
+/* -------------------------------------------------- */
+.side-tabs {
+  width: 70px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
 
-/* ---------------------- */
+  /* Gap between side tabs and table */
+  margin-right: 10px;
+}
+
+.side-tab {
+  padding: 8px 5px;
+  background: #fff;
+  text-align: center;
+  cursor: pointer;
+  font-size: 13px;
+  border-bottom: 1px solid #bcd9e6;
+  transition: 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+}
+
+.side-tab:last-child {
+  border-bottom: none;
+}
+
+.side-tab:hover {
+  background: #f0f8ff;
+}
+
+.side-tab.active {
+  background: #c5e9ff;
+  font-weight: bold;
+}
+
+
+/* -------------------------------------------------- */
 /* CONTENT AREA */
-/* ---------------------- */
+/* -------------------------------------------------- */
 .tab-display-area {
   flex: 1;
-  padding: 20px;
-  background: #fff;
-}
 
-/* Placeholder styling */
-.tab-placeholder {
-  color: #888;
-  font-size: 16px;
-  text-align: center;
-  margin-top: 50px;
+  /* Gap below top tabs */
+  margin-top: 20px;
+  padding-top: 0;
 }
 
 
+/* -------------------------------------------------- */
+/* RACE HEADER (no top spacing) */
+/* -------------------------------------------------- */
 .race-container {
-  margin-bottom: 10px;
+  margin-top: 0;
+  padding-top: 0;
 }
 
-.race-topline {
-  font-weight: bold;
-  font-size: 16px;
-  margin-bottom: 5px;
+.race-container>*:first-child {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 
-.race-details {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 10px;
-}
 
+/* -------------------------------------------------- */
+/* RESULTS TABLE */
+/* -------------------------------------------------- */
 .results-table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  /* keeps columns fixed */
 }
 
 .results-table th {
   background-color: #3274ad;
-  /* light blue, change to any color */
-  color: #ffffff;
-  /* text color */
+  color: #fff;
   font-size: 14px;
-  /* adjust text size */
   font-weight: bold;
-  /* make it bold */
-  text-align: left;
-  /* optional, left align headers */
   padding: 6px 8px;
+  text-align: left;
 }
 
 .results-table th,
@@ -847,105 +823,71 @@ html {
   text-align: left;
   word-wrap: break-word;
   overflow-wrap: break-word;
-
 }
 
-/* Column 1 (Pos) smaller */
+.results-table td {
+  text-align: left;
+}
+
+/* Keep first column width clean */
 .results-table th:nth-child(1),
 .results-table td:nth-child(1) {
   width: 40px;
-  /* adjust as needed */
+  padding-left: 0px;
+  font-weight: bold;
 }
 
-/* Column 2 (Horse + Silk) wider */
+/* Apply padding ONLY to the text inside the first column */
+.results-table th:nth-child(1),
+.results-table td:nth-child(1)>* {
+  padding-left: 10px;
+  /* adjust to 8 if you want more */
+
+}
+
+.results-table td:nth-child(1)::before {
+  content: "";
+  width: 8px;
+  /* ← adjust this to move number further right */
+  display: inline-block;
+}
+
+/* Horse column */
 .results-table th:nth-child(2),
 .results-table td:nth-child(2) {
   width: 220px;
-  /* adjust as needed */
 }
 
-/* Optional: other columns can auto-fill */
+/* Other columns auto-fill */
 .results-table th:nth-child(n+3),
 .results-table td:nth-child(n+3) {
   width: auto;
 }
 
 
+/* -------------------------------------------------- */
+/* EXTRA ELEMENTS */
+/* -------------------------------------------------- */
 .silk-icon {
   width: 40px;
-  /* bigger */
   height: 40px;
-  /* bigger */
   vertical-align: middle;
   margin-right: 6px;
 }
 
-
 .extra-info {
-  font-size: 14px;
+  font-size: 12px;
   color: #444;
   background: #f9f9f9;
   padding: 6px 10px;
   border-bottom: 1px solid #ddd;
-}
-
-.results-table td {
-  text-align: left;
-  /* all text left-aligned */
+  font-weight: normal;
 }
 
 .beaten-by {
   font-size: 16px;
   color: #555;
   margin-top: 2px;
-}
-
-/* Left-align race title and details */
-.race-topline,
-.race-details {
-  text-align: left;
-}
-
-/* Left-align table headers and cells */
-.results-table th,
-.results-table td {
-  text-align: left;
-}
-
-
-
-
-
-/* Race header: Date */
-.race-topline-date {
-  font-size: 25px;
-  /* adjust size */
-  color: #333333;
-  /* change text color */
-  font-weight: bold;
-  /* optional */
-  margin-bottom: 2px;
-  /* spacing below */
-  text-align: left;
-  /* keep left-aligned */
-}
-
-/* Race header: Time + Course */
-.race-topline-time-course {
-  font-size: 24px;
-  color: #767ddb;
-  font-weight: normal;
-  margin-bottom: 2px;
-  text-align: left;
-}
-
-/* Race header: Class | Distance | Going | Surface */
-.race-topline-details {
-  font-size: 20px;
-  color: #767ddb;
-  font-weight: normal;
-  margin-bottom: 8px;
-  text-align: left;
 }
 
 
