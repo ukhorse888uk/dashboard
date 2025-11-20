@@ -86,8 +86,8 @@ document.addEventListener("DOMContentLoaded", function () {
 // ----------------------
 // GLOBAL VARIABLES
 // ----------------------
-let allTimes = [];           // all race times {course, time}
-let courseToTimes = {};      // mapping of course -> times
+let allTimes = [];
+let courseToTimes = {};
 let selectedCourse = "LATEST";
 let selectedTime = "";
 let allResultsRows = [];
@@ -102,6 +102,7 @@ function loadResultsCSV() {
     complete: function (results) {
       const rows = results.data.slice(1).filter(r => r.length > 3);
       allResultsRows = rows;
+
       allTimes = [];
       courseToTimes = {};
 
@@ -137,7 +138,6 @@ function convertRaceTime(t) {
   let [h, m] = t.split(":");
   h = parseInt(h, 10);
   m = (m || "00").padStart(2, "0");
-
   if (h >= 0 && h <= 9) return `${h + 12}:${m}`;
   return `${h}:${m}`;
 }
@@ -152,12 +152,12 @@ function fixTime12(t) {
   if (!t || t.length < 4) return t;
   let [hh, mm] = t.split(":");
   hh = parseInt(hh, 10);
-  if (hh >= 0 && hh <= 9) hh += 12;
+  if (hh <= 9) hh += 12;
   return (hh < 10 ? "0" + hh : hh) + ":" + mm;
 }
 
 // ----------------------
-// FORMAT DATE
+// DATE FORMAT
 // ----------------------
 function formatDateDDMMYYYY(yyyymmdd) {
   if (!yyyymmdd || yyyymmdd.length < 8) return yyyymmdd;
@@ -167,42 +167,78 @@ function formatDateDDMMYYYY(yyyymmdd) {
   return `${d}/${m}/${y}`;
 }
 
-// ----------------------
-// CONVERT ODDS & WEIGHT
-// ----------------------
-// Custom odds table: decimal -> fraction
-const customOddsMap = {
-  1.50: "6/4",
-  1.33: "4/3",
-  2.00: "2/1",
-  3.00: "3/1",
-  // add more decimals here
+// -------------------------------------------------
+// DECIMAL → FRACTION + NUMERIC OVERRIDE MAP
+// -------------------------------------------------
+// Put numeric keys you want to force. Numeric comparison is tolerant.
+const oddsOverrideMap = {
+  "6.5": "11/2",
+  "17": "16/1",
+  "4.33": "10/3"
+  // add more if needed
 };
 
+function decimalToFractional(raw) {
+  if (raw === null || raw === undefined) return "";
+  let s = String(raw).trim();
 
-function decimalToFractional(decimal) {
-  if (!decimal || isNaN(decimal)) return decimal;
+  if (s === "") return "";
 
-  // Check custom table first
-  if (customOddsMap[decimal]) return customOddsMap[decimal];
+  // If already a fraction like "11/2" or "6/4", just return it (don't convert)
+  if (s.includes("/")) return s;
 
-  // fallback to automatic calculation if not in table
-  let d = parseFloat(decimal);
-  if (d <= 1) return decimal;
+  // remove common formatting like commas
+  s = s.replace(/,/g, "");
 
-  let frac = d - 1;
-  let denom = 10000;
-  let num = Math.round(frac * denom);
+  // parse numeric value
+  const d = parseFloat(s);
+  if (isNaN(d)) return s; // not numeric — return original
 
-  function gcd(a, b) { return b ? gcd(b, a % b) : a; }
-  let g = gcd(num, denom);
-  num /= g;
-  denom /= g;
+  // 1) check override map by numeric equivalence with tolerance
+  const EPS = 1e-6;
+  for (const k in oddsOverrideMap) {
+    const kn = parseFloat(k);
+    if (!isNaN(kn) && Math.abs(kn - d) < EPS) {
+      return oddsOverrideMap[k];
+    }
+  }
 
-  return `${num}/${denom}`;
+  // 2) convert decimal -> fractional (fractional odds = decimal - 1)
+  const fracVal = d - 1;
+  // handle integer fracVal quickly (e.g., 17 -> 16/1)
+  if (Math.abs(fracVal - Math.round(fracVal)) < EPS) {
+    return `${Math.round(fracVal)}/1`;
+  }
+
+  // convert to integer ratio by scaling
+  let numerator = fracVal;
+  let denominator = 1;
+  let limit = 12; // enough to capture common denominators like 2,3,4,8,16,3 etc.
+  while (Math.abs(Math.round(numerator) - numerator) > 1e-9 && limit > 0) {
+    numerator *= 10;
+    denominator *= 10;
+    limit--;
+  }
+  numerator = Math.round(numerator);
+
+  // gcd to simplify
+  const gcd = (a, b) => {
+    a = Math.abs(a); b = Math.abs(b);
+    while (b) {
+      const t = a % b;
+      a = b;
+      b = t;
+    }
+    return a || 1;
+  };
+  const g = gcd(numerator, denominator);
+  numerator = numerator / g;
+  denominator = denominator / g;
+
+  return `${numerator}/${denominator}`;
 }
 
-
+// ----------------------
 function lbsToStoneLb(lbs) {
   if (!lbs || isNaN(lbs)) return lbs;
   lbs = parseInt(lbs);
@@ -265,7 +301,7 @@ function buildTimeTabsForLatest() {
     }
   }
 
-  const latest3 = uniqueTimes.slice(0, 3);
+  const latest3 = uniqueTimes.slice(0, 10);
 
   latest3.forEach((time, i) => {
     const tab = document.createElement("div");
@@ -310,13 +346,16 @@ function buildTimeTabsForCourse(course) {
   updateContentPlaceholder();
 }
 
+// ----------------------
+// UPDATE CONTENT
+// ----------------------
 function updateContentPlaceholder() {
   const content = document.querySelector(".tab-display-area .tab-placeholder");
-  content.innerHTML = ""; // clear previous
+  content.innerHTML = "";
 
   const rowsToShow = allResultsRows.filter(r => {
-    const course = r[1]?.trim();  // Column B
-    const time = convertRaceTime(r[3]?.trim()); // Column D
+    const course = r[1]?.trim();
+    const time = convertRaceTime(r[3]?.trim());
     if (selectedCourse === "LATEST") return selectedTime === time;
     return course === selectedCourse && time === selectedTime;
   });
@@ -331,30 +370,16 @@ function updateContentPlaceholder() {
 
   const first = rowsToShow[0];
 
-  // --- HEADER LINES ---
-  const raceDate = first[2];        // Column C, as-is
+  const raceDate = first[2];
   const fixedTime = fixTime12(first[3]);
   const courseName = first[1];
   const classDistanceGoingSurface = `${first[5]} | ${first[6]} | ${first[7]} | ${first[8]}`;
 
-  const topLineDate = document.createElement("div");
-  topLineDate.className = "race-topline-date";
-  topLineDate.textContent = raceDate;
-  topLineDate.style.textAlign = "left";
-
-  const topLineTimeCourse = document.createElement("div");
-  topLineTimeCourse.className = "race-topline-time-course";
-  topLineTimeCourse.textContent = `${fixedTime} - ${courseName}`;
-  topLineTimeCourse.style.textAlign = "left";
-
-  const topLineDetails = document.createElement("div");
-  topLineDetails.className = "race-topline-details";
-  topLineDetails.textContent = classDistanceGoingSurface;
-  topLineDetails.style.textAlign = "left";
-
-  raceContainer.appendChild(topLineDate);
-  raceContainer.appendChild(topLineTimeCourse);
-  raceContainer.appendChild(topLineDetails);
+  raceContainer.innerHTML = `
+    <div class="race-topline-date">${raceDate}</div>
+    <div class="race-topline-time-course">${fixedTime} - ${courseName}</div>
+    <div class="race-topline-details">${classDistanceGoingSurface}</div>
+  `;
 
   // ------------------------------
   // RESULTS TABLE
@@ -362,17 +387,14 @@ function updateContentPlaceholder() {
   const table = document.createElement("table");
   table.className = "results-table";
 
-  // Header Row
   const header = document.createElement("tr");
   ["Pos", "Horse", "SP", "Jockey", "Trainer", "Age", "Wgt"].forEach(h => {
     const th = document.createElement("th");
     th.textContent = h;
-    th.style.textAlign = "left";  // keep left-aligned
     header.appendChild(th);
   });
   table.appendChild(header);
 
-  // HORSE ROWS
   rowsToShow.forEach((r, rowIndex) => {
     const tr = document.createElement("tr");
 
@@ -383,7 +405,10 @@ function updateContentPlaceholder() {
       : horseName;
 
     const draw = r[14] ? ` (${r[14]})` : "";
-    const fracOdds = decimalToFractional(r[13]);
+
+    // SP taken from column N (r[13]) then converted
+    const spRaw = r[13] ?? "";
+    const fracOdds = decimalToFractional(spRaw);
     const newWeight = lbsToStoneLb(r[17]);
 
     const tdMapping = [
@@ -398,15 +423,11 @@ function updateContentPlaceholder() {
 
     tdMapping.forEach((val, colIndex) => {
       const td = document.createElement("td");
-      td.style.textAlign = "left"; // keep all left
       td.innerHTML = val;
 
-      // Add "輸距離" under Pos for non-winners
       if (colIndex === 0 && rowIndex !== 0) {
         const beatenBy = r[18] || "";
-        if (beatenBy) {
-          td.innerHTML += `<div class="beaten-by"><small>輸距離: ${beatenBy}</small></div>`;
-        }
+        if (beatenBy) td.innerHTML += `<div class="beaten-by"><small>輸距離: ${beatenBy}</small></div>`;
       }
 
       tr.appendChild(td);
@@ -414,14 +435,11 @@ function updateContentPlaceholder() {
 
     table.appendChild(tr);
 
-    // Extra info: comment & finish time
     const infoRow = document.createElement("tr");
     const infoCell = document.createElement("td");
     infoCell.colSpan = 7;
-
     const comment = r[19] || "";
     const finish = r[20] || "";
-
     infoCell.innerHTML = `
       <div class="extra-info">
         ${comment ? `<div><b>Comment:</b> ${comment}</div>` : ""}
@@ -434,13 +452,18 @@ function updateContentPlaceholder() {
 
   raceContainer.appendChild(table);
   content.appendChild(raceContainer);
-}
 
+  // no separate post-fix needed because decimalToFractional handles fractions & overrides
+}
 
 // ----------------------
 // INITIAL LOAD
 // ----------------------
 loadResultsCSV();
+
+
+
+
 
 
 // ----------------------
