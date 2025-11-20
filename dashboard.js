@@ -83,41 +83,356 @@ document.addEventListener("DOMContentLoaded", function () {
 }); // END DOMContentLoaded
 
 
+// ----------------------
+// GLOBAL VARIABLES
+// ----------------------
+let allTimes = [];           // all race times {course, time}
+let courseToTimes = {};      // mapping of course -> times
+let selectedCourse = "LATEST";
+let selectedTime = "";
+let allResultsRows = [];
 
-
-// =========================
-// RESULTS TAB FUNCTIONALITY
-// =========================
+// ----------------------
+// LOAD RESULTS CSV
+// ----------------------
 function loadResultsCSV() {
-  Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/result.csv?cb=" + Date.now(), {
+  Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/RESULT.csv?cb=" + Date.now(), {
     download: true,
     skipEmptyLines: true,
     complete: function (results) {
-      displayResultTable(results.data);
+      const rows = results.data.slice(1).filter(r => r.length > 3);
+      allResultsRows = rows;
+      allTimes = [];
+      courseToTimes = {};
+
+      rows.forEach(r => {
+        const course = r[1]?.trim();
+        const t = r[3]?.trim();
+        if (!course || !t) return;
+
+        const converted = convertRaceTime(t);
+
+        allTimes.push({ course, time: converted });
+
+        if (!courseToTimes[course]) courseToTimes[course] = [];
+        if (!courseToTimes[course].includes(converted))
+          courseToTimes[course].push(converted);
+      });
+
+      Object.keys(courseToTimes).forEach(c => {
+        courseToTimes[c].sort(sortTimes);
+      });
+
+      buildCourseTabs(["LATEST", ...Object.keys(courseToTimes)]);
+      buildTimeTabsForLatest();
     }
   });
 }
 
+// ----------------------
+// TIME CONVERSION
+// ----------------------
+function convertRaceTime(t) {
+  if (!t || !t.includes(":")) return t;
+  let [h, m] = t.split(":");
+  h = parseInt(h, 10);
+  m = (m || "00").padStart(2, "0");
 
-function displayResultTable(data) {
-  if (!data || data.length === 0) {
-    document.getElementById("result-details").innerHTML =
-      "<div class='loading-race-form'>No result data found.</div>";
+  if (h >= 0 && h <= 9) return `${h + 12}:${m}`;
+  return `${h}:${m}`;
+}
+
+function sortTimes(a, b) {
+  const [ha, ma] = a.split(":").map(Number);
+  const [hb, mb] = b.split(":").map(Number);
+  return ha === hb ? ma - mb : ha - hb;
+}
+
+function fixTime12(t) {
+  if (!t || t.length < 4) return t;
+  let [hh, mm] = t.split(":");
+  hh = parseInt(hh, 10);
+  if (hh >= 0 && hh <= 9) hh += 12;
+  return (hh < 10 ? "0" + hh : hh) + ":" + mm;
+}
+
+// ----------------------
+// FORMAT DATE
+// ----------------------
+function formatDateDDMMYYYY(yyyymmdd) {
+  if (!yyyymmdd || yyyymmdd.length < 8) return yyyymmdd;
+  const y = yyyymmdd.substring(0, 4);
+  const m = yyyymmdd.substring(4, 6);
+  const d = yyyymmdd.substring(6, 8);
+  return `${d}/${m}/${y}`;
+}
+
+// ----------------------
+// CONVERT ODDS & WEIGHT
+// ----------------------
+function decimalToFractional(decimal) {
+  if (!decimal || isNaN(decimal)) return decimal;
+  let d = parseFloat(decimal);
+  if (d <= 1) return decimal;
+  let frac = d - 1;
+  let denom = 10000;
+  let num = Math.round(frac * denom);
+
+  function gcd(a, b) { return b ? gcd(b, a % b) : a; }
+  let g = gcd(num, denom);
+  num /= g;
+  denom /= g;
+
+  return `${num}/${denom}`;
+}
+
+function lbsToStoneLb(lbs) {
+  if (!lbs || isNaN(lbs)) return lbs;
+  lbs = parseInt(lbs);
+  let stone = Math.floor(lbs / 14);
+  let remaining = lbs % 14;
+  return `${stone}st ${remaining}lb`;
+}
+
+// ----------------------
+// BUILD TOP TABS
+// ----------------------
+function buildCourseTabs(list) {
+  const container = document.getElementById("smallTabsContainer");
+  container.innerHTML = "";
+
+  list.forEach(course => {
+    const tab = document.createElement("div");
+    tab.className = "small-tab" + (course === "LATEST" ? " latest-tab active" : "");
+    tab.textContent = course;
+
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".small-tab").forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+
+      selectedCourse = course;
+      if (course === "LATEST") buildTimeTabsForLatest();
+      else buildTimeTabsForCourse(course);
+    });
+
+    container.appendChild(tab);
+  });
+}
+
+function buildTimeTabsForLatest() {
+  const container = document.getElementById("sideTabsContainer");
+  container.innerHTML = "";
+
+  const now = new Date();
+  const nowHM = now.getHours() * 100 + now.getMinutes();
+
+  let finished = allTimes.filter(t => {
+    const [h, m] = t.time.split(":").map(Number);
+    return (h * 100 + m) < nowHM;
+  });
+
+  if (finished.length === 0) finished = [...allTimes];
+
+  finished.sort((a, b) => {
+    const [ha, ma] = a.time.split(":").map(Number);
+    const [hb, mb] = b.time.split(":").map(Number);
+    return (hb * 100 + mb) - (ha * 100 + ma);
+  });
+
+  const uniqueTimes = [];
+  const seen = new Set();
+  for (const item of finished) {
+    if (!seen.has(item.time)) {
+      uniqueTimes.push(item.time);
+      seen.add(item.time);
+    }
+  }
+
+  const latest3 = uniqueTimes.slice(0, 3);
+
+  latest3.forEach((time, i) => {
+    const tab = document.createElement("div");
+    tab.className = "side-tab" + (i === 0 ? " active" : "");
+    tab.textContent = time;
+    if (i === 0) selectedTime = time;
+
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".side-tab").forEach(s => s.classList.remove("active"));
+      tab.classList.add("active");
+      selectedTime = time;
+      updateContentPlaceholder();
+    });
+
+    container.appendChild(tab);
+  });
+
+  updateContentPlaceholder();
+}
+
+function buildTimeTabsForCourse(course) {
+  const container = document.getElementById("sideTabsContainer");
+  container.innerHTML = "";
+
+  const list = courseToTimes[course] || [];
+  list.forEach((time, index) => {
+    const tab = document.createElement("div");
+    tab.className = "side-tab" + (index === 0 ? " active" : "");
+    tab.textContent = time;
+    if (index === 0) selectedTime = time;
+
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".side-tab").forEach(s => s.classList.remove("active"));
+      tab.classList.add("active");
+      selectedTime = time;
+      updateContentPlaceholder();
+    });
+
+    container.appendChild(tab);
+  });
+
+  updateContentPlaceholder();
+}
+
+function updateContentPlaceholder() {
+  const content = document.querySelector(".tab-display-area .tab-placeholder");
+  content.innerHTML = ""; // clear previous
+
+  const rowsToShow = allResultsRows.filter(r => {
+    const course = r[1]?.trim();  // Column B
+    const time = convertRaceTime(r[3]?.trim()); // Column D
+    if (selectedCourse === "LATEST") return selectedTime === time;
+    return course === selectedCourse && time === selectedTime;
+  });
+
+  if (rowsToShow.length === 0) {
+    content.textContent = "No results available.";
     return;
   }
 
-  let html = "<table class='result-table'>";
+  const raceContainer = document.createElement("div");
+  raceContainer.className = "race-container";
 
-  data.forEach(row => {
-    html += "<tr>";
-    row.forEach(col => html += `<td>${col}</td>`);
-    html += "</tr>";
+  const first = rowsToShow[0];
+
+  // --- HEADER LINES ---
+  const raceDate = first[2];        // Column C, as-is
+  const fixedTime = fixTime12(first[3]);
+  const courseName = first[1];
+  const classDistanceGoingSurface = `${first[5]} | ${first[6]} | ${first[7]} | ${first[8]}`;
+
+  const topLineDate = document.createElement("div");
+  topLineDate.className = "race-topline-date";
+  topLineDate.textContent = raceDate;
+  topLineDate.style.textAlign = "left";
+
+  const topLineTimeCourse = document.createElement("div");
+  topLineTimeCourse.className = "race-topline-time-course";
+  topLineTimeCourse.textContent = `${fixedTime} - ${courseName}`;
+  topLineTimeCourse.style.textAlign = "left";
+
+  const topLineDetails = document.createElement("div");
+  topLineDetails.className = "race-topline-details";
+  topLineDetails.textContent = classDistanceGoingSurface;
+  topLineDetails.style.textAlign = "left";
+
+  raceContainer.appendChild(topLineDate);
+  raceContainer.appendChild(topLineTimeCourse);
+  raceContainer.appendChild(topLineDetails);
+
+  // ------------------------------
+  // RESULTS TABLE
+  // ------------------------------
+  const table = document.createElement("table");
+  table.className = "results-table";
+
+  // Header Row
+  const header = document.createElement("tr");
+  ["Pos", "Horse", "SP", "Jockey", "Trainer", "Age", "Wgt"].forEach(h => {
+    const th = document.createElement("th");
+    th.textContent = h;
+    th.style.textAlign = "left";  // keep left-aligned
+    header.appendChild(th);
+  });
+  table.appendChild(header);
+
+  // HORSE ROWS
+  rowsToShow.forEach((r, rowIndex) => {
+    const tr = document.createElement("tr");
+
+    const silkUrl = r[21];
+    const horseName = r[10];
+    const horseWithSilk = silkUrl
+      ? `<img src="${silkUrl}" class="silk-icon" onerror="this.style.display='none'"> ${horseName}`
+      : horseName;
+
+    const draw = r[14] ? ` (${r[14]})` : "";
+    const fracOdds = decimalToFractional(r[13]);
+    const newWeight = lbsToStoneLb(r[17]);
+
+    const tdMapping = [
+      r[12] + draw,
+      horseWithSilk,
+      fracOdds,
+      r[15],
+      r[16],
+      r[11],
+      newWeight
+    ];
+
+    tdMapping.forEach((val, colIndex) => {
+      const td = document.createElement("td");
+      td.style.textAlign = "left"; // keep all left
+      td.innerHTML = val;
+
+      // Add "輸距離" under Pos for non-winners
+      if (colIndex === 0 && rowIndex !== 0) {
+        const beatenBy = r[18] || "";
+        if (beatenBy) {
+          td.innerHTML += `<div class="beaten-by"><small>輸距離: ${beatenBy}</small></div>`;
+        }
+      }
+
+      tr.appendChild(td);
+    });
+
+    table.appendChild(tr);
+
+    // Extra info: comment & finish time
+    const infoRow = document.createElement("tr");
+    const infoCell = document.createElement("td");
+    infoCell.colSpan = 7;
+
+    const comment = r[19] || "";
+    const finish = r[20] || "";
+
+    infoCell.innerHTML = `
+      <div class="extra-info">
+        ${comment ? `<div><b>Comment:</b> ${comment}</div>` : ""}
+        ${finish ? `<div><b>Finish Time:</b> ${finish}</div>` : ""}
+      </div>
+    `;
+    infoRow.appendChild(infoCell);
+    table.appendChild(infoRow);
   });
 
-  html += "</table>";
-
-  document.getElementById("result-details").innerHTML = html;
+  raceContainer.appendChild(table);
+  content.appendChild(raceContainer);
 }
+
+
+// ----------------------
+// INITIAL LOAD
+// ----------------------
+loadResultsCSV();
+
+
+
+
+
+
+
+
+
 
 
 
