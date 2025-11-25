@@ -279,42 +279,44 @@ function formatRaceDate(csvDate) {
 }
 
 const fractionalOddsMap = new Map([
-  // Decimal odds mappings
-  ["1.91", "10/11"], ["2.62", "13/8"], ["1.44", "4/9"], ["2.50", "6/4"], ["1.53", "8/15"], ["6.5", "11/2"],
-  ["17", "16/1"], ["4.33", "10/3"], ["1.5", "6/4"], ["2", "1/1"],
+  // Whole number decimal odds
+  ["2", "1/1"], ["3", "2/1"], ["4", "3/1"], ["5", "4/1"], ["6", "5/1"],
+  ["7", "6/1"], ["8", "7/1"], ["9", "8/1"], ["10", "9/1"], ["11", "10/1"],
+  ["12", "11/1"], ["13", "12/1"], ["14", "13/1"], ["15", "14/1"], ["16", "15/1"],
+  ["17", "16/1"], ["18", "17/1"], ["19", "18/1"], ["20", "19/1"],
+
+  // Other decimal odds
+  ["1.91", "10/11"], ["2.62", "13/8"], ["1.44", "4/9"], ["2.50", "6/4"], ["1.53", "8/15"],
+  ["6.5", "11/2"], ["2.38", "11/8"], ["1.83", "5/6"], ["4.33", "10/3"], ["1.5", "6/4"],
 
   // Fractional string mappings
   ["333/100", "10/3"], ["500/100", "5/1"], ["100/33", "3/1"], ["250/100", "5/2"],
   ["163/100", "13/8"], ["3/2", "6/4"], ["69/50", "11/8"], ["47/25", "15/8"],
-  ["91/100", "10/11"], ["73/100", "8/13"], ["81/50", "13/8"], ["4/2", "7/4"],
-  ["6/2", "11/4"]
+  ["91/100", "10/11"], ["73/100", "8/13"], ["81/50", "13/8"], ["4/2", "2/1"],
+  ["6/2", "3/1"]
 ]);
-
 const decimalToFractional = memoize(function decimalToFractional(raw) {
   if (raw === null || raw === undefined || raw === "") return "-";
 
   let s = String(raw).trim();
   if (s === "" || s === "NaN") return "-";
 
-  // First, check if it's a decimal number that should be converted to fractional
   const d = parseFloat(s);
   if (isNaN(d)) return "-";
 
-  // For large decimal odds like 81.00, convert directly to fractional
-  if (d >= 10) {
-    const fracVal = d - 1;
-    if (Math.abs(fracVal - Math.round(fracVal)) < 1e-6) {
-      return `${Math.round(fracVal)}/1`;
-    }
+  // FIRST: Handle whole number odds directly (like 4.00, 5.00, 6.00, etc.)
+  // Check if it's essentially a whole number (accounts for floating point precision)
+  if (Math.abs(d - Math.round(d)) < 1e-6 && d >= 2) {
+    return `${Math.round(d) - 1}/1`;  // 4.00 → 3/1, 5.00 → 4/1, 6.00 → 5/1, etc.
   }
 
-  // Then check if it's already in the map (for specific fractional conversions)
+  // THEN check the map for specific decimal matches
   if (fractionalOddsMap.has(s)) return fractionalOddsMap.get(s);
 
   // Handle fractional strings directly
   if (s.includes("/")) return s;
 
-  // Check mapped values with tolerance (for close decimal matches)
+  // Check mapped values with tolerance
   const EPS = 1e-6;
   for (const [k, v] of fractionalOddsMap) {
     const kn = parseFloat(k);
@@ -1141,25 +1143,73 @@ function displayRace(raceRows, raceKey) {
   const typeMap = { "Hurdle": "跨欄", "Flat": "平路", "Chase": "追逐赛" };
 
   const fractionalOddsMap = {
-    // Decimal odds mappings
-    "1.91": "10/11", "2.62": "13/8", "1.44": "4/9", "2.50": "6/4", "1.53": "8/15", "6.5": "11/2",
-    "17": "16/1", "4.33": "10/3", "1.5": "6/4", "2": "1/1",
+    // Whole number decimal odds
+    "2": "1/1", "3": "2/1", "4": "3/1", "5": "4/1", "6": "5/1",
+    "7": "6/1", "8": "7/1", "9": "8/1", "10": "9/1", "11": "10/1",
+    "12": "11/1", "13": "12/1", "14": "13/1", "15": "14/1", "16": "15/1",
+    "17": "16/1", "18": "17/1", "19": "18/1", "20": "19/1",
+
+    // Other decimal odds - ADD MISSING ONES
+    "1.91": "10/11", "2.62": "13/8", "1.44": "4/9", "2.50": "6/4", "1.53": "8/15",
+    "6.5": "11/2", "2.38": "11/8", "1.83": "5/6", "4.33": "10/3", "1.5": "6/4",
+    "3.75": "11/4", "3.5": "5/2", "3.25": "9/4", "5.5": "9/2", "6.5": "11/2", "7.5": "13/2", "8.5": "15/2", "9.5": "17/2", "2.75": "7/4", "1.67": "4/6",// ← ADD THESE
 
     // Fractional string mappings
     "333/100": "10/3", "500/100": "5/1", "100/33": "3/1", "250/100": "5/2",
     "163/100": "13/8", "3/2": "6/4", "69/50": "11/8", "47/25": "15/8",
-    "91/100": "10/11", "73/100": "8/13", "81/50": "13/8", "4/2": "7/4",
-    "6/2": "11/4"
+    "91/100": "10/11", "73/100": "8/13", "81/50": "13/8", "4/2": "2/1",
+    "6/2": "3/1"
   };
 
   function mapFractionalOdds(fractionStr) {
     if (!fractionStr) return fractionStr;
-    return fractionalOddsMap[fractionStr] || fractionStr;
-  }
 
-  function mapFractionalOdds(fractionStr) {
-    if (!fractionStr) return fractionStr;
-    return fractionalOddsMap[fractionStr] || fractionStr;
+    // FIRST: Check if it's already a fractional string with a slash
+    if (fractionStr.includes("/")) {
+      return fractionalOddsMap[fractionStr] || fractionStr;
+    }
+
+    // SECOND: Check if it's a decimal number in our map
+    if (fractionalOddsMap[fractionStr]) {
+      return fractionalOddsMap[fractionStr];
+    }
+
+    // THIRD: If it's a decimal not in our map, convert it automatically
+    const decimalValue = parseFloat(fractionStr);
+    if (!isNaN(decimalValue) && decimalValue > 1) {
+      // Use the same logic as drop odds for automatic conversion
+      const fracVal = decimalValue - 1;
+
+      // For common fractions, try to find a nice representation
+      const commonFractions = [
+        { decimal: 0.25, fraction: "1/4" }, { decimal: 0.33, fraction: "1/3" },
+        { decimal: 0.5, fraction: "1/2" }, { decimal: 0.67, fraction: "2/3" },
+        { decimal: 0.75, fraction: "3/4" }, { decimal: 1.25, fraction: "5/4" },
+        { decimal: 1.33, fraction: "4/3" }, { decimal: 1.5, fraction: "6/4" },
+        { decimal: 1.67, fraction: "5/3" }, { decimal: 1.75, fraction: "7/4" },
+        { decimal: 2.25, fraction: "9/4" }, { decimal: 2.5, fraction: "5/2" },
+        { decimal: 2.75, fraction: "11/4" }, { decimal: 3.5, fraction: "5/2" },
+        { decimal: 3.75, fraction: "11/4" }, { decimal: 4.5, fraction: "7/2" },
+        { decimal: 8.5, fraction: "15/2" }, { decimal: 4.5, fraction: "7/2" }
+      ];
+
+      for (const common of commonFractions) {
+        if (Math.abs(fracVal - common.decimal) < 0.1) {
+          return common.fraction;
+        }
+      }
+
+      // Fallback: return as decimal-1/1 for whole numbers
+      if (Math.abs(fracVal - Math.round(fracVal)) < 1e-6) {
+        return `${Math.round(fracVal)}/1`;
+      }
+
+      // Final fallback: return original
+      return fractionStr;
+    }
+
+    // Finally, return the original if no mapping found
+    return fractionStr;
   }
 
   const raceTime = raceData[2] || '';
@@ -1320,12 +1370,11 @@ function displayRace(raceRows, raceKey) {
   <div>地區: ${region}</div>
 `));
 
-    const lastnightDecimal = parseFloat(lastnightOdds) - 1;
-    horseRow.appendChild(createTd(mapFractionalOdds(decimalToFraction(lastnightDecimal))));
+    const lastnightFraction = mapFractionalOdds(lastnightOdds);
+    horseRow.appendChild(createTd(lastnightFraction));
 
-    const nowDecimal = parseFloat(nowOdds) - 1;
-    const nowOddsFraction = mapFractionalOdds(decimalToFraction(nowDecimal));
-    horseRow.appendChild(createTd(`<span class="red-odd">${nowOddsFraction}</span>`));
+    const nowFraction = mapFractionalOdds(nowOdds);
+    horseRow.appendChild(createTd(`<span class="red-odd">${nowFraction}</span>`));
 
     table.appendChild(horseRow);
 
@@ -1725,7 +1774,7 @@ function processDropOddsData(data, scrollPosition) {
       if (!origFracVal || !nowFracVal) return false;
 
       const pctDrop = ((origFracVal - nowFracVal) / origFracVal) * 100;
-      return pctDrop >= 50;
+      return pctDrop >= 48;
     })
     .sort((a, b) => a['Time'].localeCompare(b['Time'], undefined, { numeric: true }));
 
