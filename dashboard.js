@@ -1020,7 +1020,8 @@ function createRaceFormTable(horseName) {
   html += '<th>日期</th><th>賽事資料</th><th>重量</th><th>賽果（1L = 1個馬位）</th><th>騎師</th><th>OR</th><th>TS</th><th>RPR</th>';
   html += '</tr></thead><tbody>';
 
-  formData.slice(0, 6).forEach(race => {
+  // REMOVE THE .slice(0, 6) LIMIT - show ALL races
+  formData.forEach(race => {
     let formattedDate = '';
     if (race.date) {
       const parts = race.date.split('/');
@@ -1118,6 +1119,12 @@ function displayRace(raceRows, raceKey) {
     return;
   }
 
+  // ADD THIS PERFORMANCE CHECK RIGHT HERE:
+  if (window.raceFormDataLoading && !window.raceFormDataLoaded) {
+    console.log('⏳ Race form data still loading, please wait...');
+    // You could show a loading indicator here
+  }
+
   // Clear and show loading immediately
   raceDetails.innerHTML = '<div class="loading"></div>';
   raceDetails.style.display = 'block';
@@ -1151,8 +1158,8 @@ function displayRace(raceRows, raceKey) {
 
     // Other decimal odds - ADD MISSING ONES
     "1.91": "10/11", "2.62": "13/8", "1.44": "4/9", "2.50": "6/4", "1.53": "8/15",
-    "6.5": "11/2", "2.38": "11/8", "1.83": "5/6", "4.33": "10/3", "1.5": "6/4",
-    "3.75": "11/4", "3.5": "5/2", "3.25": "9/4", "5.5": "9/2", "6.5": "11/2", "7.5": "13/2", "8.5": "15/2", "9.5": "17/2", "2.75": "7/4", "1.67": "4/6",// ← ADD THESE
+    "6.5": "11/2", "2.38": "11/8", "1.83": "5/6", "4.33": "10/3", "1.5": "6/4", "2.63": "13/8",
+    "3.75": "11/4", "3.5": "5/2", "3.25": "9/4", "5.5": "9/2", "6.5": "11/2", "7.5": "13/2", "8.5": "15/2", "9.5": "17/2", "2.75": "7/4", "1.67": "4/6",
 
     // Fractional string mappings
     "333/100": "10/3", "500/100": "5/1", "100/33": "3/1", "250/100": "5/2",
@@ -1174,38 +1181,77 @@ function displayRace(raceRows, raceKey) {
       return fractionalOddsMap[fractionStr];
     }
 
-    // THIRD: If it's a decimal not in our map, convert it automatically
+    // THIRD: If it's a decimal not in our map, convert it properly to fractional
     const decimalValue = parseFloat(fractionStr);
     if (!isNaN(decimalValue) && decimalValue > 1) {
-      // Use the same logic as drop odds for automatic conversion
+      // Convert decimal to fractional
       const fracVal = decimalValue - 1;
 
-      // For common fractions, try to find a nice representation
+      // Enhanced common fractions list that includes all your mappings
       const commonFractions = [
-        { decimal: 0.25, fraction: "1/4" }, { decimal: 0.33, fraction: "1/3" },
-        { decimal: 0.5, fraction: "1/2" }, { decimal: 0.67, fraction: "2/3" },
-        { decimal: 0.75, fraction: "3/4" }, { decimal: 1.25, fraction: "5/4" },
-        { decimal: 1.33, fraction: "4/3" }, { decimal: 1.5, fraction: "6/4" },
-        { decimal: 1.67, fraction: "5/3" }, { decimal: 1.75, fraction: "7/4" },
-        { decimal: 2.25, fraction: "9/4" }, { decimal: 2.5, fraction: "5/2" },
-        { decimal: 2.75, fraction: "11/4" }, { decimal: 3.5, fraction: "5/2" },
-        { decimal: 3.75, fraction: "11/4" }, { decimal: 4.5, fraction: "7/2" },
-        { decimal: 8.5, fraction: "15/2" }, { decimal: 4.5, fraction: "7/2" }
+        { decimal: 0.09, fraction: "1/11" }, { decimal: 0.1, fraction: "1/10" },
+        { decimal: 0.11, fraction: "1/9" }, { decimal: 0.125, fraction: "1/8" },
+        { decimal: 0.14, fraction: "1/7" }, { decimal: 0.166, fraction: "1/6" },
+        { decimal: 0.2, fraction: "1/5" }, { decimal: 0.25, fraction: "1/4" },
+        { decimal: 0.33, fraction: "1/3" }, { decimal: 0.375, fraction: "3/8" },
+        { decimal: 0.4, fraction: "2/5" }, { decimal: 0.44, fraction: "4/9" },
+        { decimal: 0.5, fraction: "1/2" }, { decimal: 0.53, fraction: "8/15" },
+        { decimal: 0.57, fraction: "4/7" }, { decimal: 0.6, fraction: "3/5" },
+        { decimal: 0.625, fraction: "5/8" }, { decimal: 0.67, fraction: "2/3" },
+        { decimal: 0.75, fraction: "3/4" }, { decimal: 0.8, fraction: "4/5" },
+        { decimal: 0.83, fraction: "5/6" }, { decimal: 0.875, fraction: "7/8" },
+        { decimal: 0.91, fraction: "10/11" }, { decimal: 0.93, fraction: "8/13" },
+        { decimal: 1.0, fraction: "1/1" }, { decimal: 1.25, fraction: "5/4" },
+        { decimal: 1.33, fraction: "4/3" }, { decimal: 1.38, fraction: "11/8" },
+        { decimal: 1.5, fraction: "3/2" }, { decimal: 1.62, fraction: "13/8" },
+        { decimal: 1.63, fraction: "13/8" }, { decimal: 1.67, fraction: "5/3" },
+        { decimal: 1.75, fraction: "7/4" }, { decimal: 2.0, fraction: "2/1" },
+        { decimal: 2.25, fraction: "9/4" }, { decimal: 2.38, fraction: "11/8" },
+        { decimal: 2.5, fraction: "5/2" }, { decimal: 2.62, fraction: "13/8" },
+        { decimal: 2.63, fraction: "13/8" }, { decimal: 2.75, fraction: "11/4" },
+        { decimal: 3.0, fraction: "3/1" }, { decimal: 3.25, fraction: "13/4" },
+        { decimal: 3.33, fraction: "10/3" }, { decimal: 3.5, fraction: "7/2" },
+        { decimal: 3.75, fraction: "15/4" }, { decimal: 4.0, fraction: "4/1" },
+        { decimal: 4.33, fraction: "10/3" }, { decimal: 4.5, fraction: "9/2" },
+        { decimal: 5.0, fraction: "5/1" }, { decimal: 5.5, fraction: "11/2" },
+        { decimal: 6.0, fraction: "6/1" }, { decimal: 6.5, fraction: "13/2" },
+        { decimal: 7.0, fraction: "7/1" }, { decimal: 7.5, fraction: "15/2" },
+        { decimal: 8.0, fraction: "8/1" }, { decimal: 8.5, fraction: "17/2" },
+        { decimal: 9.0, fraction: "9/1" }, { decimal: 9.5, fraction: "19/2" },
+        { decimal: 10.0, fraction: "10/1" }
       ];
 
+      // Find the closest common fraction
+      let closestFraction = null;
+      let smallestDiff = Infinity;
+
       for (const common of commonFractions) {
-        if (Math.abs(fracVal - common.decimal) < 0.1) {
-          return common.fraction;
+        const diff = Math.abs(fracVal - common.decimal);
+        if (diff < smallestDiff) {
+          smallestDiff = diff;
+          closestFraction = common.fraction;
         }
       }
 
-      // Fallback: return as decimal-1/1 for whole numbers
+      // If we found a close match (within reasonable tolerance)
+      if (closestFraction && smallestDiff < 0.1) {
+        return closestFraction;
+      }
+
+      // Fallback: try to represent as simplified fraction
+      const tolerance = 0.01;
+      for (let denom = 1; denom <= 100; denom++) {
+        const numerator = Math.round(fracVal * denom);
+        const actualValue = numerator / denom;
+        if (Math.abs(fracVal - actualValue) < tolerance) {
+          return `${numerator}/${denom}`;
+        }
+      }
+
+      // Final fallback: return as decimal-1/1 for whole numbers
       if (Math.abs(fracVal - Math.round(fracVal)) < 1e-6) {
         return `${Math.round(fracVal)}/1`;
       }
-
-      // Final fallback: return original
-      return fractionStr;
     }
 
     // Finally, return the original if no mapping found
@@ -1272,6 +1318,122 @@ function displayRace(raceRows, raceKey) {
 
   raceDetails.appendChild(raceHeader);
 
+  // Create race form slider with 3 positions
+  const formToggleContainer = document.createElement('div');
+  formToggleContainer.className = 'form-toggle-container';
+  formToggleContainer.innerHTML = `
+    <div class="form-toggle-label">顯示賽績表</div>
+    <div class="slider-container">
+      <div class="slider-labels">
+        <span class="slider-label">不顯示戰績</span>
+        <span class="slider-label">顯示6場</span>
+        <span class="slider-label">顯示所有</span>
+      </div>
+      <div class="slider-track">
+        <input type="range" id="race-form-slider" class="form-slider" min="1" max="3" value="1">
+        <div class="slider-positions">
+          <span class="slider-position"></span>
+          <span class="slider-position"></span>
+          <span class="slider-position"></span>
+        </div>
+      </div>
+    </div>
+  `;
+  raceDetails.appendChild(formToggleContainer);
+
+  // Load saved slider state from localStorage
+  const savedSliderState = localStorage.getItem('raceFormSlider');
+  const slider = document.getElementById('race-form-slider');
+  if (savedSliderState) {
+    slider.value = savedSliderState;
+  }
+
+  // Function to update race form display based on slider value
+  function updateRaceFormDisplay() {
+    const value = parseInt(slider.value);
+    const raceFormTables = document.querySelectorAll('.race-form-table');
+
+    raceFormTables.forEach(table => {
+      if (value === 1) {
+        // Position 1: Hide all race forms
+        table.style.display = 'none';
+      } else if (value === 2) {
+        // Position 2: Show max 6 races
+        table.style.display = 'table';
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach((row, index) => {
+          row.style.display = index < 6 ? 'table-row' : 'none';
+        });
+      } else if (value === 3) {
+        // Position 3: Show ALL races (no limit)
+        table.style.display = 'table';
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+          row.style.display = 'table-row';
+        });
+      }
+    });
+
+    // Update labels active state
+    const labels = document.querySelectorAll('.slider-label');
+    labels.forEach((label, index) => {
+      if (index + 1 === value) {
+        label.style.color = '#4CAF50';
+        label.style.fontWeight = 'bold';
+      } else {
+        label.style.color = '#666';
+        label.style.fontWeight = '500';
+      }
+    });
+  }
+
+  // Save slider state and update display when changed
+  slider.addEventListener('change', function () {
+    localStorage.setItem('raceFormSlider', this.value);
+    updateRaceFormDisplay();
+  });
+
+  // Make slider snap to positions 1, 2, 3
+  slider.addEventListener('input', function () {
+    const value = parseInt(this.value);
+
+    // Snap to nearest position (1, 2, or 3)
+    let snappedValue;
+    if (value <= 1.5) {
+      snappedValue = 1;
+    } else if (value <= 2.5) {
+      snappedValue = 2;
+    } else {
+      snappedValue = 3;
+    }
+
+    this.value = snappedValue;
+    localStorage.setItem('raceFormSlider', snappedValue);
+    updateRaceFormDisplay();
+  });
+
+  // Also add click event to the track for direct position selection
+  const sliderTrack = document.querySelector('.slider-track');
+  sliderTrack.addEventListener('click', function (e) {
+    const rect = this.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const width = rect.width;
+    const percentage = clickX / width;
+
+    let newValue;
+    if (percentage < 0.33) {
+      newValue = 1;
+    } else if (percentage < 0.66) {
+      newValue = 2;
+    } else {
+      newValue = 3;
+    }
+
+    slider.value = newValue;
+    localStorage.setItem('raceFormSlider', newValue);
+    updateRaceFormDisplay();
+  });
+
   const table = document.createElement('table');
   table.className = 'race-table';
   const thead = document.createElement('thead');
@@ -1296,7 +1458,44 @@ function displayRace(raceRows, raceKey) {
   const colorMap = { 'b': '棗色', 'ch': '栗色', 'gr': '灰色', 'bl': '黑色', 'br': '棕色', 'ro': '雜色', 'b/br': '黑棕色', 'gr/ro': '雜灰色', 'b/ro': '雜棗色', 'ch/ro': '雜栗色', 'br/ro': '雜棕色' };
   const nationalityMap = { 'GB': '英國', 'IRE': '愛爾蘭', 'FR': '法國', 'HK': '香港', 'USA': '美國' };
 
-  horseRows.sort((a, b) => (parseFloat(a[52]) || Number.MAX_VALUE) - (parseFloat(b[52]) || Number.MAX_VALUE));
+  // Enhanced sorting that handles all fraction formats consistently
+  horseRows.sort((a, b) => {
+    const parseFraction = (fractionStr) => {
+      if (!fractionStr || fractionStr === '-' || fractionStr === '' || fractionStr === 'NaN') {
+        return Number.MAX_VALUE;
+      }
+
+      // Convert to string and trim
+      const str = fractionStr.toString().trim();
+
+      // If it's already a decimal number (like 2.5, 3.33, etc.)
+      if (!isNaN(parseFloat(str)) && !str.includes('/')) {
+        return parseFloat(str);
+      }
+
+      // Handle fractional formats like "5/2", "10/3", "3/1"
+      if (str.includes('/')) {
+        const parts = str.split('/');
+        if (parts.length === 2) {
+          const numerator = parseFloat(parts[0]);
+          const denominator = parseFloat(parts[1]);
+          if (!isNaN(numerator) && !isNaN(denominator) && denominator !== 0) {
+            return numerator / denominator;
+          }
+        }
+      }
+
+      return Number.MAX_VALUE;
+    };
+
+    // Parse both current odds
+    const oddsA = parseFraction(a[52]); // nowOdds
+    const oddsB = parseFraction(b[52]); // nowOdds
+
+    console.log(`Sorting: ${a[20]} (${a[52]}) = ${oddsA}, ${b[20]} (${b[52]}) = ${oddsB}`);
+
+    return oddsA - oddsB;
+  });
 
   for (let i = 0; i < horseRows.length; i++) {
     let row = horseRows[i];
@@ -1381,7 +1580,13 @@ function displayRace(raceRows, raceKey) {
     let formRow = document.createElement('tr');
     let formCell = document.createElement('td');
     formCell.colSpan = 9;
-    formCell.innerHTML = `<div class="horse-comment">翻譯中…</div>`;
+
+    // Create race form table immediately with all data
+    const raceFormTableHTML = createRaceFormTable(horseName);
+    formCell.innerHTML = `
+      <div class="horse-comment">翻譯中…</div>
+      <div class="race-form-table">${raceFormTableHTML}</div>
+    `;
     formRow.appendChild(formCell);
     table.appendChild(formRow);
 
@@ -1392,12 +1597,14 @@ function displayRace(raceRows, raceKey) {
         cell.innerHTML = `
       <div class="horse-info">馬主: ${owner}</div>
       <div class="horse-pedigree">父系 ${sire} - 母系 ${dam} (外祖父 ${damsire})</div>
-      ${createRaceFormTable(horseName)}
+      <div class="horse-comment">${translatedComment}</div>
+      <div class="race-form-table">${createRaceFormTable(horseName)}</div>
     `;
       } else {
         cell.innerHTML = `
       <div class="horse-info">馬主: ${owner}</div>
       <div class="horse-pedigree">父系 ${sire} - 母系 ${dam} (外祖父 ${damsire})</div>
+      <div class="horse-comment">${translatedComment}</div>
     `;
         formRow.classList.add("nr-row");
       }
@@ -1409,6 +1616,11 @@ function displayRace(raceRows, raceKey) {
     td.innerHTML = content;
     return td;
   }
+
+  // Initial update of race form display - CRITICAL: Call this after ALL HTML is created
+  setTimeout(() => {
+    updateRaceFormDisplay();
+  }, 100);
 
   // ✅ AUTO-HIGHLIGHT FEATURE - Add this at the end of the function
   console.log('🏁 Race display completed, checking for auto-highlight...');
@@ -1438,7 +1650,6 @@ function displayRace(raceRows, raceKey) {
     }
   }, 500); // Short delay to ensure DOM is fully rendered
 }
-
 // ===============================
 // 🔵 OPTIMIZED HORSE NAVIGATION
 // ===============================

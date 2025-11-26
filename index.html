@@ -43,63 +43,51 @@
         <div id="race-details"></div>
       </div>
 
-      <!-- Drop Odds Section -->
-      <div id="drop-odds" style="display:none;">
-        <div id="drop-odds-container"></div>
+    </div>
+  </div>
+
+  <!-- Drop Odds Section -->
+  <div id="drop-odds" style="display:none;">
+    <div id="drop-odds-container"></div>
+  </div>
+
+  <!-- Results Section -->
+  <div id="result-section" style="display:none;">
+    <div id="result-subbar-container"></div>
+    <div id="result-details"></div>
+
+    <!-- Result Page Tabs -->
+    <div id="resultPageTabs">
+
+      <!-- Top Tabs: LATEST + Courses -->
+      <div class="small-tabs-container" id="smallTabsContainer">
+        <!-- Dynamic tabs will be inserted here -->
       </div>
 
+      <!-- Main Layout: Side Tabs + Content -->
+      <div class="result-layout">
 
-      <!-- Results Section -->
-      <div id="result-section" style="display:none;">
-        <div id="result-subbar-container"></div>
-        <div id="result-details"></div>
+        <!-- Side Tabs (Race Times) -->
+        <div class="side-tabs" id="sideTabsContainer">
+          <!-- Dynamic time tabs inserted here -->
+        </div>
 
-        <!-- Result Page Tabs -->
-        <div id="resultPageTabs">
+        <!-- Right Area: Content -->
+        <div class="right-area">
 
-          <!-- Top Tabs: LATEST + Courses -->
-          <div class="small-tabs-container" id="smallTabsContainer">
-            <!-- Example static top tabs (dynamic tabs will be inserted here) -->
-            <!-- <div class="small-tab latest-tab active">LATEST</div> -->
-            <!-- <div class="small-tab">Course 1</div> -->
+          <!-- Content Area -->
+          <div class="tab-display-area">
+            <div class="tab-placeholder">
+              Content for selected course & time will appear here.
+            </div>
           </div>
 
-          <!-- Main Layout: Side Tabs + Content -->
-          <div class="result-layout">
+        </div>
 
-            <!-- Side Tabs (Race Times) -->
-            <div class="side-tabs" id="sideTabsContainer">
-              <!-- Dynamic time tabs inserted here -->
-            </div>
-
-            <!-- Right Area: Content -->
-            <div class="right-area">
-
-              <!-- Content Area -->
-              <div class="tab-display-area">
-                <div class="tab-placeholder">
-                  Content for selected course & time will appear here.
-                </div>
-              </div>
-
-            </div> <!-- end right-area -->
-
-          </div> <!-- end result-layout -->
-
-        </div> <!-- end resultPageTabs -->
-      </div> <!-- end result-section -->
-
-
-
-
-
-
-
+      </div>
 
     </div>
   </div>
-  </div>
-
 
   <script src="dashboard.js"></script>
 </body>

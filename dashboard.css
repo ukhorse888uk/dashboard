@@ -523,6 +523,201 @@ body {
   text-decoration: underline;
 }
 
+
+
+
+
+
+.form-toggle-container {
+  margin: 10px 0;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  text-align: left;
+  border: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.form-toggle-label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  min-width: 80px;
+}
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 180px;
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.slider-label {
+  font-size: 11px;
+  color: #666;
+  font-weight: 500;
+  flex: 1;
+  text-align: center;
+}
+
+.slider-track {
+  position: relative;
+  width: 100%;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.form-slider {
+  width: 100%;
+  height: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  outline: none;
+  z-index: 2;
+  position: relative;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  opacity: 1;
+}
+
+.form-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  z-index: 3;
+  position: relative;
+}
+
+.form-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  z-index: 3;
+}
+
+.form-slider::-webkit-slider-track {
+  -webkit-appearance: none;
+  background: transparent;
+  height: 6px;
+}
+
+.form-slider::-moz-range-track {
+  background: transparent;
+  height: 6px;
+  border: none;
+}
+
+.slider-positions {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: #ddd;
+  border-radius: 3px;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 9px;
+  z-index: 1;
+}
+
+.slider-position {
+  width: 6px;
+  height: 6px;
+  background: #999;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+/* Active state for slider positions */
+.form-slider[value="1"]~.slider-positions .slider-position:nth-child(1),
+.form-slider[value="2"]~.slider-positions .slider-position:nth-child(2),
+.form-slider[value="3"]~.slider-positions .slider-position:nth-child(3) {
+  background: #4CAF50;
+  transform: scale(1.3);
+}
+
+/* Active state for labels */
+.form-slider[value="1"]~.slider-labels .slider-label:nth-child(1),
+.form-slider[value="2"]~.slider-labels .slider-label:nth-child(2),
+.form-slider[value="3"]~.slider-labels .slider-label:nth-child(3) {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.race-form-table {
+  display: none;
+}
+
+/* Show race form tables based on slider value */
+.form-slider[value="2"]~.race-form-table,
+.form-slider[value="3"]~.race-form-table {
+  display: table;
+}
+
+/* Limit to 6 races when slider is at position 2 */
+.form-slider[value="2"]~.race-form-table tr:nth-child(n+7) {
+  display: none;
+}
+
+/* Hover effects for better interactivity */
+.form-slider:hover::-webkit-slider-thumb {
+  background: #45a049;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.form-slider:hover::-moz-range-thumb {
+  background: #45a049;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.slider-track:hover .slider-positions {
+  background: #d0d0d0;
+}
+
+.loading-race-form {
+  padding: 10px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
+.race-form-table {
+  transition: opacity 0.3s ease;
+}
+
+.race-form-table.loading {
+  opacity: 0.6;
+}
+
+
+
+
 /* =============================== DROP ODDS TABLE - WEB VERSION =============================== */
 #drop-odds-container {
   max-height: 700px;
