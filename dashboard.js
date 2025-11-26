@@ -81,19 +81,21 @@ function processRaceDataChunked(data, chunkSize = 100, callback) {
 function showTab(tab) {
   console.log('Switching to tab:', tab);
 
-  // Batch DOM operations
-  const elements = {
-    "race-details-wrapper": tab === "races" ? "block" : "none",
-    "drop-odds": tab === "drops" ? "block" : "none",
-    "result-section": tab === "results" ? "block" : "none"
-  };
+  // Hide all sections
+  document.getElementById('race-details-wrapper').style.display = 'none';
+  document.getElementById('drop-odds').style.display = 'none';
+  document.getElementById('result-section').style.display = 'none';
 
-  Object.entries(elements).forEach(([id, display]) => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = display;
-  });
+  // Show active section
+  if (tab === 'races') {
+    document.getElementById('race-details-wrapper').style.display = 'block';
+  } else if (tab === 'drops') {
+    document.getElementById('drop-odds').style.display = 'block';
+  } else if (tab === 'results') {
+    document.getElementById('result-section').style.display = 'block';
+  }
 
-  // Update tab classes efficiently
+  // Update tab classes
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
   const activeTabElement = document.getElementById(tab + "-tab");
   if (activeTabElement) activeTabElement.classList.add("active");
@@ -1212,7 +1214,7 @@ function displayRace(raceRows, raceKey) {
         { decimal: 3.0, fraction: "3/1" }, { decimal: 3.25, fraction: "13/4" },
         { decimal: 3.33, fraction: "10/3" }, { decimal: 3.5, fraction: "7/2" },
         { decimal: 3.75, fraction: "15/4" }, { decimal: 4.0, fraction: "4/1" },
-        { decimal: 4.33, fraction: "10/3" }, { decimal: 4.5, fraction: "9/2" },
+        { decimal: 4.33, fraction: "16/3" }, { decimal: 4.5, fraction: "9/2" },
         { decimal: 5.0, fraction: "5/1" }, { decimal: 5.5, fraction: "11/2" },
         { decimal: 6.0, fraction: "6/1" }, { decimal: 6.5, fraction: "13/2" },
         { decimal: 7.0, fraction: "7/1" }, { decimal: 7.5, fraction: "15/2" },
