@@ -1600,7 +1600,7 @@ html {
 
 /* End of MOBILE PORTRAIT MEDIA QUERY */
 
-/* =============================== MOBILE PORTRAIT VERSION =============================== */
+/* =============================== MOBILE landscape VERSION =============================== */
 @media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
 
   /* Fix scrolling for the entire page */
@@ -1894,134 +1894,150 @@ html {
   }
 
   /* ============================== Drop Odds Table Landscape ============================== */
-  #drop-odds-container {
-    max-height: none !important;
-    overflow: visible !important;
-    /* no inner scrollbars */
-    padding: 0;
-    margin: 0 auto;
-    width: 100%;
+  @media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+    #drop-odds-container {
+      max-height: none !important;
+      overflow: visible !important;
+      padding: 0;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .drop-odds-table {
+      table-layout: fixed !important;
+      width: 100%;
+      max-width: 950px;
+      min-width: 500px;
+      margin: 0 auto;
+      border-collapse: collapse;
+    }
+
+    .drop-odds-table th,
+    .drop-odds-table td {
+      font-size: 12px;
+      padding: 4px 5px;
+      word-break: break-word;
+    }
+
+    /* Time column - adjusted for "11:45" */
+    .drop-odds-table th:nth-child(1),
+    .drop-odds-table td:nth-child(1) {
+      width: 8% !important;
+      text-align: center !important;
+    }
+
+    /* Course column - adjusted for "Thurles" */
+    .drop-odds-table th:nth-child(2),
+    .drop-odds-table td:nth-child(2) {
+      width: 12% !important;
+      text-align: left !important;
+    }
+
+    /* Race No column - adjusted for "5" */
+    .drop-odds-table th:nth-child(3),
+    .drop-odds-table td:nth-child(3) {
+      width: 6% !important;
+      text-align: center !important;
+    }
+
+    /* Horse Name column - adjusted for "Salvator Mundi" */
+    .drop-odds-table th:nth-child(4),
+    .drop-odds-table td:nth-child(4) {
+      width: 22% !important;
+      text-align: left !important;
+    }
+
+    /* Column 5 - adjusted for "29/100" */
+    .drop-odds-table th:nth-child(5),
+    .drop-odds-table td:nth-child(5) {
+      width: 8% !important;
+      text-align: center !important;
+    }
+
+    /* Column 6 - adjusted for "7/50" */
+    .drop-odds-table th:nth-child(6),
+    .drop-odds-table td:nth-child(6) {
+      width: 8% !important;
+      text-align: center !important;
+    }
+
+    /* Column 7 - adjusted for "0.15" */
+    .drop-odds-table th:nth-child(7),
+    .drop-odds-table td:nth-child(7) {
+      width: 8% !important;
+      text-align: center !important;
+    }
+
+    /* Column 8 - adjusted for "52%" */
+    .drop-odds-table th:nth-child(8),
+    .drop-odds-table td:nth-child(8) {
+      width: 8% !important;
+      text-align: center !important;
+    }
+
+    /* Column 9 - adjusted for "2" */
+    .drop-odds-table th:nth-child(9),
+    .drop-odds-table td:nth-child(9) {
+      width: 6% !important;
+      text-align: center !important;
+    }
+
+    /* Column 10 - adjusted for "7/50" */
+    .drop-odds-table th:nth-child(10),
+    .drop-odds-table td:nth-child(10) {
+      width: 8% !important;
+      text-align: center !important;
+    }
+
+    /* Optional: vertical line between column 7 and 8 */
+    .drop-odds-table td:nth-child(7),
+    .drop-odds-table th:nth-child(7) {
+      border-right: 2px solid #ffd966;
+      padding-right: 4px;
+    }
+
+    .drop-odds-table td:nth-child(8),
+    .drop-odds-table th:nth-child(8) {
+      padding-left: 4px;
+    }
+
+    .drop-odds-table .time-with-course {
+      display: block;
+      font-weight: bold;
+      font-size: 11px;
+    }
+
+    .drop-odds-table .course-name {
+      display: block;
+      font-size: 10px;
+      color: #666;
+      margin-top: 2px;
+      text-align: left !important;
+    }
   }
 
-  .drop-odds-table {
-    table-layout: fixed !important;
-    width: 100%;
-    max-width: 950px;
-    min-width: 500px;
-    margin: 0 auto;
-    border-collapse: collapse;
-  }
+  /* ============================== FIX: Remove left gap in mobile landscape ============================== */
+  @media (max-width: 1024px) and (orientation: landscape) {
+    #race-details {
+      width: 100% !important;
+      min-width: auto !important;
+      margin-left: 0 !important;
+      padding-left: 0 !important;
+    }
 
-  .drop-odds-table th,
-  .drop-odds-table td {
-    font-size: 14px;
-    padding: 4px 6px;
-    word-break: break-word;
-  }
+    .race-table,
+    .race-form-table {
+      width: 100% !important;
+      min-width: auto !important;
+      margin-left: 0 !important;
+      padding-left: 0 !important;
+    }
 
-  .drop-odds-table th:nth-child(1),
-  .drop-odds-table td:nth-child(1) {
-    width: 8% !important;
-    text-align: left !important;
+    .container,
+    #main-content {
+      width: 100% !important;
+      overflow-x: hidden !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
   }
-
-  .drop-odds-table th:nth-child(2),
-  .drop-odds-table td:nth-child(2) {
-    width: 8% !important;
-    text-align: left !important;
-  }
-
-  .drop-odds-table th:nth-child(3),
-  .drop-odds-table td:nth-child(3) {
-    width: 6% !important;
-    text-align: left !important;
-  }
-
-  .drop-odds-table th:nth-child(4),
-  .drop-odds-table td:nth-child(4) {
-    width: 16% !important;
-    text-align: left !important;
-  }
-
-  .drop-odds-table th:nth-child(5),
-  .drop-odds-table td:nth-child(5) {
-    width: 5% !important;
-    text-align: center !important;
-  }
-
-  .drop-odds-table th:nth-child(6),
-  .drop-odds-table td:nth-child(6) {
-    width: 5% !important;
-    text-align: center !important;
-  }
-
-  .drop-odds-table th:nth-child(7),
-  .drop-odds-table td:nth-child(7) {
-    width: 5% !important;
-    text-align: center !important;
-  }
-
-  .drop-odds-table th:nth-child(8),
-  .drop-odds-table td:nth-child(8) {
-    width: 6% !important;
-    text-align: center !important;
-  }
-
-  .drop-odds-table th:nth-child(9),
-  .drop-odds-table td:nth-child(9) {
-    width: 6% !important;
-    text-align: center !important;
-  }
-
-  .drop-odds-table th:nth-child(10),
-  .drop-odds-table td:nth-child(10) {
-    width: 5% !important;
-    text-align: center !important;
-  }
-
-  .drop-odds-table td:nth-child(1) {
-    white-space: normal !important;
-    line-height: 1.2;
-    text-align: center !important;
-  }
-
-  .drop-odds-table .time-with-course {
-    display: block;
-    font-weight: bold;
-    font-size: 11px;
-  }
-
-  .drop-odds-table .course-name {
-    display: block;
-    font-size: 10px;
-    color: #666;
-    margin-top: 2px;
-    text-align: left !important;
-  }
-}
-
-/* ============================== FIX: Remove left gap in mobile landscape ============================== */
-@media (max-width: 1024px) and (orientation: landscape) {
-  #race-details {
-    width: 100% !important;
-    min-width: auto !important;
-    margin-left: 0 !important;
-    padding-left: 0 !important;
-  }
-
-  .race-table,
-  .race-form-table {
-    width: 100% !important;
-    min-width: auto !important;
-    margin-left: 0 !important;
-    padding-left: 0 !important;
-  }
-
-  .container,
-  #main-content {
-    width: 100% !important;
-    overflow-x: hidden !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-}
