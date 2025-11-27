@@ -1929,28 +1929,28 @@ html {
     /* Course column - adjusted for "Thurles" */
     .drop-odds-table th:nth-child(2),
     .drop-odds-table td:nth-child(2) {
-      width: 12% !important;
+      width: 5% !important;
       text-align: left !important;
     }
 
     /* Race No column - adjusted for "5" */
     .drop-odds-table th:nth-child(3),
     .drop-odds-table td:nth-child(3) {
-      width: 6% !important;
+      width: 16% !important;
       text-align: center !important;
     }
 
     /* Horse Name column - adjusted for "Salvator Mundi" */
     .drop-odds-table th:nth-child(4),
     .drop-odds-table td:nth-child(4) {
-      width: 22% !important;
+      width: 10% !important;
       text-align: left !important;
     }
 
     /* Column 5 - adjusted for "29/100" */
     .drop-odds-table th:nth-child(5),
     .drop-odds-table td:nth-child(5) {
-      width: 8% !important;
+      width: 10% !important;
       text-align: center !important;
     }
 
