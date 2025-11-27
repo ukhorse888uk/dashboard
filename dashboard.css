@@ -1922,24 +1922,24 @@ html {
   .drop-odds-table th:nth-child(1),
   .drop-odds-table td:nth-child(1) {
     width: 8% !important;
-    text-align: center !important;
+    text-align: left !important;
   }
 
   .drop-odds-table th:nth-child(2),
   .drop-odds-table td:nth-child(2) {
-    width: 18% !important;
+    width: 8% !important;
     text-align: left !important;
   }
 
   .drop-odds-table th:nth-child(3),
   .drop-odds-table td:nth-child(3) {
-    width: 5% !important;
+    width: 6% !important;
     text-align: left !important;
   }
 
   .drop-odds-table th:nth-child(4),
   .drop-odds-table td:nth-child(4) {
-    width: 18% !important;
+    width: 16% !important;
     text-align: left !important;
   }
 
