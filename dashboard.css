@@ -1,5 +1,4 @@
-/* === Global Styles === */
-/* === Global Styles === */
+/* === GLOBAL STYLES (Applied to all modes) === */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -8,7 +7,20 @@ body {
   line-height: 1.4;
 }
 
-/* === Top Tabs === */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ADD THIS HERE - Global race form table text toggling */
+.race-form-table .full-text {
+  display: inline;
+}
+
+.race-form-table .simplified-text {
+  display: none;
+}
+
+/* === TOP TABS === */
 .tab-bar {
   display: flex;
   background: #2e5c2e;
@@ -59,19 +71,17 @@ body {
   transform: rotate(180deg);
 }
 
-/* === Dropdown Panel === */
+/* === DROPDOWN PANEL === */
 #race-dropdown {
   background: #f8f8f8;
   border-bottom: 1px solid #ddd;
   overflow: hidden;
   transition: max-height 0.3s ease;
   max-height: 0;
-  /* collapsed by default */
 }
 
 #race-dropdown.open {
   max-height: 300px;
-  /* expands when open */
 }
 
 #close-dropdown {
@@ -87,16 +97,14 @@ body {
   overflow-y: auto;
 }
 
-/* Race header container */
+/* === RACE HEADER === */
 .race-header {
   display: flex;
   justify-content: space-between;
-  /* pushes left & right apart */
   align-items: flex-start;
   margin-bottom: 16px;
 }
 
-/* Left section */
 .race-left {
   display: flex;
   flex-direction: column;
@@ -119,18 +127,14 @@ body {
 
 .race-name {
   font-size: 20px;
-
 }
 
-/* Right section */
 .race-right {
   position: relative;
-  /* remove right:-750px */
   margin-left: auto;
-  /* ensures it stays at the far right */
 }
 
-/* === Container & Main Content === */
+/* === CONTAINER & MAIN CONTENT === */
 .container {
   display: flex;
   width: 100%;
@@ -149,6 +153,7 @@ body {
   padding: 0;
 }
 
+/* === COURSE ROWS === */
 .course-row {
   display: flex;
   margin-bottom: 5px;
@@ -189,7 +194,7 @@ body {
   font-weight: bold;
 }
 
-/* Container for both tables - ensures same width */
+/* === RACE DETAILS CONTAINER === */
 #race-details {
   width: 98%;
   min-width: 800px;
@@ -198,15 +203,18 @@ body {
   padding: 0;
 }
 
-/* ============================== Sub-bar for same-course races ============================== */
+/* === SUB-BAR FOR SAME-COURSE RACES === */
 #race-subbar-container {
-  display: contents;
+  display: flex;
   gap: 8px;
   padding: 6px 10px;
   background-color: #f0f0f0;
   border-bottom: 1px solid #ccc;
   overflow-x: auto;
   white-space: nowrap;
+  position: relative;
+  z-index: 50;
+  -webkit-overflow-scrolling: touch;
 }
 
 #race-subbar-container button {
@@ -218,6 +226,7 @@ body {
   font-size: 14px;
   flex: 0 0 auto;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 #race-subbar-container button:hover {
@@ -231,11 +240,7 @@ body {
   border-color: #4a90e2;
 }
 
-#race-subbar-container {
-  position: relative;
-  z-index: 50;
-}
-
+/* === FORM TOGGLE & SLIDER === */
 .form-toggle-container {
   margin: 10px 0;
   padding: 10px;
@@ -378,22 +383,21 @@ body {
   font-weight: bold;
 }
 
+/* Race form visibility control */
 .race-form-table {
   display: none;
 }
 
-/* Show race form tables based on slider value */
 .form-slider[value="2"]~.race-form-table,
 .form-slider[value="3"]~.race-form-table {
   display: table;
 }
 
-/* Limit to 6 races when slider is at position 2 */
 .form-slider[value="2"]~.race-form-table tr:nth-child(n+7) {
   display: none;
 }
 
-/* Hover effects for better interactivity */
+/* Slider hover effects */
 .form-slider:hover::-webkit-slider-thumb {
   background: #45a049;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
@@ -408,6 +412,7 @@ body {
   background: #d0d0d0;
 }
 
+/* === LOADING STATES === */
 .loading-race-form {
   padding: 10px;
   text-align: center;
@@ -423,281 +428,7 @@ body {
   opacity: 0.6;
 }
 
-/* =============================== MAIN RACE TABLE - WEB VERSION =============================== */
-.race-table {
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: collapse;
-  margin-top: 30px;
-  margin-bottom: 20px;
-  border: none;
-  min-width: 100%;
-  max-width: 100%;
-}
-
-.race-table thead tr {
-  border-bottom: 2px solid #444;
-}
-
-.race-table th,
-.race-table td {
-  padding: 8px;
-  text-align: left;
-  border: none;
-  font-size: 14px;
-}
-
-.race-table td {
-  vertical-align: top;
-  padding: 4px 8px;
-}
-
-/* Race Table Column Widths - Web Version */
-.race-table th:nth-child(1),
-.race-table td:nth-child(1) {
-  /* Horse Number + Draw */
-  width: 40px;
-  font-size: 14px;
-}
-
-.race-table th:nth-child(2),
-.race-table td:nth-child(2) {
-  /* Horse Silk */
-  width: 45px;
-  text-align: center;
-  padding-right: 0;
-}
-
-.race-table td:nth-child(2) img {
-  width: 68px;
-  height: auto;
-  display: block;
-  margin: 0;
-}
-
-.race-table th:nth-child(3),
-.race-table td:nth-child(3) {
-  /* Horse Name + Gender/Color/Nationality */
-  font-size: 14px;
-  width: 100px;
-  padding-left: 2px;
-}
-
-.race-table th:nth-child(4),
-.race-table td:nth-child(4) {
-  /* Column 4 */
-  width: 28px;
-  font-size: 14px;
-}
-
-.race-table th:nth-child(5),
-.race-table td:nth-child(5) {
-  /* Column 5 */
-  width: 60px;
-  font-size: 14px;
-}
-
-.race-table th:nth-child(6),
-.race-table td:nth-child(6) {
-  /* Column 6 */
-  text-align: left;
-  width: 100px;
-  font-size: 14px;
-}
-
-.race-table th:nth-child(7),
-.race-table td:nth-child(7) {
-  /* Column 7 */
-  text-align: left;
-  font-size: 14px;
-  width: 130px;
-}
-
-.race-table th:nth-child(8),
-.race-table td:nth-child(8) {
-  /* Column 8 */
-  width: 30px;
-}
-
-.race-table th:nth-child(9),
-.race-table td:nth-child(9) {
-  /* Column 9 */
-  width: 30px;
-}
-
-/* Special styling inside race table */
-.race-table td .horse-num-draw {
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.race-table td div:not(.horse-num-draw) {
-  font-size: 14px;
-  font-weight: normal;
-}
-
-.horse-name {
-  font-weight: bold !important;
-  font-size: 18px !important;
-  color: #080808 !important;
-  margin-bottom: 4px;
-}
-
-.last-run {
-  font-size: 13px;
-  color: #444;
-}
-
-.race-table {
-  border-collapse: collapse;
-}
-
-.race-table tr+tr td {
-  border-top: 1px solid #d6d6d6;
-}
-
-.horse-info {
-  font-size: 11px;
-  margin-bottom: 4px;
-  line-height: 1.2;
-}
-
-.horse-pedigree {
-  font-size: 11px;
-  color: #5c965b;
-  margin-bottom: 8px;
-  line-height: 1.2;
-}
-
-.red-odd {
-  display: inline-flex;
-  /* center text inside */
-  align-items: center;
-  justify-content: center;
-  width: 62px;
-  /* circle size */
-  height: 62px;
-  border-radius: 60%;
-  /* makes it a circle */
-  background-color: rgb(58, 134, 34);
-  /* circle color */
-  color: #fff;
-  /* text color */
-  font-size: 18px !important;
-  font-weight: bold;
-  text-align: center;
-}
-
-.nr-row {
-  background-color: #d3d3d3 !important;
-  /* light grey */
-  color: #555 !important;
-  /* dim text */
-}
-
-.nr-row img {
-  opacity: 0.5;
-  /* dim silks too */
-}
-
-/* =============================== RACE FORM TABLE - WEB VERSION =============================== */
-.race-form-table {
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: collapse;
-  margin-top: 10px;
-  font-size: 14px;
-  border-bottom: 3px solid #029a19;
-  min-width: 10%;
-  max-width: 100%;
-}
-
-.race-form-table thead th {
-  background: #e0e0e0;
-  font-weight: 600;
-}
-
-.race-form-table tbody tr:nth-child(odd) {
-  background: #ffffff;
-}
-
-.race-form-table tbody tr:nth-child(even) {
-  background: #f5f5f5;
-}
-
-/* =============================== Race Form Table Column Widths =============================== */
-.race-form-table td:nth-child(1),
-.race-form-table th:nth-child(1) {
-  /* Horse No: ~8 characters */
-  width: 5%;
-  text-align: left;
-}
-
-.race-form-table td:nth-child(2),
-.race-form-table th:nth-child(2) {
-  /* Horse Name: ~50 characters */
-  width: 32%;
-  text-align: left;
-}
-
-.race-form-table td:nth-child(3),
-.race-form-table th:nth-child(3) {
-  /* Weight: max 5 characters */
-  width: 6%;
-  text-align: center;
-}
-
-.race-form-table td:nth-child(4),
-.race-form-table th:nth-child(4) {
-  /* Jockey: ~20 characters (adjust if needed) */
-  width: 30%;
-  text-align: left;
-}
-
-.race-form-table td:nth-child(5),
-.race-form-table th:nth-child(5) {
-  /* Trainer: ~20 characters (adjust if needed) */
-  width: 12%;
-  text-align: left;
-}
-
-.race-form-table td:nth-child(6),
-.race-form-table th:nth-child(6) {
-  /* Draw: small column */
-  width: 3%;
-  text-align: center;
-}
-
-.race-form-table td:nth-child(7),
-.race-form-table th:nth-child(7) {
-  /* Odds: small column */
-  width: 3%;
-  text-align: center;
-}
-
-.race-form-table td:nth-child(8),
-.race-form-table th:nth-child(8) {
-  /* Comments / Extra Info: flexible */
-  width: 3%;
-  text-align: center;
-}
-
-.race-table,
-.race-form-table {
-  margin-left: 0;
-  /* no outside spacing */
-  padding-left: 0;
-  /* no inside spacing */
-}
-
-.race-table th:first-child,
-.race-table td:first-child,
-.race-form-table th:first-child,
-.race-form-table td:first-child {
-  padding-left: 0;
-  /* flush left edge */
-}
-
+/* === HORSE NAVIGATION === */
 .clickable-horse {
   cursor: pointer;
   text-decoration: underline;
@@ -710,209 +441,25 @@ body {
   text-decoration: underline;
 }
 
-
-
-
-
-
-
-
-
-
-
-/* =============================== DROP ODDS TABLE - WEB VERSION =============================== */
-#drop-odds-container {
-  max-height: 700px;
-  scroll-behavior: smooth;
-  margin: 0;
-  padding: 0;
-  position: relative;
-  /* Add horizontal scrolling if needed */
-}
-
-.drop-odds-table {
-  width: 100%;
-  table-layout: auto;
-  border-collapse: collapse;
-  margin-top: 0;
-  font-size: 14px;
-  min-width: 1200px;
-  /* Ensure table has minimum width to display all columns */
-}
-
-.drop-odds-table thead {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.drop-odds-table th,
-.drop-odds-table td {
-  padding: 8px 12px;
-  text-align: center;
-  word-break: break-word;
-}
-
-.drop-odds-table thead th {
-  background: #2e5c2e;
-  color: white;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-/* Drop Odds Table Column Widths - Web Version */
-.drop-odds-table th:nth-child(1),
-.drop-odds-table td:nth-child(1) {
-  width: 8%;
-  /* Add minimum width */
-}
-
-.drop-odds-table th:nth-child(2),
-.drop-odds-table td:nth-child(2) {
-  width: 20%;
-  /* Add minimum width to ensure visibility */
-  text-align: left;
-  white-space: normal;
-  overflow: visible;
-  word-wrap: break-word;
-  display: table-cell !important;
-  /* Force display */
-}
-
-.drop-odds-table th:nth-child(3),
-.drop-odds-table td:nth-child(3) {
-  width: 10%;
-  text-align: center;
-}
-
-.drop-odds-table th:nth-child(4),
-.drop-odds-table td:nth-child(4) {
-  width: 40%;
-  text-align: left;
-}
-
-.drop-odds-table th:nth-child(5),
-.drop-odds-table td:nth-child(5) {
-  width: 8%;
-  min-width: 70px;
-}
-
-.drop-odds-table th:nth-child(6),
-.drop-odds-table td:nth-child(6) {
-  width: 8%;
-  min-width: 70px;
-}
-
-.drop-odds-table th:nth-child(7),
-.drop-odds-table td:nth-child(7) {
-  width: 8%;
-  min-width: 70px;
-}
-
-.drop-odds-table th:nth-child(8),
-.drop-odds-table td:nth-child(8) {
-  width: 8%;
-  min-width: 70px;
-}
-
-.drop-odds-table th:nth-child(9),
-.drop-odds-table td:nth-child(9) {
-  width: 8%;
-  min-width: 70px;
-}
-
-.drop-odds-table th:nth-child(10),
-.drop-odds-table td:nth-child(10) {
-  width: 8%;
-  min-width: 70px;
-}
-
-.drop-odds-table th:nth-child(11),
-.drop-odds-table td:nth-child(11) {
-  width: 8%;
-  min-width: 70px;
-}
-
-.drop-odds-table th:nth-child(12),
-.drop-odds-table td:nth-child(12) {
-  width: 8%;
-  min-width: 70px;
-}
-
-.drop-odds-table tbody tr:not(.green):not(.red):nth-child(odd) {
-  background-color: #ffffff;
-}
-
-.drop-odds-table tbody tr:not(.green):not(.red):nth-child(even) {
-  background-color: #f0f0f0;
-}
-
-.gold {
-  background-color: #ffc002;
-  color: #ffffff;
-  font-weight: bold;
-}
-
-.red {
-  background-color: #ff0101;
-  color: hsl(0, 0%, 100%);
-  font-weight: bold;
-}
-
-.green {
-  background-color: #27c22c;
-  color: hsl(0, 0%, 100%);
-  font-weight: bold;
-}
-
-
-
-/* Optional: vertical line between column 7 and 8 */
-.drop-odds-table td:nth-child(7),
-.drop-odds-table th:nth-child(7) {
-  border-right: 3px solid #ffd966;
-  padding-right: 6px;
-}
-
-.drop-odds-table td:nth-child(8),
-.drop-odds-table th:nth-child(8) {
-  padding-left: 6px;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
 .horse-link {
   color: #0066ff;
   cursor: pointer;
   text-decoration: underline;
 }
 
-
-
-
-/* -------------------------------------------------- */
-/* MAIN LAYOUT */
-/* -------------------------------------------------- */
+/* === RESULTS LAYOUT === */
 .result-layout {
   display: flex;
   width: 100%;
-  border: 1px solid #bcd9e6;
+
   border-radius: 6px;
   overflow: hidden;
   background: #fff;
-
-  /* Small gap below top tabs */
   margin-top: 0px;
   padding-top: 0;
 }
 
-
-/* -------------------------------------------------- */
-/* TOP TABS (COURSES) */
-/* -------------------------------------------------- */
+/* === SMALL TABS (COURSES) === */
 .small-tabs-container {
   display: flex;
   flex-wrap: nowrap;
@@ -940,7 +487,6 @@ html {
 
 .small-tab.latest-tab {
   width: 45px;
-  /* match side tabs */
 }
 
 .small-tab.active {
@@ -948,17 +494,12 @@ html {
   font-weight: bold;
 }
 
-
-/* -------------------------------------------------- */
-/* SIDE TABS (TIMES) */
-/* -------------------------------------------------- */
+/* === SIDE TABS (TIMES) === */
 .side-tabs {
   width: 70px;
   background: #fff;
   display: flex;
   flex-direction: column;
-
-  /* Gap between side tabs and table */
   margin-right: 10px;
 }
 
@@ -989,792 +530,146 @@ html {
   font-weight: bold;
 }
 
-
-/* -------------------------------------------------- */
-/* CONTENT AREA */
-/* -------------------------------------------------- */
+/* === TAB DISPLAY AREA === */
 .tab-display-area {
   flex: 1;
-
-  /* Gap below top tabs */
   margin-top: 10px;
   padding-top: 0;
-
 }
 
-
-/* -------------------------------------------------- */
-/* RACE HEADER (no top spacing) */
-/* -------------------------------------------------- */
+/* === RACE CONTAINER === */
 .race-container {
   margin-top: 10px;
   margin-bottom: 15px;
-  /* <-- add this */
   padding-top: 10px;
 }
-
 
 .race-container>*:first-child {
   margin-top: 10px !important;
   padding-top: 0 !important;
 }
 
+/* =============================== WEB VERSION =============================== */
+@media (min-width: 1025px) {
 
-/* -------------------------------------------------- */
-/* RESULTS TABLE */
-/* -------------------------------------------------- */
-.results-table {
-  margin-top: 35px;
-  /* <-- add this */
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-
-.results-table th {
-  background-color: #3274ad;
-  color: #fff;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 6px 8px;
-  text-align: left;
-}
-
-.results-table th,
-.results-table td {
-  text-align: left;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
-.results-table td {
-  text-align: left;
-}
-
-/* Keep first column width clean */
-.results-table th:nth-child(1),
-.results-table td:nth-child(1) {
-  width: 80px;
-  padding-left: 0px;
-  font-weight: bold;
-}
-
-/* Apply padding ONLY to the text inside the first column */
-.results-table th:nth-child(1),
-.results-table td:nth-child(1)>* {
-  padding-left: 10px;
-  /* adjust to 8 if you want more */
-
-}
-
-.results-table td:nth-child(1)::before {
-  content: "";
-  width: 8px;
-  /* ← adjust this to move number further right */
-  display: inline-block;
-
-}
-
-/* Horse column */
-.results-table th:nth-child(2),
-.results-table td:nth-child(2) {
-  width: 280px;
-}
-
-/* Other columns auto-fill */
-.results-table th:nth-child(3),
-.results-table td:nth-child(3) {
-  width: 30px;
-}
-
-/* Other columns auto-fill */
-.results-table th:nth-child(4),
-.results-table td:nth-child(4) {
-  width: 220px;
-}
-
-/* Other columns auto-fill */
-.results-table th:nth-child(5),
-.results-table td:nth-child(5) {
-  width: 280px;
-}
-
-/* -------------------------------------------------- */
-/* EXTRA ELEMENTS */
-/* -------------------------------------------------- */
-.silk-icon {
-  width: 60px;
-  height: 60px;
-  vertical-align: middle;
-  margin-right: 6px;
-}
-
-.extra-info {
-  font-size: 12px;
-  color: #444;
-  background: #f9f9f9;
-  padding: 6px 10px;
-  border-bottom: 1px solid #ddd;
-  font-weight: normal;
-}
-
-.beaten-by {
-  font-size: 16px;
-  color: #555;
-  margin-top: 2px;
-}
-
-
-
-
-
-
-
-
-
-
-/* =============================== MOBILE PORTRAIT VERSION =============================== */
-@media (max-width: 768px) and (orientation: portrait) {
-
-  html,
-  body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    /* Add this */
-    max-width: 100%;
-    overflow-x: hidden;
-    /* no horizontal scroll */
-  }
-
-  .container {
-    width: 100%;
-    max-width: 100%;
-    min-height: 100vh;
-    /* Ensure container reaches bottom */
-    overflow-x: hidden;
-    overflow-y: auto;
-    /* Enable vertical scrolling */
-  }
-
-  #main-content {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-    min-height: 100vh;
-    /* Ensure content reaches bottom */
-  }
-
-  #race-subbar-container {
-    overflow-x: auto;
-    /* Allow horizontal scrolling if needed */
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* ✅ Only shrink the race card table, not all tables */
-  #race-card {
-    width: 100% !important;
-    max-width: 100% !important;
-    table-layout: fixed;
-  }
-
-  #race-card th,
-  #race-card td {
-    white-space: normal;
-    word-wrap: break-word;
-    font-size: 12px;
-    /* smaller text helps fit */
-  }
-
-
-
-  /* === Dropdown Panel (like web version) === */
-  #race-dropdown {
-    background: #f8f8f8;
-    border-bottom: 1px solid #ddd;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-    max-height: 0;
-  }
-
-  #race-dropdown.open {
-    max-height: 300px;
-  }
-
-  #race-courses {
-    padding: 10px;
-    max-height: none !important;
-    overflow: visible !important;
-  }
-
-  #close-dropdown {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-  }
-
-  .course-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: 5px;
-    padding-bottom: 3px;
-    border-bottom: 1px solid #8a8b8a;
-    color: #000;
-    font-size: 13px;
-    line-height: 1.3;
-  }
-
-  .course-name {
-    flex: 0 0 100px;
-    font-weight: bold;
-    padding-right: 8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .race-times {
-    flex: 1;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    overflow-x: auto;
-    padding-bottom: 2px;
-  }
-
-  .race-time {
-    padding: 0px 3px;
-    white-space: nowrap;
-    font-size: 12px;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  .race-time:hover {
-    background-color: #ffd966;
-  }
-
-  .race-time.selected-race {
-    background-color: #2e7d32 !important;
-    color: #fff !important;
-    font-weight: bold;
-  }
-
-  /* === Race header container === */
-  .race-header {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .race-left {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .race-title {
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 8px;
-  }
-
-  .race-meta {
-    font-size: 14px;
-    margin-bottom: 8px;
-  }
-
-  .race-meta span {
-    margin-right: 10px;
-  }
-
-  .race-name {
-    position: relative;
-    font-size: 11px;
-  }
-
-  .race-right {
-    position: relative;
-    display: none;
-  }
-
-  /* Force race table to fit screen */
+  /* === MAIN RACE TABLE - WEB VERSION === */
   .race-table {
     width: 100%;
-    max-width: 100%;
     table-layout: fixed;
+    border-collapse: collapse;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    border: none;
+    min-width: 100%;
+    max-width: 100%;
+  }
+
+  .race-table thead tr {
+    border-bottom: 2px solid #444;
   }
 
   .race-table th,
   .race-table td {
-    padding: 1px 4px;
+    padding: 8px;
+    text-align: left;
+    border: none;
+    font-size: 14px;
   }
 
+  .race-table td {
+    vertical-align: top;
+    padding: 4px 8px;
+  }
+
+  /* Race Table Column Widths - Web Version */
   .race-table th:nth-child(1),
   .race-table td:nth-child(1) {
-    width: 6%;
-    font-size: 11px;
+    width: 40px;
+    font-size: 14px;
   }
 
   .race-table th:nth-child(2),
   .race-table td:nth-child(2) {
-    width: 6%;
+    width: 45px;
     text-align: center;
+    padding-right: 0;
   }
 
   .race-table td:nth-child(2) img {
-    width: 45px;
-    /* smaller image in portrait */
+    width: 68px;
     height: auto;
+    display: block;
+    margin: 0;
   }
 
   .race-table th:nth-child(3),
   .race-table td:nth-child(3) {
-    width: 15%;
-    font-size: 11px;
+    font-size: 14px;
+    width: 100px;
+    padding-left: 2px;
   }
 
-  /* Hide cols 4–7 in portrait */
   .race-table th:nth-child(4),
   .race-table td:nth-child(4) {
-    width: 2%;
-    font-size: 11px;
-    text-align: center;
+    width: 28px;
+    font-size: 14px;
   }
 
   .race-table th:nth-child(5),
   .race-table td:nth-child(5) {
-    width: 5%;
-    font-size: 11px;
-    text-align: center;
+    width: 60px;
+    font-size: 14px;
   }
 
   .race-table th:nth-child(6),
-  .race-table td:nth-child(6),
+  .race-table td:nth-child(6) {
+    text-align: left;
+    width: 100px;
+    font-size: 14px;
+  }
+
   .race-table th:nth-child(7),
   .race-table td:nth-child(7) {
-    display: none;
+    text-align: left;
+    font-size: 14px;
+    width: 130px;
   }
 
   .race-table th:nth-child(8),
   .race-table td:nth-child(8) {
-    width: 5%;
-    text-align: center;
-    font-size: 12px;
+    width: 30px;
   }
 
   .race-table th:nth-child(9),
   .race-table td:nth-child(9) {
-    width: 7%;
-    text-align: center;
-    font-size: 12px;
+    width: 30px;
   }
 
+  /* Special styling inside race table */
   .race-table td .horse-num-draw {
-    font-size: 13px;
+    font-size: 16px;
     font-weight: bold;
   }
 
   .race-table td div:not(.horse-num-draw) {
-    font-size: 11px;
+    font-size: 14px;
     font-weight: normal;
   }
 
   .horse-name {
     font-weight: bold !important;
-    font-size: 13px !important;
+    font-size: 18px !important;
     color: #080808 !important;
     margin-bottom: 4px;
   }
 
   .last-run {
-    font-size: 11px;
+    font-size: 13px;
     color: #444;
   }
 
-  .horse-info {
-    font-size: 8px !important;
-    margin-bottom: 4px;
-    line-height: 1.2;
-  }
-
-  .horse-pedigree {
-    font-size: 8px !important;
-    color: #2d9c17;
-    margin-bottom: 8px;
-    line-height: 1.2;
-  }
-
-  .red-odd {
-    display: inline-flex;
-    /* center text inside */
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    /* circle size */
-    height: 42px;
-    border-radius: 60%;
-    /* makes it a circle */
-    background-color: rgb(58, 134, 34);
-    /* circle color */
-    color: #fff;
-    /* text color */
-    font-size: 12px !important;
-    font-weight: bold;
-    text-align: center;
-  }
-
-  /* === Race Form Table Portrait === */
-  .race-form-table {
-    font-size: 10px;
-    width: 100% !important;
-    table-layout: fixed !important;
-    display: none;
-    max-width: none;
-  }
-
-  .race-form-table th:nth-child(2),
-  .race-form-table td:nth-child(2) {
-    display: none;
-  }
-
-  .race-form-table td:nth-child(1),
-  .race-form-table th:nth-child(1) {
-    width: 10% !important;
-  }
-
-  .race-form-table td:nth-child(3),
-  .race-form-table th:nth-child(3) {
-    width: 20% !important;
-  }
-
-  .race-form-table td:nth-child(4),
-  .race-form-table th:nth-child(4) {
-    width: 10% !important;
-  }
-
-  .race-form-table td:nth-child(5),
-  .race-form-table th:nth-child(5) {
-    width: 10% !important;
-  }
-
-  .race-form-table td:nth-child(6),
-  .race-form-table th:nth-child(6) {
-    width: 10% !important;
-  }
-
-  .race-form-table td:nth-child(7),
-  .race-form-table th:nth-child(7) {
-    width: 10% !important;
-  }
-
-  .race-form-table td:nth-child(8),
-  .race-form-table th:nth-child(8) {
-    width: 10% !important;
-  }
-
-  .race-form-table td:nth-child(1) {
-    white-space: normal !important;
-    line-height: 1.2;
-    text-align: left !important;
-  }
-
-  /* === Drop Odds Table Portrait === */
-  #drop-odds-container {
-    max-height: none !important;
-    /* let expand fully */
-    overflow: visible !important;
-    /* no inner scrollbars */
-  }
-
-  .drop-odds-table {
-    table-layout: fixed !important;
-    width: 100%;
-    min-width: 400px;
-    max-width: none;
-  }
-
-  .drop-odds-table th,
-  .drop-odds-table td {
-    font-size: 12px;
-    padding: 4px 5px;
-  }
-
-  .drop-odds-table th:nth-child(1),
-  .drop-odds-table td:nth-child(1) {
-    width: 18% !important;
-    text-align: left !important;
-  }
-
-  .drop-odds-table th:nth-child(2),
-  .drop-odds-table td:nth-child(2) {
-    width: 8% !important;
-  }
-
-  .drop-odds-table th:nth-child(3),
-  .drop-odds-table td:nth-child(3) {
-    width: 36% !important;
-    text-align: left !important;
-  }
-
-  .drop-odds-table th:nth-child(4),
-  .drop-odds-table td:nth-child(4) {
-    width: 12% !important;
-    text-align: left !important;
-  }
-
-  .drop-odds-table th:nth-child(5),
-  .drop-odds-table td:nth-child(5) {
-    width: 12% !important;
-    text-align: center !important;
-  }
-
-  .drop-odds-table th:nth-child(6),
-  .drop-odds-table td:nth-child(6) {
-    width: 12% !important;
-    text-align: center !important;
-  }
-
-  .drop-odds-table th:nth-child(7),
-  .drop-odds-table td:nth-child(7) {
-    width: 12% !important;
-    text-align: center !important;
-  }
-
-  .drop-odds-table th:nth-child(8),
-  .drop-odds-table td:nth-child(8) {
-    width: 8% !important;
-    text-align: center !important;
-  }
-
-  .drop-odds-table th:nth-child(9),
-  .drop-odds-table td:nth-child(9) {
-    display: none !important;
-  }
-
-  .drop-odds-table th:nth-child(10),
-  .drop-odds-table td:nth-child(10) {
-    width: 0% !important;
-    text-align: center !important;
-  }
-
-  .drop-odds-table td:nth-child(1) {
-    white-space: normal !important;
-    line-height: 1.2;
-    text-align: center !important;
-  }
-
-  .drop-odds-table .time-with-course {
-    display: block;
-    font-weight: bold;
-    font-size: 10px;
-    text-align: left !important;
-  }
-
-  .drop-odds-table .course-name {
-    display: block;
-    font-size: 9px;
-    color: #666;
-    margin-top: 2px;
-    text-align: center !important;
-  }
-
-  /* Optional: vertical line between column 7 and 8 */
-  .drop-odds-table td:nth-child(6),
-  .drop-odds-table th:nth-child(6) {
-    border-right: 3px solid #ffd966;
-    padding-right: 6px;
-  }
-
-  .drop-odds-table td:nth-child(7),
-  .drop-odds-table th:nth-child(7) {
-    padding-left: 6px;
-    border-right: none;
-  }
-}
-
-/* End of MOBILE PORTRAIT MEDIA QUERY */
-
-/* =============================== MOBILE landscape VERSION =============================== */
-@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
-
-  /* Fix scrolling for the entire page */
-  html,
-  body {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    /* prevent sideways scroll */
-    overflow-y: auto;
-    /* enable vertical scroll */
-    -webkit-overflow-scrolling: touch;
-  }
-
-
-  /* Main container should handle scrolling */
-  .container {
-    width: 100%;
-    max-width: 105%;
-    min-height: 100vh;
-    overflow: visible;
-    /* let it expand */
-  }
-
-
-  /* Ensure content expands properly */
-  #main-content {
-    width: 100%;
-    min-height: 100vh;
-    overflow: visible;
-  }
-
-
-  /* Race header container */
-  .race-header {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .race-left {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .race-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 8px;
-  }
-
-  .race-meta {
-    font-size: 16px;
-    margin-bottom: 8px;
-  }
-
-  .race-meta span {
-    margin-right: 10px;
-  }
-
-  .race-name {
-    font-size: 16px;
-  }
-
-  .race-right {
-    position: static;
-    margin-right: 0.5cm;
-    pointer-events: auto;
-  }
-
-  /* ============================== Sub-bar for same-course races ============================== */
-  #race-subbar-container {
-    display: flex;
-    gap: 8px;
-    padding: 6px 10px;
-    background-color: #f0f0f0;
-    border-bottom: 1px solid #ccc;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  #race-subbar-container button {
-    padding: 5px 10px;
-    background-color: #fff;
-    border: 1px solid #888;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    flex: 0 0 auto;
-    transition: all 0.2s;
-  }
-
-  #race-subbar-container button:hover {
-    background-color: #e0e0ff;
-    border-color: #555;
-  }
-
-  #race-subbar-container button.active {
-    background-color: #ffd966;
-    color: #fff;
-    border-color: #4a90e2;
-  }
-
-  /* ============================== Race Table Landscape ============================== */
-  .race-table {
-    table-layout: fixed !important;
-    width: 100%;
-    max-width: 110%;
-    margin: 0 auto;
-    border-collapse: collapse;
-  }
-
-  .race-table th,
-  .race-table td {
-    font-size: 13px;
-    padding: 3px 5px;
-  }
-
-  .race-table th:nth-child(1),
-  .race-table td:nth-child(1) {
-    width: 10% !important;
-    text-align: left;
-  }
-
-  .race-table th:nth-child(2),
-  .race-table td:nth-child(2) {
-    width: 10% !important;
-    text-align: left;
-  }
-
-  .race-table th:nth-child(3),
-  .race-table td:nth-child(3) {
-    width: 22% !important;
-    text-align: left;
-  }
-
-  .race-table th:nth-child(4),
-  .race-table td:nth-child(4) {
-    width: 5% !important;
-    text-align: center;
-  }
-
-  .race-table th:nth-child(5),
-  .race-table td:nth-child(5) {
-    width: 7% !important;
-    text-align: center;
-  }
-
-  .race-table th:nth-child(6),
-  .race-table td:nth-child(6) {
-    width: 18% !important;
-    text-align: left;
-  }
-
-  .race-table th:nth-child(7),
-  .race-table td:nth-child(7) {
-    width: 18% !important;
-    text-align: left;
-  }
-
-  .race-table th:nth-child(8),
-  .race-table td:nth-child(8) {
-    width: 8% !important;
-    text-align: center;
-  }
-
-  .race-table th:nth-child(9),
-  .race-table td:nth-child(9) {
-    width: 8% !important;
-    text-align: left;
+  .race-table tr+tr td {
+    border-top: 1px solid #d6d6d6;
   }
 
   .horse-info {
@@ -1792,252 +687,1848 @@ html {
 
   .red-odd {
     display: inline-flex;
-    /* center text inside */
     align-items: center;
     justify-content: center;
-    width: 42px;
-    /* circle size */
-    height: 42px;
-    border-radius: 40%;
-    /* makes it a circle */
+    width: 62px;
+    height: 62px;
+    border-radius: 60%;
     background-color: rgb(58, 134, 34);
-    /* circle color */
     color: #fff;
-    /* text color */
-    font-size: 14px !important;
+    font-size: 18px !important;
     font-weight: bold;
     text-align: center;
   }
 
+  .nr-row {
+    background-color: #d3d3d3 !important;
+    color: #555 !important;
+  }
+
+  .nr-row img {
+    opacity: 0.5;
+  }
+
+  /* === RACE FORM TABLE - WEB VERSION === */
+  .race-form-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+    border-bottom: 1px solid #000000;
+    min-width: 10%;
+    max-width: 100%;
+  }
+
+  .race-form-table thead th {
+    background: #e0e0e0;
+    font-weight: 600;
+  }
+
+  .race-form-table tbody tr:nth-child(odd) {
+    background: #ffffff;
+  }
+
+  .race-form-table tbody tr:nth-child(even) {
+    background: #e2dddd;
+  }
+
+  /* Race Form Table Column Widths - Web Version */
+  .race-form-table td:nth-child(1),
+  .race-form-table th:nth-child(1) {
+    width: 5%;
+    text-align: left;
+  }
+
+  .race-form-table td:nth-child(2),
+  .race-form-table th:nth-child(2) {
+    width: 32%;
+    text-align: left;
+  }
+
+  .race-form-table td:nth-child(3),
+  .race-form-table th:nth-child(3) {
+    width: 6%;
+    text-align: center;
+  }
+
+  .race-form-table td:nth-child(4),
+  .race-form-table th:nth-child(4) {
+    width: 30%;
+    text-align: left;
+  }
+
+  .race-form-table td:nth-child(5),
+  .race-form-table th:nth-child(5) {
+    width: 12%;
+    text-align: left;
+  }
+
+  .race-form-table td:nth-child(6),
+  .race-form-table th:nth-child(6) {
+    width: 3%;
+    text-align: center;
+  }
+
+  .race-form-table td:nth-child(7),
+  .race-form-table th:nth-child(7) {
+    width: 3%;
+    text-align: center;
+  }
+
+  .race-form-table td:nth-child(8),
+  .race-form-table th:nth-child(8) {
+    width: 3%;
+    text-align: center;
+  }
+
+  /* === DROP ODDS TABLE - WEB VERSION === */
+  #drop-odds-container {
+    max-height: 700px;
+    scroll-behavior: smooth;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+
+  .drop-odds-table {
+    width: 100%;
+    table-layout: auto;
+    border-collapse: collapse;
+    margin-top: 0;
+    font-size: 14px;
+    min-width: 1200px;
+  }
+
+  .drop-odds-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  .drop-odds-table th,
+  .drop-odds-table td {
+    padding: 8px 12px;
+    text-align: center;
+    word-break: break-word;
+  }
+
+  .drop-odds-table thead th {
+    background: #2e5c2e;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  /* Drop Odds Table Column Widths - Web Version */
+  .drop-odds-table th:nth-child(1),
+  .drop-odds-table td:nth-child(1) {
+    width: 8%;
+  }
+
+  .drop-odds-table th:nth-child(2),
+  .drop-odds-table td:nth-child(2) {
+    width: 20%;
+    text-align: left;
+    white-space: normal;
+    overflow: visible;
+    word-wrap: break-word;
+    display: table-cell !important;
+  }
+
+  .drop-odds-table th:nth-child(3),
+  .drop-odds-table td:nth-child(3) {
+    width: 10%;
+    text-align: center;
+  }
+
+  .drop-odds-table th:nth-child(4),
+  .drop-odds-table td:nth-child(4) {
+    width: 40%;
+    text-align: left;
+  }
+
+  .drop-odds-table th:nth-child(5),
+  .drop-odds-table td:nth-child(5) {
+    width: 8%;
+    min-width: 70px;
+  }
+
+  .drop-odds-table th:nth-child(6),
+  .drop-odds-table td:nth-child(6) {
+    width: 8%;
+    min-width: 70px;
+  }
+
+  .drop-odds-table th:nth-child(7),
+  .drop-odds-table td:nth-child(7) {
+    width: 8%;
+    min-width: 70px;
+  }
+
+  .drop-odds-table th:nth-child(8),
+  .drop-odds-table td:nth-child(8) {
+    width: 8%;
+    min-width: 70px;
+  }
+
+  .drop-odds-table th:nth-child(9),
+  .drop-odds-table td:nth-child(9) {
+    width: 8%;
+    min-width: 70px;
+  }
+
+  .drop-odds-table th:nth-child(10),
+  .drop-odds-table td:nth-child(10) {
+    width: 8%;
+    min-width: 70px;
+  }
+
+  .drop-odds-table th:nth-child(11),
+  .drop-odds-table td:nth-child(11) {
+    width: 8%;
+    min-width: 70px;
+  }
+
+  .drop-odds-table th:nth-child(12),
+  .drop-odds-table td:nth-child(12) {
+    width: 8%;
+    min-width: 70px;
+  }
+
+  .drop-odds-table tbody tr:not(.green):not(.red):nth-child(odd) {
+    background-color: #ffffff;
+  }
+
+  .drop-odds-table tbody tr:not(.green):not(.red):nth-child(even) {
+    background-color: #f0f0f0;
+  }
+
+  .gold {
+    background-color: #ffc002;
+    color: #ffffff;
+    font-weight: bold;
+  }
+
+  .red {
+    background-color: #ff0101;
+    color: hsl(0, 0%, 100%);
+    font-weight: bold;
+  }
+
+  .green {
+    background-color: #27c22c;
+    color: hsl(0, 0%, 100%);
+    font-weight: bold;
+  }
+
+  /* Vertical line between column 7 and 8 */
+  .drop-odds-table td:nth-child(7),
+  .drop-odds-table th:nth-child(7) {
+    border-right: 3px solid #ffd966;
+    padding-right: 6px;
+  }
+
+  .drop-odds-table td:nth-child(8),
+  .drop-odds-table th:nth-child(8) {
+    padding-left: 6px;
+  }
+
+  /* === RESULTS TABLE - WEB VERSION === */
+  .results-table {
+    margin-top: 35px;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .results-table th {
+    background-color: #3274ad;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 6px 8px;
+    text-align: left;
+  }
+
+  .results-table th,
+  .results-table td {
+    text-align: left;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .results-table td {
+    text-align: left;
+  }
+
+  /* Make comment row sit right under horse row */
+  .results-table tr:has(.extra-info) {
+    margin-top: -14px !important;
+    /* Pull up */
+    position: relative;
+    top: -22px;
+  }
+
+  /* Column widths for results table */
+  .results-table th:nth-child(1),
+  .results-table td:nth-child(1) {
+    width: 80px;
+    padding-left: 0px;
+    font-weight: bold;
+  }
+
+  .results-table th:nth-child(1),
+  .results-table td:nth-child(1)>* {
+    padding-left: 10px;
+  }
+
+  .results-table td:nth-child(1)::before {
+    content: "";
+    width: 8px;
+    display: inline-block;
+  }
+
+  .results-table th:nth-child(2),
+  .results-table td:nth-child(2) {
+    width: 280px;
+  }
+
+  .results-table th:nth-child(3),
+  .results-table td:nth-child(3) {
+    width: 30px;
+  }
+
+  .results-table th:nth-child(4),
+  .results-table td:nth-child(4) {
+    width: 220px;
+  }
+
+  .results-table th:nth-child(5),
+  .results-table td:nth-child(5) {
+    width: 280px;
+  }
+
+  /* === EXTRA ELEMENTS - WEB VERSION === */
+  .silk-icon {
+    width: 60px;
+    height: 60px;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+
+  .extra-info {
+    font-size: 12px;
+    color: #0f0c0c;
+    background: #f9f9f9;
+    padding: 6px 10px;
+    border-bottom: 1px solid #ddd;
+    font-weight: normal;
+  }
+
+  .beaten-by {
+    font-size: 16px;
+    color: #555;
+    margin-top: 2px;
+  }
+
   .horse-comment {
-    font-size: 16px !important;
+    font-size: 14px !important;
     color: #444;
     margin-top: 4px;
     line-height: 1.3;
-    padding-bottom: 4px;
-    border-bottom: 1px solid #ccc;
-    /* <-- adds line under text */
+  }
+}
+
+
+/* =============================== MOBILE LANDSCAPE VERSION =============================== */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+
+  html,
+  body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
-
-  /* ============================== Race Form Table Landscape ============================== */
-  .race-form-table {
-    table-layout: fixed !important;
+  .container {
     width: 100%;
-    max-width: 1100px;
-    min-width: 700px;
-    margin: 10px auto;
+    max-width: 100%;
+    min-height: 100vh;
+    overflow: visible;
+    margin: 0;
+    padding: 0;
+    display: block;
+  }
+
+  #main-content {
+    width: 100%;
+    min-height: 100vh;
+    overflow: visible;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* === DROPDOWN PANEL === */
+  #race-dropdown {
+    background: #f8f8f8;
+    border-bottom: 1px solid #ddd;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    max-height: 0;
+  }
+
+  #race-dropdown.open {
+    max-height: 300px;
+  }
+
+  #close-dropdown {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 5px 10px;
+  }
+
+  #race-courses {
+    padding: 10px;
+    max-height: 250px;
+    overflow-y: auto;
+  }
+
+  /* === SUB-BAR FOR SAME-COURSE RACES === */
+  #race-subbar-container {
+    display: flex;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+    overflow-x: auto;
+    white-space: nowrap;
+    position: relative;
+    z-index: 50;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #race-subbar-container button {
+    padding: 6px 12px;
+    background-color: #fff;
+    border: 1px solid #888;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    flex: 0 0 auto;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  #race-subbar-container button:hover {
+    background-color: #e0e0ff;
+    border-color: #555;
+  }
+
+  #race-subbar-container button.active {
+    background-color: #ffd966;
+    color: #333;
+    border-color: #4a90e2;
+    font-weight: bold;
+  }
+
+  /* === RACE DETAILS === */
+  #race-details {
+    width: 100% !important;
+    min-width: 100% !important;
+    margin: 15px 0 0 0 !important;
+    padding: 0 15px !important;
+    box-sizing: border-box;
+  }
+
+  /* === RACE HEADER === */
+  .race-header {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 0 15px 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  .race-left {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .race-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+
+  .race-meta {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .race-meta span {
+    margin-right: 10px;
+  }
+
+  .race-name {
+    font-size: 16px;
+  }
+
+  .race-right {
+    display: none;
+  }
+
+  /* === FORM TOGGLE CONTAINER === */
+  .form-toggle-container {
+    margin: 10px 0;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    text-align: left;
+    border: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* === MAIN RACE TABLE - LANDSCAPE (Same border styling as web) === */
+  .race-table {
+    width: 100% !important;
+    table-layout: fixed;
     border-collapse: collapse;
-    padding-left: 0%;
+    margin: 15px 0 20px 0;
+    border: none;
+    min-width: 100%;
+    max-width: 100%;
+  }
+
+  .race-table thead tr {
+    border-bottom: 2px solid #444;
+  }
+
+  .race-table th,
+  .race-table td {
+    padding: 8px 6px;
+    text-align: left;
+    border: none;
+    font-size: 12px;
+    box-sizing: border-box;
+  }
+
+  .race-table td {
+    vertical-align: top;
+    padding: 6px 6px;
+  }
+
+  /* Race Table Column Widths - Landscape */
+  .race-table th:nth-child(1),
+  .race-table td:nth-child(1) {
+    width: 8%;
+    font-size: 12px;
+    padding-left: 4px;
+  }
+
+  .race-table th:nth-child(2),
+  .race-table td:nth-child(2) {
+    width: 10%;
+    text-align: center;
+    padding: 4px;
+  }
+
+  .race-table td:nth-child(2) img {
+    width: 60px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .race-table th:nth-child(3),
+  .race-table td:nth-child(3) {
+    width: 20%;
+    font-size: 12px;
+    padding-left: 6px;
+  }
+
+  .race-table th:nth-child(4),
+  .race-table td:nth-child(4) {
+    width: 6%;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .race-table th:nth-child(5),
+  .race-table td:nth-child(5) {
+    width: 8%;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .race-table th:nth-child(6),
+  .race-table td:nth-child(6) {
+    width: 15%;
+    font-size: 12px;
+    text-align: left;
+  }
+
+  .race-table th:nth-child(7),
+  .race-table td:nth-child(7) {
+    width: 15%;
+    font-size: 12px;
+    text-align: left;
+  }
+
+  .race-table th:nth-child(8),
+  .race-table td:nth-child(8) {
+    width: 10%;
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .race-table th:nth-child(9),
+  .race-table td:nth-child(9) {
+    width: 10%;
+    font-size: 12px;
+    text-align: center;
+    padding-right: 6px;
+  }
+
+  /* Row borders like web version */
+  .race-table tr+tr td {
+    border-top: 1px solid #d6d6d6;
+  }
+
+  /* Horse info adjustments for landscape */
+  .race-table td .horse-num-draw {
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  .horse-name {
+    font-weight: bold !important;
+    font-size: 14px !important;
+    color: #080808 !important;
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+
+  .last-run {
+    font-size: 11px;
+    color: #444;
+    margin-bottom: 3px;
+  }
+
+  .horse-info {
+    font-size: 10px !important;
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+
+  .horse-pedigree {
+    font-size: 10px !important;
+    color: #5c965b;
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+
+  .red-odd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgb(58, 134, 34);
+    color: #fff;
+    font-size: 14px !important;
+    font-weight: bold;
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .horse-comment {
+    font-size: 11px !important;
+    color: #444;
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+
+  .nr-row {
+    background-color: #d3d3d3 !important;
+    color: #555 !important;
+  }
+
+  .nr-row img {
+    opacity: 0.5;
+  }
+
+  /* === RACE FORM TABLE - LANDSCAPE (Same styling as web) === */
+  .race-form-table {
+    width: 100% !important;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 12px;
+    border-bottom: 1px solid #000000;
+    min-width: 100%;
+    max-width: 100%;
+    display: table;
+  }
+
+  .race-form-table thead th {
+    background: #e0e0e0;
+    font-weight: 600;
+    padding: 8px 6px;
+    font-size: 12px;
   }
 
   .race-form-table th,
   .race-form-table td {
-    font-size: 12px;
-    padding: 1px 4px;
+    padding: 6px 5px;
+    font-size: 11px;
+    text-align: left;
+    box-sizing: border-box;
+    vertical-align: middle !important;
+    /* Add this */
   }
 
-  .race-form-table th:nth-child(1),
-  .race-form-table td:nth-child(1) {
-    width: 10% !important;
+  .race-form-table tbody tr:nth-child(odd) {
+    background: #ffffff;
+  }
+
+  .race-form-table tbody tr:nth-child(even) {
+    background: #e2dddd;
+  }
+
+  /* Race Form Table Column Widths - Landscape */
+  .race-form-table td:nth-child(1),
+  .race-form-table th:nth-child(1) {
+    width: 8%;
     text-align: center;
-    font-size: 12px;
   }
 
-  .race-form-table th:nth-child(2),
-  .race-form-table td:nth-child(2) {
-    width: 35% !important;
+  .race-form-table td:nth-child(2),
+  .race-form-table th:nth-child(2) {
+    width: 25%;
     text-align: left;
-    font-size: 12px;
   }
 
-  .race-form-table th:nth-child(3),
-  .race-form-table td:nth-child(3) {
-    width: 8% !important;
+  .race-form-table td:nth-child(3),
+  .race-form-table th:nth-child(3) {
+    width: 7%;
+    text-align: center;
+  }
+
+  .race-form-table td:nth-child(4),
+  .race-form-table th:nth-child(4) {
+    width: 32%;
     text-align: left;
-    font-size: 12px;
   }
 
-  .race-form-table th:nth-child(4),
+  .race-form-table td:nth-child(5),
+  .race-form-table th:nth-child(5) {
+    width: 15%;
+    text-align: left;
+  }
+
+  .race-form-table td:nth-child(6),
+  .race-form-table th:nth-child(6) {
+    width: 4%;
+    text-align: center;
+  }
+
+  .race-form-table td:nth-child(7),
+  .race-form-table th:nth-child(7) {
+    width: 4%;
+    text-align: center;
+  }
+
+  .race-form-table td:nth-child(8),
+  .race-form-table th:nth-child(8) {
+    width: 4%;
+    text-align: center;
+  }
+
+  /* === DROP ODDS TABLE - LANDSCAPE === */
+  #drop-odds-container {
+    max-height: 500px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+
+  .drop-odds-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin-top: 0;
+    font-size: 11px;
+    min-width: 500px;
+  }
+
+  .drop-odds-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  .drop-odds-table th,
+  .drop-odds-table td {
+    padding: 7px 5px;
+    text-align: center;
+    word-break: break-word;
+    font-size: 11px;
+    box-sizing: border-box;
+  }
+
+  .drop-odds-table thead th {
+    background: #2e5c2e;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  /* Drop Odds Table Column Widths - Landscape */
+  .drop-odds-table th:nth-child(1),
+  .drop-odds-table td:nth-child(1) {
+    width: 2%;
+    text-align: left;
+  }
+
+  .drop-odds-table th:nth-child(2),
+  .drop-odds-table td:nth-child(2) {
+    width: 5%;
+    text-align: left;
+  }
+
+  .drop-odds-table th:nth-child(3),
+  .drop-odds-table td:nth-child(3) {
+    width: 2%;
+    text-align: center;
+  }
+
+  .drop-odds-table th:nth-child(4),
+  .drop-odds-table td:nth-child(4) {
+    width: 8%;
+    text-align: left;
+  }
+
+  .drop-odds-table th:nth-child(5),
+  .drop-odds-table td:nth-child(5) {
+    width: 3%;
+  }
+
+  .drop-odds-table th:nth-child(6),
+  .drop-odds-table td:nth-child(6) {
+    width: 3%;
+  }
+
+  .drop-odds-table th:nth-child(7),
+  .drop-odds-table td:nth-child(7) {
+    width: 3%;
+  }
+
+  .drop-odds-table th:nth-child(8),
+  .drop-odds-table td:nth-child(8) {
+    width: 3%;
+  }
+
+  .drop-odds-table th:nth-child(9),
+  .drop-odds-table td:nth-child(9) {
+    width: 3%;
+  }
+
+  /* Hide some columns on landscape to save space */
+  .drop-odds-table th:nth-child(10),
+  .drop-odds-table td:nth-child(10) {
+    width: 3%;
+  }
+
+  .drop-odds-table th:nth-child(11),
+  .drop-odds-table td:nth-child(11) {
+    width: 7%;
+  }
+
+  .drop-odds-table th:nth-child(12),
+  .drop-odds-table td:nth-child(12) {
+    display: none;
+  }
+
+  .drop-odds-table tbody tr:not(.green):not(.red):nth-child(odd) {
+    background-color: #ffffff;
+  }
+
+  .drop-odds-table tbody tr:not(.green):not(.red):nth-child(even) {
+    background-color: #f0f0f0;
+  }
+
+  .gold {
+    background-color: #ffc002;
+    color: #ffffff;
+    font-weight: bold;
+  }
+
+  .red {
+    background-color: #ff0101;
+    color: hsl(0, 0%, 100%);
+    font-weight: bold;
+  }
+
+  .green {
+    background-color: #27c22c;
+    color: hsl(0, 0%, 100%);
+    font-weight: bold;
+  }
+
+  /* Vertical line between column 7 and 8 */
+  .drop-odds-table td:nth-child(7),
+  .drop-odds-table th:nth-child(7) {
+    border-right: 3px solid #ffd966;
+    padding-right: 6px;
+  }
+
+  .drop-odds-table td:nth-child(8),
+  .drop-odds-table th:nth-child(8) {
+    padding-left: 6px;
+  }
+
+  /* Adjust time-with-course display for mobile landscape */
+  .drop-odds-table .time-with-course {
+    display: block;
+    font-weight: bold;
+    font-size: 11px;
+  }
+
+  .drop-odds-table .course-name {
+    display: block;
+    font-size: 10px;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  /* === RESULTS TABLE - LANDSCAPE === */
+  .results-table {
+    margin-top: 25px;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 11px;
+  }
+
+  .results-table th {
+    background-color: #3274ad;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 7px 6px;
+    text-align: left;
+    border: none !important;
+    /* Add this to remove all borders */
+    border-bottom: 2px solid #fff !important;
+    /* Optional: bottom border only */
+  }
+
+  .results-table th,
+  .results-table td {
+    text-align: left;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    padding: 6px 5px;
+    font-size: 11px;
+    border: none !important;
+  }
+
+  /* Or make header borders match background color */
+  .results-table th {
+    border: none;
+    /* Same as background color */
+  }
+
+  /* === RESULTS TABLE - PORTRAIT === */
+  .results-table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  /* Reduce all cell padding */
+  .results-table td {
+    padding: 2px 3px !important;
+    /* Reduced from 5px 4px */
+  }
+
+  /* Make horse row more compact */
+  .results-table tr:not(:has(.extra-info)) {
+    height: 24px !important;
+    /* Fixed height */
+  }
+
+  /* Make comment row sit right under horse row */
+  .results-table tr:has(.extra-info) {
+    margin-top: -4px !important;
+    /* Pull up */
+    position: relative;
+    top: -2px;
+  }
+
+  /* Column widths for results table - Landscape */
+  .results-table th:nth-child(1),
+  .results-table td:nth-child(1) {
+    width: 8%;
+    font-weight: bold;
+  }
+
+  .results-table th:nth-child(2),
+  .results-table td:nth-child(2) {
+    width: 25%;
+  }
+
+  .results-table th:nth-child(3),
+  .results-table td:nth-child(3) {
+    width: 6%;
+  }
+
+  .results-table th:nth-child(4),
+  .results-table td:nth-child(4) {
+    width: 20%;
+  }
+
+  .results-table th:nth-child(5),
+  .results-table td:nth-child(5) {
+    width: 20%;
+  }
+
+  .results-table th:nth-child(6),
+  .results-table td:nth-child(6) {
+    width: 4%;
+    text-align: center;
+  }
+
+  .results-table th:nth-child(7),
+  .results-table td:nth-child(7) {
+    width: 8%;
+    text-align: center;
+  }
+
+  /* === EXTRA ELEMENTS - LANDSCAPE === */
+  .silk-icon {
+    width: 40px;
+    height: 40px;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+
+  .extra-info {
+    font-size: 12px;
+    color: #444;
+    background: #f9f9f9;
+    padding: 6px 10px;
+    border-bottom: 1px solid #ddd;
+    font-weight: normal;
+  }
+
+  .beaten-by {
+    font-size: 11px;
+    color: #0a0a0a;
+    margin-top: 2px;
+  }
+
+  .horse-comment {
+    font-size: 14px !important;
+    color: #444;
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+
+
+}
+
+/* =============================== MOBILE PORTRAIT VERSION =============================== */
+@media (max-width: 768px) and (orientation: portrait) {
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    display: block;
+  }
+
+  /* === DROPDOWN PANEL === */
+  #race-dropdown {
+    background: #f8f8f8;
+    border-bottom: 1px solid #ddd;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    max-height: 0;
+  }
+
+  #race-dropdown.open {
+    max-height: 300px;
+  }
+
+  #close-dropdown {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 5px 10px;
+  }
+
+  #race-courses {
+    padding: 10px;
+    max-height: 250px;
+    overflow-y: auto;
+  }
+
+  /* === SUB-BAR FOR SAME-COURSE RACES === */
+  #race-subbar-container {
+    display: flex;
+    gap: 6px;
+    padding: 8px 10px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+    overflow-x: auto;
+    white-space: nowrap;
+    position: relative;
+    z-index: 50;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #race-subbar-container button {
+    padding: 6px 12px;
+    background-color: #fff;
+    border: 1px solid #888;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    flex: 0 0 auto;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  #race-subbar-container button:hover {
+    background-color: #e0e0ff;
+    border-color: #555;
+  }
+
+  #race-subbar-container button.active {
+    background-color: #ffd966;
+    color: #333;
+    border-color: #4a90e2;
+    font-weight: bold;
+  }
+
+  /* === MAIN CONTENT === */
+  #main-content {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* === RACE DETAILS === */
+  #race-details {
+    width: 100% !important;
+    min-width: 100% !important;
+    margin: 10px 0 0 0 !important;
+    padding: 0 10px !important;
+    box-sizing: border-box;
+  }
+
+  /* === RACE HEADER === */
+  .race-header {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 0 15px 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  .race-left {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .race-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+
+  .race-meta {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .race-meta span {
+    margin-right: 8px;
+  }
+
+  .race-name {
+    font-size: 14px;
+  }
+
+  .race-right {
+    display: none;
+  }
+
+  /* === FORM TOGGLE CONTAINER === */
+  .form-toggle-container {
+    margin: 10px 0;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    text-align: left;
+    border: 1px solid #e9ecef;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-toggle-label {
+    font-size: 13px;
+    min-width: 70px;
+  }
+
+  .slider-container {
+    min-width: 150px;
+    flex: 1;
+  }
+
+  /* === MAIN RACE TABLE - PORTRAIT (Same border styling as web) === */
+  .race-table {
+    width: 100% !important;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin: 15px 0 20px 0;
+    border: none;
+    min-width: 100%;
+    max-width: 100%;
+    display: table;
+  }
+
+  .race-table thead tr {
+    border-bottom: 2px solid #444;
+  }
+
+  .race-table th,
+  .race-table td {
+    padding: 6px 4px;
+    text-align: left;
+    border: none;
+    font-size: 11px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .race-table td {
+    vertical-align: top;
+    padding: 4px 4px;
+  }
+
+  /* Race Table Column Widths - Portrait (Total: 104% - needs adjustment) */
+  .race-table th:nth-child(1),
+  .race-table td:nth-child(1) {
+    width: 10%;
+    /* Reduced from 12% */
+    font-size: 11px;
+    padding-left: 2px;
+  }
+
+  .race-table th:nth-child(2),
+  .race-table td:nth-child(2) {
+    width: 10%;
+    /* Reduced from 12% */
+    text-align: center;
+    padding: 2px;
+  }
+
+  .race-table td:nth-child(2) img {
+    width: 50px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .race-table th:nth-child(3),
+  .race-table td:nth-child(3) {
+    width: 28%;
+    /* Increased from 25% */
+    font-size: 11px;
+    padding-left: 4px;
+  }
+
+  .race-table th:nth-child(4),
+  .race-table td:nth-child(4) {
+    width: 8%;
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .race-table th:nth-child(5),
+  .race-table td:nth-child(5) {
+    width: 10%;
+    font-size: 11px;
+    text-align: center;
+  }
+
+  /* Hide columns 6-7 in portrait */
+  .race-table th:nth-child(6),
+  .race-table td:nth-child(6),
+  .race-table th:nth-child(7),
+  .race-table td:nth-child(7) {
+    display: none;
+  }
+
+  .race-table th:nth-child(8),
+  .race-table td:nth-child(8) {
+    width: 10%;
+    /* Reduced from 12% */
+    text-align: center;
+    font-size: 11px;
+  }
+
+  .race-table th:nth-child(9),
+  .race-table td:nth-child(9) {
+    width: 24%;
+    /* Reduced from 25% */
+    font-size: 11px;
+    text-align: left;
+    padding-right: 4px;
+  }
+
+  /* Row borders like web version */
+  .race-table tr+tr td {
+    border-top: 1px solid #d6d6d6;
+  }
+
+  /* Horse info adjustments for portrait */
+  .race-table td .horse-num-draw {
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .horse-name {
+    font-weight: bold !important;
+    font-size: 12px !important;
+    color: #080808 !important;
+    margin-bottom: 3px;
+    line-height: 1.2;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .last-run {
+    font-size: 10px;
+    color: #444;
+    margin-bottom: 2px;
+    display: block;
+  }
+
+  .horse-info {
+    font-size: 9px !important;
+    margin-bottom: 3px;
+    line-height: 1.2;
+    display: block;
+  }
+
+  .horse-pedigree {
+    font-size: 9px !important;
+    color: #5c965b;
+    margin-bottom: 3px;
+    line-height: 1.2;
+    display: block;
+  }
+
+  .red-odd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgb(58, 134, 34);
+    color: #fff;
+    font-size: 12px !important;
+    font-weight: bold;
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .horse-comment {
+    font-size: 10px !important;
+    color: #444;
+    margin-top: 3px;
+    line-height: 1.3;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    max-height: 2.6em;
+  }
+
+  .nr-row {
+    background-color: #d3d3d3 !important;
+    color: #555 !important;
+  }
+
+  .nr-row img {
+    opacity: 0.5;
+  }
+
+  /* === RACE FORM TABLE - PORTRAIT === */
+  .race-form-table {
+    width: 100% !important;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 10px;
+    border-bottom: 1px solid #000000;
+    min-width: 100%;
+    max-width: 100%;
+    display: table;
+  }
+
+  .race-form-table thead th {
+    background: #e0e0e0;
+    font-weight: 600;
+    padding: 6px 4px;
+    font-size: 10px;
+    vertical-align: middle !important;
+    line-height: 1.2 !important;
+  }
+
+  .race-form-table tbody tr:nth-child(odd) {
+    background: #ffffff;
+  }
+
+  .race-form-table tbody tr:nth-child(even) {
+    background: #e2dddd;
+  }
+
+  .race-form-table th,
+  .race-form-table td {
+    padding: 5px 4px;
+    font-size: 9px;
+    text-align: left;
+    box-sizing: border-box;
+    vertical-align: middle !important;
+    line-height: 1.2 !important;
+    overflow: hidden;
+  }
+
+  /* Race Form Table Column Widths - Portrait (Fixed font-size issue) */
+  .race-form-table td:nth-child(1),
+  .race-form-table th:nth-child(1) {
+    width: 18%;
+    /* Reduced from 20% */
+    text-align: center;
+    font-size: 10px;
+    /* Fixed from 100px */
+  }
+
+  .race-form-table td:nth-child(2),
+  .race-form-table th:nth-child(2) {
+    width: 36%;
+    /* Increased from 35% */
+    text-align: left;
+    padding-left: 4px;
+  }
+
+  .race-form-table td:nth-child(3),
+  .race-form-table th:nth-child(3) {
+    width: 18%;
+    text-align: center;
+  }
+
+  .race-form-table td:nth-child(4),
+  .race-form-table th:nth-child(4) {
+    width: 38%;
+    /* Increased from 35% */
+    text-align: left;
+    padding-left: 4px;
+  }
+
+  .race-form-table td:nth-child(5),
+  .race-form-table th:nth-child(5) {
+    display: none;
+  }
+
+  .race-form-table td:nth-child(6),
+  .race-form-table th:nth-child(6) {
+    display: none;
+  }
+
+  .race-form-table td:nth-child(7),
+  .race-form-table th:nth-child(7) {
+    display: none;
+  }
+
+  .race-form-table td:nth-child(8),
+  .race-form-table th:nth-child(8) {
+    display: none;
+  }
+
+  /* === HEADER TOGGLING - PORTRAIT === */
+  .race-form-table th .full-header {
+    display: none !important;
+    /* Hide full header in portrait */
+  }
+
+  .race-form-table th .simplified-header {
+    display: inline !important;
+    /* Show simplified header in portrait */
+  }
+
+  /* === TEXT TOGGLING - PORTRAIT === */
+  .race-form-table .full-text {
+    display: none !important;
+    /* Hide full text in portrait */
+  }
+
+  .race-form-table .simplified-text {
+    display: inline !important;
+    /* Show simplified text in portrait */
+  }
+
+  /* Ensure all content inside cells aligns properly */
+  .race-form-table td>* {
+    vertical-align: middle;
+    line-height: 1.2;
+  }
+
+  /* Form table cell content handling */
+  .race-form-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Allow some wrapping for specific cells */
+  .race-form-table td:nth-child(2),
   .race-form-table td:nth-child(4) {
-    width: 40% !important;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  /* === Drop Odds Table Portrait === */
+
+  #drop-odds-container {
+    max-height: 500px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+
+  .drop-odds-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin-top: 0;
+    font-size: 11px;
+    min-width: 300px;
+  }
+
+  .drop-odds-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  .drop-odds-table th,
+  .drop-odds-table td {
+    padding: 7px 5px;
+    text-align: center;
+    word-break: break-word;
+    font-size: 11px;
+    box-sizing: border-box;
+  }
+
+  .drop-odds-table thead th {
+    background: #2e5c2e;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+
+  .drop-odds-table th:nth-child(1),
+  .drop-odds-table td:nth-child(1) {
+    width: 4%;
     text-align: left;
-    font-size: 12px;
   }
 
-  .race-form-table th:nth-child(5),
-  .race-form-table td:nth-child(5) {
-    width: 20% !important;
+  .drop-odds-table th:nth-child(2),
+  .drop-odds-table td:nth-child(2) {
+    display: none;
+  }
+
+  .drop-odds-table th:nth-child(3),
+  .drop-odds-table td:nth-child(3) {
+    width: 2%;
     text-align: left;
-    font-size: 12px;
   }
 
-  .race-form-table th:nth-child(6),
-  .race-form-table td:nth-child(6) {
-    width: 5% !important;
-    text-align: center;
-    font-size: 12px;
+  .drop-odds-table th:nth-child(4),
+  .drop-odds-table td:nth-child(4) {
+    width: 12%;
+    text-align: left;
   }
 
-  .race-form-table th:nth-child(7),
-  .race-form-table td:nth-child(7) {
-    width: 5% !important;
-    text-align: center;
-    font-size: 12px;
+  .drop-odds-table th:nth-child(5),
+  .drop-odds-table td:nth-child(5) {
+    width: 5%;
   }
 
-  .race-form-table th:nth-child(8),
-  .race-form-table td:nth-child(8) {
-    width: 5% !important;
-    text-align: center;
-    font-size: 12px;
+  .drop-odds-table th:nth-child(6),
+  .drop-odds-table td:nth-child(6) {
+    width: 5%;
   }
 
-  /* ============================== Drop Odds Table Landscape ============================== */
-  @media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
-    #drop-odds-container {
-      max-height: none !important;
-      overflow: visible !important;
-      padding: 0;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    .drop-odds-table {
-      table-layout: fixed !important;
-      width: 100%;
-      max-width: 950px;
-      min-width: 500px;
-      margin: 0 auto;
-      border-collapse: collapse;
-    }
-
-    .drop-odds-table th,
-    .drop-odds-table td {
-      font-size: 12px;
-      padding: 4px 5px;
-      word-break: break-word;
-    }
-
-    /* Time column - adjusted for "11:45" */
-    .drop-odds-table th:nth-child(1),
-    .drop-odds-table td:nth-child(1) {
-      width: 8% !important;
-      text-align: center !important;
-    }
-
-    /* Course column - adjusted for "Thurles" */
-    .drop-odds-table th:nth-child(2),
-    .drop-odds-table td:nth-child(2) {
-      width: 5% !important;
-      text-align: left !important;
-    }
-
-    /* Race No column - adjusted for "5" */
-    .drop-odds-table th:nth-child(3),
-    .drop-odds-table td:nth-child(3) {
-      width: 16% !important;
-      text-align: center !important;
-    }
-
-    /* Horse Name column - adjusted for "Salvator Mundi" */
-    .drop-odds-table th:nth-child(4),
-    .drop-odds-table td:nth-child(4) {
-      width: 10% !important;
-      text-align: left !important;
-    }
-
-    /* Column 5 - adjusted for "29/100" */
-    .drop-odds-table th:nth-child(5),
-    .drop-odds-table td:nth-child(5) {
-      width: 10% !important;
-      text-align: center !important;
-    }
-
-    /* Column 6 - adjusted for "7/50" */
-    .drop-odds-table th:nth-child(6),
-    .drop-odds-table td:nth-child(6) {
-      width: 8% !important;
-      text-align: center !important;
-    }
-
-    /* Column 7 - adjusted for "0.15" */
-    .drop-odds-table th:nth-child(7),
-    .drop-odds-table td:nth-child(7) {
-      width: 8% !important;
-      text-align: center !important;
-    }
-
-    /* Column 8 - adjusted for "52%" */
-    .drop-odds-table th:nth-child(8),
-    .drop-odds-table td:nth-child(8) {
-      width: 8% !important;
-      text-align: center !important;
-    }
-
-    /* Column 9 - adjusted for "2" */
-    .drop-odds-table th:nth-child(9),
-    .drop-odds-table td:nth-child(9) {
-      width: 6% !important;
-      text-align: center !important;
-    }
-
-    /* Column 10 - adjusted for "7/50" */
-    .drop-odds-table th:nth-child(10),
-    .drop-odds-table td:nth-child(10) {
-      width: 8% !important;
-      text-align: center !important;
-    }
-
-    /* Optional: vertical line between column 7 and 8 */
-    .drop-odds-table td:nth-child(7),
-    .drop-odds-table th:nth-child(7) {
-      border-right: 2px solid #ffd966;
-      padding-right: 4px;
-    }
-
-    .drop-odds-table td:nth-child(8),
-    .drop-odds-table th:nth-child(8) {
-      padding-left: 4px;
-    }
-
-    .drop-odds-table .time-with-course {
-      display: block;
-      font-weight: bold;
-      font-size: 11px;
-    }
-
-    .drop-odds-table .course-name {
-      display: block;
-      font-size: 10px;
-      color: #666;
-      margin-top: 2px;
-      text-align: left !important;
-    }
+  .drop-odds-table th:nth-child(7),
+  .drop-odds-table td:nth-child(7) {
+    width: 4%;
   }
 
-  /* ============================== FIX: Remove left gap in mobile landscape ============================== */
-  @media (max-width: 1024px) and (orientation: landscape) {
-    #race-details {
-      width: 100% !important;
-      min-width: auto !important;
-      margin-left: 0 !important;
-      padding-left: 0 !important;
-    }
-
-    .race-table,
-    .race-form-table {
-      width: 100% !important;
-      min-width: auto !important;
-      margin-left: 0 !important;
-      padding-left: 0 !important;
-    }
-
-    .container,
-    #main-content {
-      width: 100% !important;
-      overflow-x: hidden !important;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
+  .drop-odds-table th:nth-child(8),
+  .drop-odds-table td:nth-child(8) {
+    width: 4%;
   }
+
+  .drop-odds-table th:nth-child(9),
+  .drop-odds-table td:nth-child(9) {
+    width: 4%;
+  }
+
+  /* Hide some columns on landscape to save space */
+  .drop-odds-table th:nth-child(10),
+  .drop-odds-table td:nth-child(10) {
+    width: 3%;
+  }
+
+  .drop-odds-table th:nth-child(11),
+  .drop-odds-table td:nth-child(11) {
+    width: 7%;
+  }
+
+  .drop-odds-table th:nth-child(12),
+  .drop-odds-table td:nth-child(12) {
+    display: none;
+  }
+
+  .drop-odds-table tbody tr:not(.green):not(.red):nth-child(odd) {
+    background-color: #ffffff;
+  }
+
+  .drop-odds-table tbody tr:not(.green):not(.red):nth-child(even) {
+    background-color: #f0f0f0;
+  }
+
+  .gold {
+    background-color: #ffc002;
+    color: #ffffff;
+    font-weight: bold;
+  }
+
+  .red {
+    background-color: #ff0101;
+    color: hsl(0, 0%, 100%);
+    font-weight: bold;
+  }
+
+  .green {
+    background-color: #27c22c;
+    color: hsl(0, 0%, 100%);
+    font-weight: bold;
+  }
+
+  /* Vertical line between column 7 and 8 */
+  .drop-odds-table td:nth-child(7),
+  .drop-odds-table th:nth-child(7) {
+    border-right: 3px solid #ffd966;
+    padding-right: 6px;
+  }
+
+  .drop-odds-table td:nth-child(8),
+  .drop-odds-table th:nth-child(8) {
+    padding-left: 6px;
+  }
+
+  /* Adjust time-with-course display for mobile landscape */
+  .drop-odds-table .time-with-course {
+    display: block;
+    font-weight: bold;
+    font-size: 11px;
+  }
+
+  .drop-odds-table .course-name {
+    display: block;
+    font-size: 10px;
+    color: #666;
+    margin-top: 2px;
+  }
+
+
+  /* === RESULTS TABLE - PORTRAIT === */
+  .results-table {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 10px;
+  }
+
+  .results-table th {
+    background-color: #3274ad;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 6px 4px;
+    text-align: left;
+    vertical-align: middle !important;
+    /* Add this */
+    line-height: 1.2 !important;
+    /* Add this for consistent line height */
+  }
+
+  .results-table th,
+  .results-table td {
+    text-align: left;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    padding: 5px 4px;
+    font-size: 10px;
+    vertical-align: middle !important;
+    /* Add this */
+    line-height: 1.2 !important;
+    /* Add this for consistent line height */
+  }
+
+  /* Or make header borders match background color */
+  .results-table th {
+    border: 1px solid #3274ad;
+    /* Same as background color */
+  }
+
+  /* Column widths for results table - Portrait */
+  .results-table th:nth-child(1),
+  .results-table td:nth-child(1) {
+    width: 10%;
+    font-weight: bold;
+  }
+
+  .results-table th:nth-child(2),
+  .results-table td:nth-child(2) {
+    width: 40%;
+  }
+
+  .results-table th:nth-child(3),
+  .results-table td:nth-child(3) {
+    width: 10%;
+  }
+
+  .results-table th:nth-child(4),
+  .results-table td:nth-child(4) {
+    width: 30%;
+  }
+
+  .results-table th:nth-child(5),
+  .results-table td:nth-child(5) {
+    display: none;
+  }
+
+  .results-table th:nth-child(6),
+  .results-table td:nth-child(6) {
+    display: none;
+  }
+
+  .results-table th:nth-child(7),
+  .results-table td:nth-child(7) {
+    display: none;
+  }
+
+  /* Ensure images align properly */
+  .results-table img {
+    vertical-align: middle;
+    display: inline-block;
+  }
+
+  /* Ensure text elements align properly */
+  .results-table td>* {
+    vertical-align: middle;
+  }
+
+  /* If you have any specific elements that need alignment */
+  .results-table .horse-name,
+  .results-table .jockey-name,
+  .results-table .trainer-name {
+    vertical-align: middle;
+    line-height: 1.2;
+  }
+
+  /* === EXTRA ELEMENTS - PORTRAIT === */
+  .silk-icon {
+    width: 40px;
+    height: 40px;
+    vertical-align: left;
+    margin-right: 4px;
+  }
+
+  .extra-info {
+    font-size: 10px;
+    color: #444;
+    background: #f9f9f9;
+    padding: 5px 8px;
+    border-bottom: 1px solid #ddd;
+    font-weight: normal;
+  }
+}

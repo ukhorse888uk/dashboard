@@ -4,9 +4,7 @@
 let activeTab = localStorage.getItem('activeTab') || 'races';
 let masterJockeyMap = {};
 let masterTrainerMap = {};
-let raceNumberMap = {};
 let raceFormData = {};
-let showRaceForm = localStorage.getItem('showRaceForm') === 'true';
 let allTimes = [];
 let courseToTimes = {};
 let selectedCourse = "LATEST";
@@ -14,17 +12,13 @@ let selectedTime = "";
 let allResultsRows = [];
 let globalRaceRows = {};
 let resultsDataLoaded = false;
-
-// 🔵 HORSE NAVIGATION VARIABLES
 let horseRaceMap = {};
 let racecardDataLoaded = false;
 let dropOddsDataLoaded = false;
-
-// 🔵 PERFORMANCE OPTIMIZATIONS
 let debounceTimers = {};
 
 // ===============================
-// 🔵 PERFORMANCE UTILITIES
+// 🔵 UTILITY FUNCTIONS (Used by multiple pages)
 // ===============================
 function debounce(func, wait, immediate = false) {
   return function () {
@@ -54,265 +48,58 @@ function memoize(fn) {
 function processRaceDataChunked(data, chunkSize = 100, callback) {
   return new Promise((resolve) => {
     let index = 0;
-
     function processChunk() {
       const chunkEnd = Math.min(index + chunkSize, data.length);
-
       for (let i = index; i < chunkEnd; i++) {
         callback(data[i], i);
       }
-
       index = chunkEnd;
-
       if (index < data.length) {
         setTimeout(processChunk, 0);
       } else {
         resolve();
       }
     }
-
     processChunk();
   });
 }
 
-// =========================================
-// TAB SWITCH FUNCTION — OPTIMIZED
-// =========================================
-function showTab(tab) {
-  console.log('Switching to tab:', tab);
-
-  // Hide all sections
-  document.getElementById('race-details-wrapper').style.display = 'none';
-  document.getElementById('drop-odds').style.display = 'none';
-  document.getElementById('result-section').style.display = 'none';
-
-  // Show active section
-  if (tab === 'races') {
-    document.getElementById('race-details-wrapper').style.display = 'block';
-  } else if (tab === 'drops') {
-    document.getElementById('drop-odds').style.display = 'block';
-  } else if (tab === 'results') {
-    document.getElementById('result-section').style.display = 'block';
-  }
-
-  // Update tab classes
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  const activeTabElement = document.getElementById(tab + "-tab");
-  if (activeTabElement) activeTabElement.classList.add("active");
-
-  localStorage.setItem("activeTab", tab);
-}
-
-// ===============================
-// 🔵 DOM READY – OPTIMIZED
-// ===============================
-document.addEventListener("DOMContentLoaded", function () {
-  // Batch event listeners
-  const tabHandlers = {
-    "race-tab": () => showTab("races"),
-    "drops-tab": () => showTab("drops"),
-    "results-tab": () => {
-      showTab("results");
-      loadResultsCSV();
-    }
-  };
-
-  Object.entries(tabHandlers).forEach(([id, handler]) => {
-    const element = document.getElementById(id);
-    if (element) element.addEventListener("click", handler);
-  });
-
-  // Race form display
-  const raceDetails = document.getElementById('race-details');
-  if (raceDetails) {
-    raceDetails.style.display = showRaceForm ? 'block' : 'none';
-  }
-
-  showTab(activeTab);
-});
-
-window.toggleRaceForm = function () {
-  showRaceForm = !showRaceForm;
-  localStorage.setItem('showRaceForm', showRaceForm);
-  const raceDetails = document.getElementById('race-details');
-  if (raceDetails) raceDetails.style.display = showRaceForm ? 'block' : 'none';
-};
-
-// ===============================
-// 🔵 DATA READY CHECK FUNCTION
-// ===============================
-function isDataReadyForNavigation() {
-  return racecardDataLoaded && dropOddsDataLoaded && Object.keys(horseRaceMap).length > 0;
-}
-
-// ===============================
-// 🔵 MANUAL REFRESH FUNCTION
-// ===============================
-function refreshAllData() {
-  console.log('🔄 Manually refreshing all data...');
-  racecardDataLoaded = false;
-  dropOddsDataLoaded = false;
-  horseRaceMap = {};
-
-  // Clear cache
-  localStorage.removeItem('racecardData');
-  localStorage.removeItem('racecardDataTime');
-  localStorage.removeItem('dropOddsData');
-  localStorage.removeItem('dropOddsDataTime');
-  localStorage.removeItem('resultsCSV');
-  localStorage.removeItem('resultsCSVTime');
-
-  loadRacecard();
-  loadDropOdds();
-
-  setTimeout(() => {
-    addHorseClickHandlers();
-  }, 2000);
-}
-
-// ===============================
-// 🔵 OPTIMIZED RESULTS SECTION
-// ===============================
-const loadResultsCSV = debounce(function loadResultsCSV() {
-  const cacheKey = 'resultsCSV';
-  const cacheTimeKey = 'resultsCSVTime';
-  const cacheExpiry = 2 * 60 * 1000; // 2 minutes
-
-  // Check cache first
-  const cachedData = localStorage.getItem(cacheKey);
-  const cachedTime = localStorage.getItem(cacheTimeKey);
-
-  if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime)) < cacheExpiry) {
-    console.log('📦 Using cached results data');
-    processResultsData(JSON.parse(cachedData));
-    return;
-  }
-
-  Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/result.csv?cb=" + Date.now(), {
-    download: true,
-    skipEmptyLines: true,
-    complete: function (results) {
-      if (results.errors && results.errors.length > 0) {
-        console.error('CSV parsing errors:', results.errors);
-        return;
-      }
-
-      // Cache the data
-      localStorage.setItem(cacheKey, JSON.stringify(results.data));
-      localStorage.setItem(cacheTimeKey, Date.now().toString());
-
-      processResultsData(results.data);
-    },
-    error: function (err) {
-      console.error('Failed to load results CSV:', err);
-    }
-  });
-}, 500);
-
-function processResultsData(data) {
-  const rows = data.slice(1).filter(r => r.length > 3);
-  allResultsRows = rows;
-  allTimes = [];
-  courseToTimes = {};
-
-  processRaceDataChunked(rows, 200, (r) => {
-    const course = r[1]?.trim();
-    const t = r[3]?.trim();
-    if (!course || !t) return;
-
-    const converted = convertRaceTime(t);
-    allTimes.push({ course, time: converted });
-
-    if (!courseToTimes[course]) courseToTimes[course] = new Set();
-    courseToTimes[course].add(converted);
-  }).then(() => {
-    // Convert Sets to Arrays and sort
-    Object.keys(courseToTimes).forEach(c => {
-      courseToTimes[c] = Array.from(courseToTimes[c]).sort(sortTimes);
-    });
-
-    resultsDataLoaded = true;
-    buildCourseTabs(["LATEST", ...Object.keys(courseToTimes)]);
-    buildTimeTabsForLatest();
-  });
-}
-
-// Optimized time conversion
-const convertRaceTime = memoize(function convertRaceTime(t) {
-  if (!t || !t.includes(":")) return t;
-  let [h, m] = t.split(":");
-  h = parseInt(h, 10);
-  m = (m || "00").padStart(2, "0");
-  if (h >= 0 && h <= 9) return `${h + 12}:${m}`;
-  return `${h}:${m}`;
-});
-
-function sortTimes(a, b) {
-  const [ha, ma] = a.split(":").map(Number);
-  const [hb, mb] = b.split(":").map(Number);
-  return ha === hb ? ma - mb : ha - hb;
-}
-
-function fixTime12(t) {
-  if (!t || t.length < 4) return t;
-  let [hh, mm] = t.split(":");
-  hh = parseInt(hh, 10);
-  if (hh <= 9) hh += 12;
-  return (hh < 10 ? "0" + hh : hh) + ":" + mm;
-}
-
-function formatRaceDate(csvDate) {
-  if (!csvDate) return "";
-  csvDate = csvDate.trim();
-  const parts = csvDate.includes("/") ? csvDate.split("/") : csvDate.split("-");
-  if (parts.length !== 3) return csvDate;
-
-  const day = parseInt(parts[2], 10);
-  const monthIndex = parseInt(parts[1], 10) - 1;
-  const year = parseInt(parts[0], 10);
-
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  let suffix = "th";
-  if (day === 1 || day === 21 || day === 31) suffix = "st";
-  else if (day === 2 || day === 22) suffix = "nd";
-  else if (day === 3 || day === 23) suffix = "rd";
-
-  return `${day}${suffix} ${months[monthIndex]} ${year}`;
+function cleanName(name) {
+  return name ? name.trim() : '';
 }
 
 const fractionalOddsMap = new Map([
   // Whole number decimal odds
-  ["2", "1/1"], ["3", "2/1"], ["4", "3/1"], ["5", "4/1"], ["6", "5/1"],
+  ["2", "Evens"], ["3", "2/1"], ["4", "3/1"], ["5", "4/1"], ["6", "5/1"],
   ["7", "6/1"], ["8", "7/1"], ["9", "8/1"], ["10", "9/1"], ["11", "10/1"],
   ["12", "11/1"], ["13", "12/1"], ["14", "13/1"], ["15", "14/1"], ["16", "15/1"],
   ["17", "16/1"], ["18", "17/1"], ["19", "18/1"], ["20", "19/1"],
 
   // Other decimal odds
   ["1.91", "10/11"], ["2.62", "13/8"], ["1.44", "4/9"], ["2.50", "6/4"], ["1.53", "8/15"],
-  ["6.5", "11/2"], ["2.38", "11/8"], ["1.83", "5/6"], ["4.33", "10/3"], ["1.5", "6/4"],
+  ["6.5", "11/2"], ["2.375", "11/8"], ["1.83", "5/6"], ["4.33", "10/3"], ["2.5", "6/4"], ["2.88", "15/8"], ["1.72", "8/11"], ["1.73", "8/11"], ["2.0", "Evens"], ["1.62", "8/13"], ["3.12", "85/40"],
+
 
   // Fractional string mappings
   ["333/100", "10/3"], ["500/100", "5/1"], ["100/33", "3/1"], ["250/100", "5/2"],
   ["163/100", "13/8"], ["3/2", "6/4"], ["69/50", "11/8"], ["47/25", "15/8"],
   ["91/100", "10/11"], ["73/100", "8/13"], ["81/50", "13/8"], ["4/2", "2/1"],
-  ["6/2", "3/1"]
+  ["6/2", "3/1"], ["1/1", "Evens"]
 ]);
+
 const decimalToFractional = memoize(function decimalToFractional(raw) {
   if (raw === null || raw === undefined || raw === "") return "-";
-
   let s = String(raw).trim();
   if (s === "" || s === "NaN") return "-";
-
   const d = parseFloat(s);
   if (isNaN(d)) return "-";
 
-  // FIRST: Handle whole number odds directly (like 4.00, 5.00, 6.00, etc.)
-  // Check if it's essentially a whole number (accounts for floating point precision)
+  // Handle whole number odds
   if (Math.abs(d - Math.round(d)) < 1e-6 && d >= 2) {
-    return `${Math.round(d) - 1}/1`;  // 4.00 → 3/1, 5.00 → 4/1, 6.00 → 5/1, etc.
+    return `${Math.round(d) - 1}/1`;
   }
 
-  // THEN check the map for specific decimal matches
+  // Check the map for specific decimal matches
   if (fractionalOddsMap.has(s)) return fractionalOddsMap.get(s);
 
   // Handle fractional strings directly
@@ -368,7 +155,6 @@ const decimalToFractional = memoize(function decimalToFractional(raw) {
   return `${numerator}/${denominator}`;
 });
 
-// Optimized weight conversion
 const lbsToStoneLb = memoize(function lbsToStoneLb(lbs) {
   if (!lbs || isNaN(lbs)) return lbs;
   lbs = parseInt(lbs);
@@ -377,233 +163,81 @@ const lbsToStoneLb = memoize(function lbsToStoneLb(lbs) {
   return `${stone}st ${remaining}lb`;
 });
 
-function buildCourseTabs(list) {
-  const container = document.getElementById("smallTabsContainer");
-  container.innerHTML = "";
-
-  list.forEach(course => {
-    const tab = document.createElement("div");
-    tab.className = "small-tab" + (course === "LATEST" ? " latest-tab active" : "");
-    tab.textContent = course;
-
-    tab.addEventListener("click", () => {
-      document.querySelectorAll(".small-tab").forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
-      selectedCourse = course;
-      if (course === "LATEST") buildTimeTabsForLatest();
-      else buildTimeTabsForCourse(course);
-    });
-
-    container.appendChild(tab);
-  });
-}
-
-function buildTimeTabsForLatest() {
-  const container = document.getElementById("sideTabsContainer");
-  container.innerHTML = "";
-
-  // Check if data is loaded
-  if (!resultsDataLoaded || allResultsRows.length === 0) {
-    container.innerHTML = '<div class="loading">Loading results data...</div>';
-    return;
-  }
-
-  const now = new Date();
-  const nowHM = now.getHours() * 100 + now.getMinutes();
-  let finished = allTimes.filter(t => {
-    const [h, m] = t.time.split(":").map(Number);
-    return (h * 100 + m) < nowHM;
-  });
-  if (finished.length === 0) finished = [...allTimes];
-
-  finished.sort((a, b) => {
-    const [ha, ma] = a.time.split(":").map(Number);
-    const [hb, mb] = b.time.split(":").map(Number);
-    return (hb * 100 + mb) - (ha * 100 + ma);
-  });
-
-  const uniqueTimes = [];
-  const seen = new Set();
-  for (const item of finished) {
-    if (!seen.has(item.time)) {
-      uniqueTimes.push(item.time);
-      seen.add(item.time);
-    }
-  }
-
-  const latest3 = uniqueTimes.slice(0, 10);
-
-  if (latest3.length === 0) {
-    container.innerHTML = '<div class="no-data">No recent races found</div>';
-    return;
-  }
-
-  latest3.forEach((time, i) => {
-    const tab = document.createElement("div");
-    tab.className = "side-tab" + (i === 0 ? " active" : "");
-    tab.textContent = time;
-    if (i === 0) selectedTime = time;
-
-    tab.addEventListener("click", () => {
-      document.querySelectorAll(".side-tab").forEach(s => s.classList.remove("active"));
-      tab.classList.add("active");
-      selectedTime = time;
-      updateContentPlaceholder();
-    });
-
-    container.appendChild(tab);
-  });
-
-  updateContentPlaceholder();
-}
-
-function buildTimeTabsForCourse(course) {
-  const container = document.getElementById("sideTabsContainer");
-  container.innerHTML = "";
-
-  const list = courseToTimes[course] || [];
-  list.forEach((time, index) => {
-    const tab = document.createElement("div");
-    tab.className = "side-tab" + (index === 0 ? " active" : "");
-    tab.textContent = time;
-    if (index === 0) selectedTime = time;
-
-    tab.addEventListener("click", () => {
-      document.querySelectorAll(".side-tab").forEach(s => s.classList.remove("active"));
-      tab.classList.add("active");
-      selectedTime = time;
-      updateContentPlaceholder();
-    });
-
-    container.appendChild(tab);
-  });
-
-  updateContentPlaceholder();
-}
-
-function updateContentPlaceholder() {
-  const content = document.querySelector(".tab-display-area .tab-placeholder");
-  content.innerHTML = "";
-
-  // Check if data is ready
-  if (!resultsDataLoaded || allResultsRows.length === 0) {
-    content.innerHTML = '<div class="loading">Loading race results...</div>';
-    return;
-  }
-
-  const rowsToShow = allResultsRows.filter(r => {
-    const course = r[1]?.trim();
-    const time = convertRaceTime(r[3]?.trim());
-    if (selectedCourse === "LATEST") return selectedTime === time;
-    return course === selectedCourse && time === selectedTime;
-  });
-
-  if (rowsToShow.length === 0) {
-    content.innerHTML = '<div class="no-data">No results available for this race.</div>';
-    return;
-  }
-
-  const raceContainer = document.createElement("div");
-  raceContainer.className = "race-container";
-  const first = rowsToShow[0];
-  const raceDate = formatRaceDate(first[2]);
-  const fixedTime = fixTime12(first[3]);
-  const courseName = first[1];
-  const classDistanceGoingSurface = `${first[5]} | ${first[6]} | ${first[7]} | ${first[8]}`;
-
-  raceContainer.innerHTML = `
-    <div class="race-topline-date">${raceDate}</div>
-    <div class="race-topline-time-course">${fixedTime} - ${courseName}</div>
-    <div class="race-topline-details">${classDistanceGoingSurface}</div>
-  `;
-
-  const table = document.createElement("table");
-  table.className = "results-table";
-  const header = document.createElement("tr");
-  ["Pos", "Horse", "SP", "Jockey", "Trainer", "Age", "Wgt"].forEach(h => {
-    const th = document.createElement("th");
-    th.textContent = h;
-    header.appendChild(th);
-  });
-  table.appendChild(header);
-
-  rowsToShow.forEach((r, rowIndex) => {
-    const tr = document.createElement("tr");
-    const silkUrl = r[21];
-    const horseName = r[10];
-    const horseWithSilk = silkUrl
-      ? `<img src="${silkUrl}" class="silk-icon" onerror="this.style.display='none'"> ${horseName}`
-      : horseName;
-
-    const draw = r[14] ? ` (${r[14]})` : "";
-    const spRaw = r[13] ?? "";
-    const fracOdds = decimalToFractional(spRaw);
-    const newWeight = lbsToStoneLb(r[17]);
-
-    const tdMapping = [
-      r[12] + draw,
-      horseWithSilk,
-      fracOdds,
-      r[15],
-      r[16],
-      r[11],
-      newWeight
-    ];
-
-    tdMapping.forEach((val, colIndex) => {
-      const td = document.createElement("td");
-      td.innerHTML = val;
-
-      if (colIndex === 0 && rowIndex !== 0) {
-        const beatenBy = r[18] || "";
-        if (beatenBy) td.innerHTML += `<div class="beaten-by"><small>輸距離: ${beatenBy}</small></div>`;
-      }
-
-      tr.appendChild(td);
-    });
-
-    table.appendChild(tr);
-
-    const infoRow = document.createElement("tr");
-    const infoCell = document.createElement("td");
-    infoCell.colSpan = 7;
-    const comment = r[19] || "";
-    const finish = r[20] || "";
-    infoCell.innerHTML = `
-      <div class="extra-info">
-        ${comment ? `<div><b>Comment:</b> ${comment}</div>` : ""}
-        ${finish ? `<div><b>Finish Time:</b> ${finish}</div>` : ""}
-      </div>
-    `;
-    infoRow.appendChild(infoCell);
-    table.appendChild(infoRow);
-  });
-
-  raceContainer.appendChild(table);
-  content.appendChild(raceContainer);
-}
-
-// Update the DOMContentLoaded to restore Latest tab when switching back to results
-document.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("results-tab").addEventListener("click", () => {
-    showTab("results");
-    loadResultsCSV();
-
-    setTimeout(() => {
-      if (selectedCourse === "LATEST" && resultsDataLoaded) {
-        buildTimeTabsForLatest();
-      }
-    }, 100);
-  });
+const convertRaceTime = memoize(function convertRaceTime(t) {
+  if (!t || !t.includes(":")) return t;
+  let [h, m] = t.split(":");
+  h = parseInt(h, 10);
+  m = (m || "00").padStart(2, "0");
+  if (h >= 0 && h <= 9) return `${h + 12}:${m}`;
+  return `${h}:${m}`;
 });
 
-// ===============================
-// 🔵 CLEAN NAME & MASTER MAPS
-// ===============================
-function cleanName(name) {
-  return name ? name.trim() : '';
+function sortTimes(a, b) {
+  const [ha, ma] = a.split(":").map(Number);
+  const [hb, mb] = b.split(":").map(Number);
+  return ha === hb ? ma - mb : ha - hb;
 }
 
+function formatDecimal(num) {
+  if (num % 1 === 0) return num.toString();
+  return num.toFixed(2).replace(/\.?0+$/, '');
+}
+
+// ===============================
+// 🔵 TAB MANAGEMENT
+// ===============================
+function showTab(tab) {
+  console.log('Switching to tab:', tab);
+
+  // Hide all sections
+  document.getElementById('race-details-wrapper').style.display = 'none';
+  document.getElementById('drop-odds').style.display = 'none';
+  document.getElementById('result-section').style.display = 'none';
+
+  // Show active section
+  if (tab === 'races') {
+    document.getElementById('race-details-wrapper').style.display = 'block';
+  } else if (tab === 'drops') {
+    document.getElementById('drop-odds').style.display = 'block';
+  } else if (tab === 'results') {
+    document.getElementById('result-section').style.display = 'block';
+  }
+
+  // Update tab classes
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  const activeTabElement = document.getElementById(tab + "-tab");
+  if (activeTabElement) activeTabElement.classList.add("active");
+
+  localStorage.setItem("activeTab", tab);
+}
+
+function updateRaceArrow() {
+  const isMobile = window.innerWidth <= 1024;
+
+  if (isMobile) {
+    const raceList = document.getElementById('race-list');
+    const arrowTab = document.querySelector('.tab-button.arrow-tab');
+    const arrow = arrowTab?.querySelector('.arrow');
+    if (arrow && raceList) {
+      arrow.classList.toggle('open', raceList.classList.contains('open'));
+    }
+  } else {
+    const raceTab = document.querySelector('.tab[data-tab="races"]');
+    const arrow = raceTab?.querySelector('.arrow');
+    const dropdown = document.getElementById('race-dropdown');
+    if (arrow && dropdown) {
+      arrow.classList.toggle('open', dropdown.classList.contains('open'));
+    }
+  }
+}
+
+function isDataReadyForNavigation() {
+  return racecardDataLoaded && dropOddsDataLoaded && Object.keys(horseRaceMap).length > 0;
+}
+
+// ===============================
+// 🔵 RACE CARD PAGE FUNCTIONS
+// ===============================
 function buildMasterMaps(data) {
   masterJockeyMap = {};
   masterTrainerMap = {};
@@ -642,51 +276,44 @@ function buildMasterMaps(data) {
   });
 }
 
-function getJockeyRaceCount(siteName) {
-  const key = siteName.replace(/\s*\([^)]*\)/g, '').trim().toLowerCase();
-  for (let name in masterJockeyMap) {
-    if (name.toLowerCase().startsWith(key)) return masterJockeyMap[name].raceCount;
-  }
-  return 0;
+function buildHorseRaceMapping(raceRows) {
+  if (!raceRows || !Array.isArray(raceRows)) return;
+
+  horseRaceMap = {};
+  console.log('Building horse mapping with', raceRows.length, 'rows');
+
+  processRaceDataChunked(raceRows, 200, (raceRow, index) => {
+    const course = (raceRow[0] || '').trim();
+    const time = (raceRow[2] || '').trim();
+    const horseName = (raceRow[20] || '').trim();
+
+    if (!course || !time || !horseName) return;
+
+    const raceKey = `${time}  ${course}`;
+    const horseID = (raceRow[50] || '').trim();
+    const raceID = (raceRow[49] || '').trim();
+    const cleanHorseName = horseName.toLowerCase().trim();
+
+    if (horseID && horseID !== '') {
+      horseRaceMap[horseID] = {
+        raceKey: raceKey,
+        course: course,
+        time: time,
+        horseName: horseName,
+        raceID: raceID
+      };
+
+      horseRaceMap[cleanHorseName] = horseRaceMap[horseID];
+    }
+  }).then(() => {
+    console.log('Horse mapping complete. Total mapped:', Object.keys(horseRaceMap).length);
+  });
 }
 
-function getTrainerRaceCount(siteName) {
-  const key = siteName.replace(/\s*\([^)]*\)/g, '').trim().toLowerCase();
-  for (let name in masterTrainerMap) {
-    if (name.toLowerCase().startsWith(key)) return masterTrainerMap[name].raceCount;
-  }
-  return 0;
-}
-
-function getTrainerRaceCount(siteName) {
-  const key = siteName.replace(/\s*\([^)]*\)/g, '').trim().toLowerCase();
-  for (let name in masterTrainerMap) {
-    if (name.toLowerCase().startsWith(key)) return masterTrainerMap[name].raceCount;
-  }
-  return 0;
-}
-
-function validateRaceData(data) {
-  if (!data || !Array.isArray(data) || data.length === 0) {
-    console.warn('Invalid race data received');
-    return false;
-  }
-
-  return data.every(row =>
-    row &&
-    Array.isArray(row) &&
-    row.length > 0 &&
-    row[0]
-  );
-}
-
-// ===============================
-// 🔵 OPTIMIZED RACECARD LOADING
-// ===============================
 const loadRacecard = debounce(function loadRacecard() {
   const cacheKey = 'racecardData';
   const cacheTimeKey = 'racecardDataTime';
-  const cacheExpiry = 2 * 60 * 1000; // 2 minutes
+  const cacheExpiry = 2 * 60 * 1000;
 
   // Check cache first
   const cachedData = localStorage.getItem(cacheKey);
@@ -706,10 +333,8 @@ const loadRacecard = debounce(function loadRacecard() {
         return;
       }
 
-      // Cache the data
       localStorage.setItem(cacheKey, JSON.stringify(results.data));
       localStorage.setItem(cacheTimeKey, Date.now().toString());
-
       processRacecardData(results.data);
     },
     error: function (err) {
@@ -817,10 +442,6 @@ function handleRaceSelection(raceKey, course, courseMap) {
   dropdown.classList.remove('open');
   updateRaceArrow();
 
-  if (showRaceForm) {
-    document.querySelectorAll('.race-form-container').forEach(c => c.style.display = 'block');
-  }
-
   setTimeout(() => window.scrollTo(0, scrollTop), 0);
 }
 
@@ -873,17 +494,29 @@ function showCourseSubbar(courseName, courseMap) {
   subbar.style.display = 'flex';
 }
 
-function decimalToFraction(decimal) {
-  if (!decimal) return '';
-  const tolerance = 1.0E-6;
-  let h1 = 1, h2 = 0, k1 = 0, k2 = 1, b = decimal;
-  do {
-    const a = Math.floor(b);
-    let temp = h1; h1 = a * h1 + h2; h2 = temp;
-    temp = k1; k1 = a * k1 + k2; k2 = temp;
-    b = 1 / (b - a);
-  } while (Math.abs(decimal - h1 / k1) > decimal * tolerance);
-  return h1 + '/' + k1;
+function cleanText(str) {
+  if (!str) return '';
+  return str.replace(/[^\x20-\x7E]/g, '-');
+}
+
+function formatWeight(weightStr) {
+  if (!weightStr) return '';
+
+  const match = weightStr.match(/(\d+)\s*st\s*(\d+)\s*lb/i);
+  if (match) {
+    const stones = match[1];
+    const pounds = match[2];
+    return `${stones}-${pounds}`;
+  }
+
+  const lbs = parseInt(weightStr, 10);
+  if (!isNaN(lbs)) {
+    const stones = Math.floor(lbs / 14);
+    const pounds = lbs % 14;
+    return `${stones}-${pounds}`;
+  }
+
+  return weightStr;
 }
 
 function loadRaceFormData() {
@@ -948,47 +581,20 @@ function loadRaceFormData() {
   });
 }
 
-function cleanText(str) {
-  if (!str) return '';
-  return str.replace(/[^\x20-\x7E]/g, '-');
+function decimalToFraction(decimal) {
+  if (!decimal) return '';
+  const tolerance = 1.0E-6;
+  let h1 = 1, h2 = 0, k1 = 0, k2 = 1, b = decimal;
+  do {
+    const a = Math.floor(b);
+    let temp = h1; h1 = a * h1 + h2; h2 = temp;
+    temp = k1; k1 = a * k1 + k2; k2 = temp;
+    b = 1 / (b - a);
+  } while (Math.abs(decimal - h1 / k1) > decimal * tolerance);
+  return h1 + '/' + k1;
 }
 
-function updateAllRaceForms() {
-  document.querySelectorAll('.race-form-container').forEach(c => {
-    const horseName = c.getAttribute('data-horse') || '';
-    const horseId = c.getAttribute('data-horse-id');
 
-    if (raceFormVisibilityState[horseId] === false) {
-      c.style.display = 'none';
-    } else {
-      c.style.display = 'block';
-      if (!c.innerHTML || c.innerHTML.trim() === '') {
-        c.innerHTML = createRaceFormTable(horseName);
-      }
-      raceFormVisibilityState[horseId] = true;
-    }
-  });
-}
-
-function formatWeight(weightStr) {
-  if (!weightStr) return '';
-
-  const match = weightStr.match(/(\d+)\s*st\s*(\d+)\s*lb/i);
-  if (match) {
-    const stones = match[1];
-    const pounds = match[2];
-    return `${stones}-${pounds}`;
-  }
-
-  const lbs = parseInt(weightStr, 10);
-  if (!isNaN(lbs)) {
-    const stones = Math.floor(lbs / 14);
-    const pounds = lbs % 14;
-    return `${stones}-${pounds}`;
-  }
-
-  return weightStr;
-}
 
 function createRaceFormTable(horseName) {
   if (Object.keys(raceFormData).length === 0) {
@@ -1005,7 +611,7 @@ function createRaceFormTable(horseName) {
     "Good To Yielding": "好至黏地", "Yield To Soft": "黏至軟地", "Standard To Slow": "標準至慢",
     "Yielding": "黏地", "Good": "好地", "Soft": "軟地", "Firm": "快地", "Heavy": "爛地",
     "To": "至", "Hurdle": "跨欄", "Flat": "平路", "Chase": "追逐赛", "NH": "無障",
-    "(IRE)": "愛爾蘭", "(AW)": "沙地", "Standard": "標準", "Class 1": "一班", "Class 2": "二班",
+    "(IRE)": "愛爾蘭", "(FR)": "法國", "(AW)": "沙地", "Standard": "標準", "Class 1": "一班", "Class 2": "二班",
     "Class 3": "三班", "Class 4": "四班", "Class 5": "五班", "Class 6": "六班",
   };
 
@@ -1018,11 +624,15 @@ function createRaceFormTable(horseName) {
     return result;
   }
 
+  // Detect screen mode ONCE at the beginning
+  const isMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
+
   let html = '<table class="race-form-table"><thead><tr>';
-  html += '<th>日期</th><th>賽事資料</th><th>重量</th><th>賽果（1L = 1個馬位）</th><th>騎師</th><th>OR</th><th>TS</th><th>RPR</th>';
+  html += '<th>日期</th><th>賽事資料</th><th>重量</th>';
+  html += '<th><span class="full-header">（1L = 1個馬位）</span><span class="simplified-header">賽果</span></th>';
+  html += '<th>騎師</th><th>OR</th><th>TS</th><th>RPR</th>';
   html += '</tr></thead><tbody>';
 
-  // REMOVE THE .slice(0, 6) LIMIT - show ALL races
   formData.forEach(race => {
     let formattedDate = '';
     if (race.date) {
@@ -1059,11 +669,19 @@ function createRaceFormTable(horseName) {
       details = [nL, o, w].filter(Boolean).join(' ');
     }
 
-    let col4 = details ? `${kL}(${details})` : kL;
+    // DECIDE HERE what to show based on screen mode
+    // Create full text for web/landscape
+    let fullText = details ? `${kL}(${details})` : kL;
     if (race.colT) {
       const fraction = decimalToFraction(parseFloat(race.colT) - 1);
-      col4 += ' ' + fraction;
+      fullText += ' ' + fraction;
     }
+
+    // Create simplified text for mobile portrait
+    const simplifiedText = `(${kL})`; // Just (12/13)
+
+    // Use both spans so CSS can toggle between them
+    const col4 = `<span class="full-text">${fullText}</span><span class="simplified-text">${simplifiedText}</span>`;
 
     const col5 = cleanText(race.colX);
     const col6 = cleanText(race.colZ);
@@ -1085,13 +703,6 @@ function createRaceFormTable(horseName) {
   html += '</tbody></table>';
   return html;
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const raceDetails = document.getElementById('race-details');
-  if (raceDetails) {
-    raceDetails.addEventListener('mousedown', e => e.preventDefault());
-  }
-});
 
 async function translateToChinese(text) {
   if (!text) return "";
@@ -1121,12 +732,6 @@ function displayRace(raceRows, raceKey) {
     return;
   }
 
-  // ADD THIS PERFORMANCE CHECK RIGHT HERE:
-  if (window.raceFormDataLoading && !window.raceFormDataLoaded) {
-    console.log('⏳ Race form data still loading, please wait...');
-    // You could show a loading indicator here
-  }
-
   // Clear and show loading immediately
   raceDetails.innerHTML = '<div class="loading"></div>';
   raceDetails.style.display = 'block';
@@ -1153,15 +758,15 @@ function displayRace(raceRows, raceKey) {
 
   const fractionalOddsMap = {
     // Whole number decimal odds
-    "2": "1/1", "3": "2/1", "4": "3/1", "5": "4/1", "6": "5/1",
+    "2": "Evens", "3": "2/1", "4": "3/1", "5": "4/1", "6": "5/1",
     "7": "6/1", "8": "7/1", "9": "8/1", "10": "9/1", "11": "10/1",
     "12": "11/1", "13": "12/1", "14": "13/1", "15": "14/1", "16": "15/1",
     "17": "16/1", "18": "17/1", "19": "18/1", "20": "19/1",
 
-    // Other decimal odds - ADD MISSING ONES
+    // Other decimal odds
     "1.91": "10/11", "2.62": "13/8", "1.44": "4/9", "2.50": "6/4", "1.53": "8/15",
     "6.5": "11/2", "2.38": "11/8", "1.83": "5/6", "4.33": "10/3", "1.5": "6/4", "2.63": "13/8",
-    "3.75": "11/4", "3.5": "5/2", "3.25": "9/4", "5.5": "9/2", "6.5": "11/2", "7.5": "13/2", "8.5": "15/2", "9.5": "17/2", "2.75": "7/4", "1.67": "4/6",
+    "3.75": "11/4", "3.5": "5/2", "3.25": "9/4", "5.5": "9/2", "6.5": "11/2", "7.5": "13/2", "8.5": "15/2", "9.5": "17/2", "2.75": "7/4", "1.67": "4/6", "1.62": "8/13", "2.75": "7/4", "1.73": "8/11",
 
     // Fractional string mappings
     "333/100": "10/3", "500/100": "5/1", "100/33": "3/1", "250/100": "5/2",
@@ -1173,23 +778,22 @@ function displayRace(raceRows, raceKey) {
   function mapFractionalOdds(fractionStr) {
     if (!fractionStr) return fractionStr;
 
-    // FIRST: Check if it's already a fractional string with a slash
+    // Check if it's already a fractional string with a slash
     if (fractionStr.includes("/")) {
       return fractionalOddsMap[fractionStr] || fractionStr;
     }
 
-    // SECOND: Check if it's a decimal number in our map
+    // Check if it's a decimal number in our map
     if (fractionalOddsMap[fractionStr]) {
       return fractionalOddsMap[fractionStr];
     }
 
-    // THIRD: If it's a decimal not in our map, convert it properly to fractional
+    // If it's a decimal not in our map, convert it properly to fractional
     const decimalValue = parseFloat(fractionStr);
     if (!isNaN(decimalValue) && decimalValue > 1) {
       // Convert decimal to fractional
       const fracVal = decimalValue - 1;
 
-      // Enhanced common fractions list that includes all your mappings
       const commonFractions = [
         { decimal: 0.09, fraction: "1/11" }, { decimal: 0.1, fraction: "1/10" },
         { decimal: 0.11, fraction: "1/9" }, { decimal: 0.125, fraction: "1/8" },
@@ -1619,13 +1223,10 @@ function displayRace(raceRows, raceKey) {
     return td;
   }
 
-  // Initial update of race form display - CRITICAL: Call this after ALL HTML is created
+  // Initial update of race form display
   setTimeout(() => {
     updateRaceFormDisplay();
   }, 100);
-
-  // ✅ AUTO-HIGHLIGHT FEATURE - Add this at the end of the function
-  console.log('🏁 Race display completed, checking for auto-highlight...');
 
   // Auto-highlight horse if one was requested from navigation
   setTimeout(() => {
@@ -1636,66 +1237,26 @@ function displayRace(raceRows, raceKey) {
 
     if (horseToHighlight && horseRaceKey === raceKey) {
       console.log('🚀 Auto-highlighting horse:', horseToHighlight);
-
-      // Use the enhanced highlight function
       highlightHorseInRace(horseToHighlight);
-
-      // Clear the session storage after highlighting
       sessionStorage.removeItem('horseToHighlight');
       sessionStorage.removeItem('horseRaceKey');
-
       console.log('✅ Auto-highlight completed for:', horseToHighlight);
     } else if (horseToHighlight) {
       console.log('❌ Race key mismatch - Expected:', horseRaceKey, 'Got:', raceKey);
     } else {
       console.log('ℹ️ No horse to auto-highlight');
     }
-  }, 500); // Short delay to ensure DOM is fully rendered
-}
-// ===============================
-// 🔵 OPTIMIZED HORSE NAVIGATION
-// ===============================
-function buildHorseRaceMapping(raceRows) {
-  if (!raceRows || !Array.isArray(raceRows)) return;
-
-  horseRaceMap = {};
-  console.log('Building horse mapping with', raceRows.length, 'rows');
-
-  processRaceDataChunked(raceRows, 200, (raceRow, index) => {
-    const course = (raceRow[0] || '').trim();
-    const time = (raceRow[2] || '').trim();
-    const horseName = (raceRow[20] || '').trim();
-
-    if (!course || !time || !horseName) return;
-
-    const raceKey = `${time}  ${course}`;
-    const horseID = (raceRow[50] || '').trim();
-    const raceID = (raceRow[49] || '').trim();
-    const cleanHorseName = horseName.toLowerCase().trim();
-
-    if (horseID && horseID !== '') {
-      horseRaceMap[horseID] = {
-        raceKey: raceKey,
-        course: course,
-        time: time,
-        horseName: horseName,
-        raceID: raceID
-      };
-
-      horseRaceMap[cleanHorseName] = horseRaceMap[horseID];
-    }
-  }).then(() => {
-    console.log('Horse mapping complete. Total mapped:', Object.keys(horseRaceMap).length);
-  });
+  }, 500);
 }
 
-// Enhanced navigate function with better error handling
+// ===============================
+// 🔵 HORSE NAVIGATION FUNCTIONS
+// ===============================
 function navigateToHorse(horseID, horseName) {
   console.log('=== NAVIGATING TO HORSE ===');
   console.log('Input - HorseID:', horseID, 'HorseName:', horseName);
   console.log('Total available mappings:', Object.keys(horseRaceMap).length);
 
-  // ✅ BETTER HORSE FINDING LOGIC
   let horseData = null;
   const cleanHorseName = horseName.toLowerCase().trim();
 
@@ -1726,7 +1287,6 @@ function navigateToHorse(horseID, horseName) {
       console.log('✅ Found by partial name match');
     } else if (partialMatches.length > 1) {
       console.log('❌ Multiple matches found:', partialMatches.map(h => h.horseName));
-      // Use the first match
       horseData = partialMatches[0];
       console.log('✅ Using first partial match');
     }
@@ -1736,7 +1296,6 @@ function navigateToHorse(horseID, horseName) {
     console.error('❌ Horse not found in mapping');
     console.log('Available horse names:', Object.values(horseRaceMap).map(h => h.horseName).slice(0, 10));
 
-    // Show helpful error with available horses
     const availableHorses = Object.values(horseRaceMap).map(h => h.horseName);
     const similarHorses = availableHorses.filter(name =>
       name.toLowerCase().includes(cleanHorseName.substring(0, 4))
@@ -1816,12 +1375,11 @@ function updateRaceSelection(raceKey) {
   console.log('✅ Updated race selection for:', raceKey);
 }
 
-// Enhanced horse highlighting function
 function highlightHorseInRace(horseName) {
   console.log('🔍 Looking for horse to highlight:', horseName);
 
   let attempts = 0;
-  const maxAttempts = 15; // Increased attempts
+  const maxAttempts = 15;
 
   const findAndHighlight = () => {
     attempts++;
@@ -1869,7 +1427,6 @@ function highlightHorseInRace(horseName) {
   findAndHighlight();
 }
 
-// Add click handlers to horse names in drop odds
 function addHorseClickHandlers() {
   const clickableHorses = document.querySelectorAll('.clickable-horse');
   console.log('🔄 Adding click handlers to', clickableHorses.length, 'horses');
@@ -1918,7 +1475,7 @@ function addHorseClickHandlers() {
 }
 
 // ===============================
-// 🔵 OPTIMIZED DROP ODDS
+// 🔵 DROP ODDS PAGE FUNCTIONS
 // ===============================
 const loadDropOdds = debounce(function loadDropOdds() {
   const container = document.getElementById("drop-odds-container");
@@ -1927,7 +1484,7 @@ const loadDropOdds = debounce(function loadDropOdds() {
 
   const cacheKey = 'dropOddsData';
   const cacheTimeKey = 'dropOddsDataTime';
-  const cacheExpiry = 2 * 60 * 1000; // 2 minutes
+  const cacheExpiry = 2 * 60 * 1000;
 
   // Check cache first
   const cachedData = localStorage.getItem(cacheKey);
@@ -1950,10 +1507,8 @@ const loadDropOdds = debounce(function loadDropOdds() {
         return;
       }
 
-      // Cache the data
       localStorage.setItem(cacheKey, JSON.stringify(results.data));
       localStorage.setItem(cacheTimeKey, Date.now().toString());
-
       processDropOddsData(results.data, scrollPosition);
     },
     error: function (err) {
@@ -2013,8 +1568,8 @@ function renderDropOddsTable(data) {
         <table class="drop-odds-table">
             <thead>
                 <tr>
-                    <th>${isMobilePortrait ? '賽時/場地' : '賽時'}</th>
-                    ${!isMobilePortrait ? '<th>場地</th>' : ''}
+                    <th>賽時</th>
+                    ${isMobilePortrait ? '<th>場地</th>' : '<th>場地</th>'}
                     <th>號</th>
                     <th>馬名</th>
                     <th>隔夜</th>
@@ -2022,7 +1577,7 @@ function renderDropOddsTable(data) {
                     <th>變動</th>
                     <th>變 %</th>
                     <th>賽果</th>
-                    <th>贏賠率</th>
+                    ${isMobilePortrait ? '' : '<th>贏賠率</th>'}
                 </tr>
             </thead>
             <tbody>
@@ -2041,9 +1596,8 @@ function renderDropOddsTable(data) {
     const originalFrac = decimalToFractional(originalDec);
     const nowFrac = decimalToFractional(nowDec);
     const spFrac = decimalToFractional(parseFloat(row['SP Odds']));
-    const timeCellContent = isMobilePortrait
-      ? `<span class="time-with-course">${row['Time'] || '--'}</span><span class="course-name">${row['Course'] || '--'}</span>`
-      : (row['Time'] || '--');
+
+    const timeCellContent = row['Time'] || '--';
 
     const horseID = row['HorseID'] || '';
     const horseName = row['Horse Name'] || '';
@@ -2054,7 +1608,7 @@ function renderDropOddsTable(data) {
     tableHTML += `
             <tr>
                 <td class="time-cell">${timeCellContent}</td>
-                ${!isMobilePortrait ? `<td class="course-cell">${row['Course'] || '--'}</td>` : ''}
+                <td class="course-cell">${row['Course'] || '--'}</td>
                 <td>${row['Num'] || '--'}</td>
                 <td>${clickableHorse}</td>
                 <td>${originalFrac}</td>
@@ -2062,7 +1616,7 @@ function renderDropOddsTable(data) {
                 <td class="${colorClass}">${formatDecimal(changeDec)}</td>
                 <td class="${colorClass}">${Math.round(pctChange)}%</td>
                 <td>${row['FIN'] || '--'}</td>
-                <td>${spFrac || '--'}</td>
+                ${isMobilePortrait ? '' : `<td>${spFrac || '--'}</td>`}
             </tr>
         `;
   });
@@ -2071,41 +1625,325 @@ function renderDropOddsTable(data) {
   container.innerHTML = tableHTML;
 }
 
-function formatDecimal(num) {
-  if (num % 1 === 0) return num.toString();
-  return num.toFixed(2).replace(/\.?0+$/, '');
+// ===============================
+// 🔵 RESULTS PAGE FUNCTIONS
+// ===============================
+const loadResultsCSV = debounce(function loadResultsCSV() {
+  const cacheKey = 'resultsCSV';
+  const cacheTimeKey = 'resultsCSVTime';
+  const cacheExpiry = 2 * 60 * 1000;
+
+  // Check cache first
+  const cachedData = localStorage.getItem(cacheKey);
+  const cachedTime = localStorage.getItem(cacheTimeKey);
+
+  if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime)) < cacheExpiry) {
+    console.log('📦 Using cached results data');
+    processResultsData(JSON.parse(cachedData));
+    return;
+  }
+
+  Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/result.csv?cb=" + Date.now(), {
+    download: true,
+    skipEmptyLines: true,
+    complete: function (results) {
+      if (results.errors && results.errors.length > 0) {
+        console.error('CSV parsing errors:', results.errors);
+        return;
+      }
+
+      localStorage.setItem(cacheKey, JSON.stringify(results.data));
+      localStorage.setItem(cacheTimeKey, Date.now().toString());
+      processResultsData(results.data);
+    },
+    error: function (err) {
+      console.error('Failed to load results CSV:', err);
+    }
+  });
+}, 500);
+
+function processResultsData(data) {
+  const rows = data.slice(1).filter(r => r.length > 3);
+  allResultsRows = rows;
+  allTimes = [];
+  courseToTimes = {};
+
+  processRaceDataChunked(rows, 200, (r) => {
+    const course = r[1]?.trim();
+    const t = r[3]?.trim();
+    if (!course || !t) return;
+
+    const converted = convertRaceTime(t);
+    allTimes.push({ course, time: converted });
+
+    if (!courseToTimes[course]) courseToTimes[course] = new Set();
+    courseToTimes[course].add(converted);
+  }).then(() => {
+    // Convert Sets to Arrays and sort
+    Object.keys(courseToTimes).forEach(c => {
+      courseToTimes[c] = Array.from(courseToTimes[c]).sort(sortTimes);
+    });
+
+    resultsDataLoaded = true;
+    buildCourseTabs(["LATEST", ...Object.keys(courseToTimes)]);
+    buildTimeTabsForLatest();
+  });
 }
 
-// ===============================
-// 🔵 INITIALIZATION - OPTIMIZED
-// ===============================
-function updateRaceArrow() {
-  const isMobile = window.innerWidth <= 1024;
+function fixTime12(t) {
+  if (!t || t.length < 4) return t;
+  let [hh, mm] = t.split(":");
+  hh = parseInt(hh, 10);
+  if (hh <= 9) hh += 12;
+  return (hh < 10 ? "0" + hh : hh) + ":" + mm;
+}
 
-  if (isMobile) {
-    const raceList = document.getElementById('race-list');
-    const arrowTab = document.querySelector('.tab-button.arrow-tab');
-    const arrow = arrowTab?.querySelector('.arrow');
+function formatRaceDate(csvDate) {
+  if (!csvDate) return "";
+  csvDate = csvDate.trim();
+  const parts = csvDate.includes("/") ? csvDate.split("/") : csvDate.split("-");
+  if (parts.length !== 3) return csvDate;
 
-    if (arrow && raceList) {
-      arrow.classList.toggle('open', raceList.classList.contains('open'));
-    }
-  } else {
-    const raceTab = document.querySelector('.tab[data-tab="races"]');
-    const arrow = raceTab?.querySelector('.arrow');
-    const dropdown = document.getElementById('race-dropdown');
+  const day = parseInt(parts[2], 10);
+  const monthIndex = parseInt(parts[1], 10) - 1;
+  const year = parseInt(parts[0], 10);
 
-    if (arrow && dropdown) {
-      arrow.classList.toggle('open', dropdown.classList.contains('open'));
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  let suffix = "th";
+  if (day === 1 || day === 21 || day === 31) suffix = "st";
+  else if (day === 2 || day === 22) suffix = "nd";
+  else if (day === 3 || day === 23) suffix = "rd";
+
+  return `${day}${suffix} ${months[monthIndex]} ${year}`;
+}
+
+function buildCourseTabs(list) {
+  const container = document.getElementById("smallTabsContainer");
+  container.innerHTML = "";
+
+  list.forEach(course => {
+    const tab = document.createElement("div");
+    tab.className = "small-tab" + (course === "LATEST" ? " latest-tab active" : "");
+    tab.textContent = course;
+
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".small-tab").forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      selectedCourse = course;
+      if (course === "LATEST") buildTimeTabsForLatest();
+      else buildTimeTabsForCourse(course);
+    });
+
+    container.appendChild(tab);
+  });
+}
+
+function buildTimeTabsForLatest() {
+  const container = document.getElementById("sideTabsContainer");
+  container.innerHTML = "";
+
+  // Check if data is loaded
+  if (!resultsDataLoaded || allResultsRows.length === 0) {
+    container.innerHTML = '<div class="loading">Loading results data...</div>';
+    return;
+  }
+
+  const now = new Date();
+  const nowHM = now.getHours() * 100 + now.getMinutes();
+  let finished = allTimes.filter(t => {
+    const [h, m] = t.time.split(":").map(Number);
+    return (h * 100 + m) < nowHM;
+  });
+  if (finished.length === 0) finished = [...allTimes];
+
+  finished.sort((a, b) => {
+    const [ha, ma] = a.time.split(":").map(Number);
+    const [hb, mb] = b.time.split(":").map(Number);
+    return (hb * 100 + mb) - (ha * 100 + ma);
+  });
+
+  const uniqueTimes = [];
+  const seen = new Set();
+  for (const item of finished) {
+    if (!seen.has(item.time)) {
+      uniqueTimes.push(item.time);
+      seen.add(item.time);
     }
   }
+
+  const latest3 = uniqueTimes.slice(0, 10);
+
+  if (latest3.length === 0) {
+    container.innerHTML = '<div class="no-data">No recent races found</div>';
+    return;
+  }
+
+  latest3.forEach((time, i) => {
+    const tab = document.createElement("div");
+    tab.className = "side-tab" + (i === 0 ? " active" : "");
+    tab.textContent = time;
+    if (i === 0) selectedTime = time;
+
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".side-tab").forEach(s => s.classList.remove("active"));
+      tab.classList.add("active");
+      selectedTime = time;
+      updateContentPlaceholder();
+    });
+
+    container.appendChild(tab);
+  });
+
+  updateContentPlaceholder();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Initialize horse navigation
-  horseRaceMap = {};
+function buildTimeTabsForCourse(course) {
+  const container = document.getElementById("sideTabsContainer");
+  container.innerHTML = "";
 
-  // Load essential data first
+  const list = courseToTimes[course] || [];
+  list.forEach((time, index) => {
+    const tab = document.createElement("div");
+    tab.className = "side-tab" + (index === 0 ? " active" : "");
+    tab.textContent = time;
+    if (index === 0) selectedTime = time;
+
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".side-tab").forEach(s => s.classList.remove("active"));
+      tab.classList.add("active");
+      selectedTime = time;
+      updateContentPlaceholder();
+    });
+
+    container.appendChild(tab);
+  });
+
+  updateContentPlaceholder();
+}
+
+function updateContentPlaceholder() {
+  const content = document.querySelector(".tab-display-area .tab-placeholder");
+  content.innerHTML = "";
+
+  // Check if data is ready
+  if (!resultsDataLoaded || allResultsRows.length === 0) {
+    content.innerHTML = '<div class="loading">Loading race results...</div>';
+    return;
+  }
+
+  const rowsToShow = allResultsRows.filter(r => {
+    const course = r[1]?.trim();
+    const time = convertRaceTime(r[3]?.trim());
+    if (selectedCourse === "LATEST") return selectedTime === time;
+    return course === selectedCourse && time === selectedTime;
+  });
+
+  if (rowsToShow.length === 0) {
+    content.innerHTML = '<div class="no-data">No results available for this race.</div>';
+    return;
+  }
+
+  const raceContainer = document.createElement("div");
+  raceContainer.className = "race-container";
+  const first = rowsToShow[0];
+  const raceDate = formatRaceDate(first[2]);
+  const fixedTime = fixTime12(first[3]);
+  const courseName = first[1];
+  const classDistanceGoingSurface = `${first[5]} | ${first[6]} | ${first[7]} | ${first[8]}`;
+
+  raceContainer.innerHTML = `
+    <div class="race-topline-date">${raceDate}</div>
+    <div class="race-topline-time-course">${fixedTime} - ${courseName}</div>
+    <div class="race-topline-details">${classDistanceGoingSurface}</div>
+  `;
+
+  const table = document.createElement("table");
+  table.className = "results-table";
+  const header = document.createElement("tr");
+  ["Pos", "Horse", "SP", "Jockey", "Trainer", "Age", "Wgt"].forEach(h => {
+    const th = document.createElement("th");
+    th.textContent = h;
+    header.appendChild(th);
+  });
+  table.appendChild(header);
+
+  rowsToShow.forEach((r, rowIndex) => {
+    const tr = document.createElement("tr");
+    const silkUrl = r[21];
+    const horseName = r[10];
+    const horseWithSilk = silkUrl
+      ? `<img src="${silkUrl}" class="silk-icon" onerror="this.style.display='none'"> ${horseName}`
+      : horseName;
+
+    const draw = r[14] ? ` (${r[14]})` : "";
+    const spRaw = r[13] ?? "";
+    const fracOdds = decimalToFractional(spRaw);
+    const newWeight = lbsToStoneLb(r[17]);
+
+    const tdMapping = [
+      r[12] + draw,
+      horseWithSilk,
+      fracOdds,
+      r[15],
+      r[16],
+      r[11],
+      newWeight
+    ];
+
+    tdMapping.forEach((val, colIndex) => {
+      const td = document.createElement("td");
+      td.innerHTML = val;
+
+      if (colIndex === 0 && rowIndex !== 0) {
+        const beatenBy = r[18] || "";
+        if (beatenBy) td.innerHTML += `<div class="beaten-by"><small>輸距離: ${beatenBy}</small></div>`;
+      }
+
+      tr.appendChild(td);
+    });
+
+    table.appendChild(tr);
+
+    const infoRow = document.createElement("tr");
+    const infoCell = document.createElement("td");
+    infoCell.colSpan = 7;
+    const comment = r[19] || "";
+    const finish = r[20] || "";
+    infoCell.innerHTML = `
+      <div class="extra-info">
+        ${comment ? `<div><b>Comment:</b> ${comment}</div>` : ""}
+        ${finish ? `<div><b>Finish Time:</b> ${finish}</div>` : ""}
+      </div>
+    `;
+    infoRow.appendChild(infoCell);
+    table.appendChild(infoRow);
+  });
+
+  raceContainer.appendChild(table);
+  content.appendChild(raceContainer);
+}
+
+// ===============================
+// 🔵 INITIALIZATION & EVENT HANDLERS
+// ===============================
+document.addEventListener("DOMContentLoaded", function () {
+  // Initialize tab handlers
+  const tabHandlers = {
+    "race-tab": () => showTab("races"),
+    "drops-tab": () => showTab("drops"),
+    "results-tab": () => {
+      showTab("results");
+      loadResultsCSV();
+    }
+  };
+
+  Object.entries(tabHandlers).forEach(([id, handler]) => {
+    const element = document.getElementById(id);
+    if (element) element.addEventListener("click", handler);
+  });
+
+  // Load initial data
+  horseRaceMap = {};
   loadRacecard();
   loadDropOdds();
 
@@ -2117,48 +1955,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, 1000);
 
+  // Set up race dropdown interactions
   const raceTab = document.querySelector('.tab[data-tab="races"]');
   const dropdown = document.getElementById('race-dropdown');
   const arrow = raceTab?.querySelector('.arrow');
-  const tabs = document.querySelectorAll('.tab-bar .tab');
-  const raceDetails = document.getElementById('race-details');
-  const dropOddsDiv = document.getElementById('drop-odds');
-  const subbar = document.getElementById('race-subbar-container');
   const raceCourses = document.getElementById('race-courses');
-  const raceArrowTab = document.querySelector('.tab-button.arrow-tab');
-  const raceList = document.getElementById('race-list');
-
-  function updateSubbarVisibility(activeTabName) {
-    if (!subbar) return;
-    subbar.style.display = activeTabName === 'races' ? 'flex' : 'none';
-  }
-
-  function showRaceForms() {
-    document.querySelectorAll('.race-form-container').forEach(c => {
-      c.style.display = 'block';
-      if (!c.innerHTML.trim()) {
-        const horseName = c.getAttribute('data-horse') || '';
-        c.innerHTML = createRaceFormTable(horseName);
-      }
-    });
-  }
-
-  function updateRaceListVisibility() {
-    if (!raceArrowTab || !raceList) return;
-    const activeTab = document.querySelector('.tab-bar .tab-button.active')?.dataset.tab;
-    const isMobile = window.innerWidth <= 1024;
-
-    if (isMobile) {
-      raceArrowTab.style.display = (activeTab === 'races' || activeTab === 'race-card') ? 'flex' : 'none';
-      if (activeTab !== 'races' && activeTab !== 'race-card') {
-        raceList.classList.remove('open');
-      }
-    } else {
-      raceArrowTab.style.display = '';
-      raceList.classList.remove('open');
-    }
-    updateRaceArrow();
-  }
 
   if (arrow) {
     arrow.addEventListener('click', (e) => {
@@ -2167,34 +1968,6 @@ document.addEventListener('DOMContentLoaded', () => {
       updateRaceArrow();
     });
   }
-
-  if (raceArrowTab && raceList) {
-    raceArrowTab.addEventListener('click', (e) => {
-      e.stopPropagation();
-      raceList.classList.toggle('open');
-      updateRaceArrow();
-    });
-  }
-
-  document.addEventListener('click', (e) => {
-    const isMobile = window.innerWidth <= 1024;
-    const topTabs = document.querySelectorAll('.tab-bar .tab-button');
-    const clickedOnTopTab = Array.from(topTabs).some(tab => tab.contains(e.target));
-
-    if (!isMobile) {
-      if (dropdown && raceTab && dropdown.classList.contains('open') &&
-        !dropdown.contains(e.target) && !raceTab.contains(e.target)) {
-        dropdown.classList.remove('open');
-        updateRaceArrow();
-      }
-    } else {
-      if (raceList && raceArrowTab &&
-        (clickedOnTopTab || (!raceList.contains(e.target) && !raceArrowTab.contains(e.target)))) {
-        raceList.classList.remove('open');
-        updateRaceArrow();
-      }
-    }
-  });
 
   if (raceCourses) {
     raceCourses.addEventListener('click', (e) => {
@@ -2209,12 +1982,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (globalRaceRows[raceKey]) {
           displayRace(globalRaceRows[raceKey], raceKey);
-          showRaceForms();
         }
 
         const isMobile = window.innerWidth <= 1024;
         if (isMobile) {
-          raceList.classList.remove('open');
+          const raceList = document.getElementById('race-list');
+          if (raceList) raceList.classList.remove('open');
         } else {
           dropdown.classList.remove('open');
         }
@@ -2223,46 +1996,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      const activeTabName = tab.dataset.tab;
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-
-      updateSubbarVisibility(activeTabName);
-      if (raceDetails) raceDetails.style.display = 'none';
-      if (dropOddsDiv) dropOddsDiv.style.display = 'none';
-
-      if (activeTabName === 'drops') {
-        if (dropOddsDiv) dropOddsDiv.style.display = 'block';
-        loadDropOdds();
-        showRaceForms();
-      } else if (activeTabName === 'races') {
-        if (raceDetails) raceDetails.style.display = 'block';
-        showRaceForms();
-        if (typeof loadRacecard === 'function') {
-          const prevScroll = window.scrollY || document.documentElement.scrollTop;
-          loadRacecard();
-          setTimeout(() => window.scrollTo(0, prevScroll), 200);
-        }
-      }
-
-      localStorage.setItem('activeTab', activeTabName);
-      updateRaceListVisibility();
-    });
-  });
-
-  function initTabs() {
-    document.querySelectorAll('.tab-bar .tab-button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-bar .tab-button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        localStorage.setItem('activeTab', btn.dataset.tab);
-        updateRaceListVisibility();
-      });
-    });
-  }
-
+  // Set up auto-refresh intervals
   function startAutoRefresh() {
     setInterval(() => {
       const activeTab = localStorage.getItem('activeTab') || 'races';
@@ -2272,43 +2006,67 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (activeTab === 'drops' || activeTab === 'drop-log') {
         loadDropOdds();
       }
-    }, 10 * 60 * 1000); // 10 minutes
+    }, 10 * 60 * 1000);
   }
 
-  initTabs();
-  updateRaceListVisibility();
+  // Set interval for results refresh
+  setInterval(() => {
+    if (activeTab === 'results') {
+      loadResultsCSV();
+    }
+  }, 10 * 60 * 1000);
+
   startAutoRefresh();
 
-  const lastTab = localStorage.getItem('activeTab') || 'races';
-  document.querySelector(`.tab-bar .tab[data-tab="${lastTab}"]`)?.click();
-
+  // Restore last position
   const lastPosition = localStorage.getItem('scrollPosition');
   if (lastPosition) setTimeout(() => window.scrollTo(0, parseInt(lastPosition)), 0);
 
+  // Save scroll position before unload
   window.addEventListener('beforeunload', () => {
     localStorage.setItem('scrollPosition', window.scrollY || document.documentElement.scrollTop);
   });
 
-  let resizeTimeout;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(updateRaceListVisibility, 250);
+  // Memory cleanup
+  window.addEventListener('beforeunload', function () {
+    allResultsRows = [];
+    globalRaceRows = {};
+    horseRaceMap = {};
+    masterJockeyMap = {};
+    masterTrainerMap = {};
   });
+
+  showTab(activeTab);
 });
 
-// Add cleanup function for memory management
-window.addEventListener('beforeunload', function () {
-  // Clear large data structures
-  allResultsRows = [];
-  globalRaceRows = {};
+// Global function for manual refresh
+function refreshAllData() {
+  console.log('🔄 Manually refreshing all data...');
+  racecardDataLoaded = false;
+  dropOddsDataLoaded = false;
   horseRaceMap = {};
-  masterJockeyMap = {};
-  masterTrainerMap = {};
-});
 
-// Set interval for results refresh with longer interval
-setInterval(() => {
-  if (activeTab === 'results') {
-    loadResultsCSV();
-  }
-}, 10 * 60 * 1000); // 10 minutes
+  // Clear cache
+  localStorage.removeItem('racecardData');
+  localStorage.removeItem('racecardDataTime');
+  localStorage.removeItem('dropOddsData');
+  localStorage.removeItem('dropOddsDataTime');
+  localStorage.removeItem('resultsCSV');
+  localStorage.removeItem('resultsCSVTime');
+
+  loadRacecard();
+  loadDropOdds();
+
+  setTimeout(() => {
+    addHorseClickHandlers();
+  }, 2000);
+}
+
+// Global function for race form toggle
+window.toggleRaceForm = function () {
+  const showRaceForm = localStorage.getItem('showRaceForm') === 'true';
+  const newValue = !showRaceForm;
+  localStorage.setItem('showRaceForm', newValue);
+  const raceDetails = document.getElementById('race-details');
+  if (raceDetails) raceDetails.style.display = newValue ? 'block' : 'none';
+};
