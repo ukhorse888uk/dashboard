@@ -517,8 +517,13 @@ function formatWeight(weightStr) {
   }
 
   return weightStr;
-}
+}// Global variables
 
+// Global variables
+
+let raceFormVisibilityState = {};
+
+// Load race form data from CSV
 function loadRaceFormData() {
   Papa.parse("https://ukhorse888uk.github.io/dashboard/csv/raceform2.csv?cb=" + Date.now(), {
     download: true,
@@ -581,8 +586,51 @@ function loadRaceFormData() {
   });
 }
 
+function cleanText(str) {
+  if (!str) return '';
+  // Allow £ symbol (unicode 00A3) and standard ASCII
+  return str.replace(/[^\x20-\x7E\xA3]/g, '-');
+}
+
+function updateAllRaceForms() {
+  document.querySelectorAll('.race-form-container').forEach(c => {
+    const horseName = c.getAttribute('data-horse') || '';
+    const horseId = c.getAttribute('data-horse-id');
+
+    if (raceFormVisibilityState[horseId] === false) {
+      c.style.display = 'none';
+    } else {
+      c.style.display = 'block';
+      if (!c.innerHTML || c.innerHTML.trim() === '') {
+        c.innerHTML = createRaceFormTable(horseName);
+      }
+      raceFormVisibilityState[horseId] = true;
+    }
+  });
+}
+
+function formatWeight(weightStr) {
+  if (!weightStr) return '';
+
+  const match = weightStr.match(/(\d+)\s*st\s*(\d+)\s*lb/i);
+  if (match) {
+    const stones = match[1];
+    const pounds = match[2];
+    return `${stones}-${pounds}`;
+  }
+
+  const lbs = parseInt(weightStr, 10);
+  if (!isNaN(lbs)) {
+    const stones = Math.floor(lbs / 14);
+    const pounds = lbs % 14;
+    return `${stones}-${pounds}`;
+  }
+
+  return weightStr;
+}
+
 function decimalToFraction(decimal) {
-  if (!decimal) return '';
+  if (!decimal || isNaN(decimal)) return '';
   const tolerance = 1.0E-6;
   let h1 = 1, h2 = 0, k1 = 0, k2 = 1, b = decimal;
   do {
@@ -594,7 +642,26 @@ function decimalToFraction(decimal) {
   return h1 + '/' + k1;
 }
 
+function formatColumnGNumber(numberStr) {
+  if (!numberStr) return '';
 
+  // Extract only the integer part (ignore decimals)
+  const integerMatch = numberStr.toString().match(/^(\d+)/);
+  if (!integerMatch) return '';
+
+  const num = parseInt(integerMatch[1], 10);
+  if (isNaN(num) || num === 0) return '';
+
+  // Extract the hundreds digit (third digit from right)
+  const hundredsDigit = Math.floor((num % 1000) / 100);
+
+  // Determine rounding direction
+  const roundedValue = hundredsDigit >= 5
+    ? Math.ceil(num / 1000)  // Round up
+    : Math.floor(num / 1000); // Round down
+
+  return '£' + roundedValue + 'K';
+}
 
 function createRaceFormTable(horseName) {
   if (Object.keys(raceFormData).length === 0) {
@@ -624,12 +691,9 @@ function createRaceFormTable(horseName) {
     return result;
   }
 
-  // Detect screen mode ONCE at the beginning
-  const isMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
-
   let html = '<table class="race-form-table"><thead><tr>';
-  html += '<th>日期</th><th>賽事資料</th><th>重量</th>';
-  html += '<th><span class="full-header">（1L = 1個馬位）</span><span class="simplified-header">賽果</span></th>';
+  html += '<th>日期</th><th>賽事資料 勝出獎金 £</th><th>重量</th>';
+  html += '<th><span class="full-header">1L = 1個馬位</span><span class="simplified-header">（賽果）賠率</span></th>';
   html += '<th>騎師</th><th>OR</th><th>TS</th><th>RPR</th>';
   html += '</tr></thead><tbody>';
 
@@ -644,7 +708,7 @@ function createRaceFormTable(horseName) {
       }
     }
 
-    const mergedRaw = [race.colC, race.colH, race.colI, race.colD, race.colE]
+    const mergedRaw = [race.colC, race.colH, race.colI, race.colD, race.colE, formatColumnGNumber(race.colG)]
       .filter(x => x && x.toString().trim() !== '')
       .map(cleanText)
       .join(' ');
@@ -678,7 +742,11 @@ function createRaceFormTable(horseName) {
     }
 
     // Create simplified text for mobile portrait
-    const simplifiedText = `(${kL})`; // Just (12/13)
+    let simplifiedText = `(${kL})`;
+    if (race.colT) {
+      const fraction = decimalToFraction(parseFloat(race.colT) - 1);
+      simplifiedText += ' ' + fraction;
+    }
 
     // Use both spans so CSS can toggle between them
     const col4 = `<span class="full-text">${fullText}</span><span class="simplified-text">${simplifiedText}</span>`;
@@ -689,14 +757,14 @@ function createRaceFormTable(horseName) {
     const col8 = cleanText(race.colAA);
 
     html += `<tr>
-        <td>${formattedDate}</td>
-        <td>${mergedTranslated}</td>
-        <td>${weight}</td>
-        <td>${col4}</td>
-        <td>${col5}</td>
-        <td>${col6}</td>
-        <td>${col7}</td>
-        <td>${col8}</td>
+        <td class="race-form-date">${formattedDate}</td>
+        <td class="race-form-details">${mergedTranslated}</td>
+        <td class="race-form-weight">${weight}</td>
+        <td class="race-form-result">${col4}</td>
+        <td class="race-form-jockey">${col5}</td>
+        <td class="race-form-or">${col6}</td>
+        <td class="race-form-ts">${col7}</td>
+        <td class="race-form-rpr">${col8}</td>
       </tr>`;
   });
 
@@ -724,6 +792,14 @@ async function translateToChinese(text) {
     return text;
   }
 }
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  const raceDetails = document.getElementById('race-details');
+  if (raceDetails) {
+    raceDetails.addEventListener('mousedown', e => e.preventDefault());
+  }
+});
 
 function displayRace(raceRows, raceKey) {
   const raceDetails = document.getElementById('race-details');
