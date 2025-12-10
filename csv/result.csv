@@ -1,265 +1,179 @@
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,
+No. Race / Course,Course,Date,Time,Race Name,Class,Distance (f),Going,Surface,Number,Horse,age,Position,Decimal Odds,Draw,Jockey,Trainer,Weight (lbs),Beaten By,,,
+Dundalk (AW) (IRE),Dundalk (AW) (IRE),2025-12-10,3:10,Dundalk Stadium Gift Vouchers Available Online Maiden,,5f,Standard,AW,6,Heaven's Wish (IRE),3,1,1.83,7,Colin Keane,Diego Dias,129,0,Prominent - led then ridden over 1f out - kept on(op Evens tchd 6/5),01:01.0,https://www.rp-assets.com/svg/1/9/5/266591.svg
+2,Dundalk (AW) (IRE),2025-12-10,3:10,Dundalk Stadium Gift Vouchers Available Online Maiden,,5f,Standard,AW,2,Woolridge (GB),3,2,4,6,W J Lee,A Oliver,134,1.25,Towards rear - headway from 2f out - went second 1f out - kept on but no match for winner(tchd 11/4),01:01.2,https://www.rp-assets.com/svg/i/6/9/16696i.svg
+Hereford,Dundalk (AW) (IRE),2025-12-10,3:10,Dundalk Stadium Gift Vouchers Available Online Maiden,,5f,Standard,AW,8,Star Allure (IRE),3,3,67,4,Sadhbh Tormey,Ms Claire O'Connell,119,1.75,Led - headed over 1f out - lost second 1f out - weakened gradually final furlong(op 100/1),01:01.4,https://www.rp-assets.com/svg/7/3/2/351237.svg
+7,Dundalk (AW) (IRE),2025-12-10,3:10,Dundalk Stadium Gift Vouchers Available Online Maiden,,5f,Standard,AW,1,Astute Power (IRE),3,4,13,1,Ben Coen,Edward Lynam,134,1,Dwelt start - in rear - outpaced halfway - headway over 1f out - no impression final furlong(op 9/1 tchd 8/1),01:01.6,https://www.rp-assets.com/svg/5/7/2/123275.svg
+Hexham,Dundalk (AW) (IRE),2025-12-10,3:10,Dundalk Stadium Gift Vouchers Available Online Maiden,,5f,Standard,AW,3,Before You Go (IRE),3,5,4.5,3,Shane Foley,Daniel James Murphy,129,4,Took keen hold - ran green throughout - prominent - weakened from over 1f out(op 10/3),01:02.3,https://www.rp-assets.com/svg/1/3/5/142531.svg
+6,Dundalk (AW) (IRE),2025-12-10,3:10,Dundalk Stadium Gift Vouchers Available Online Maiden,,5f,Standard,AW,4,Bye Bye Now (IRE),3,6,12,2,Chris Hayes,John C McConnell,129,2.75,Dwelt start - took keen hold - ran green throughout - towards rear - raced wide and in touch with leaders after 2f - ducked left and weakened final furlong(op 12/1),01:02.7,https://www.rp-assets.com/svg/8/5/6/204658.svg
+Leicester,Dundalk (AW) (IRE),2025-12-10,3:10,Dundalk Stadium Gift Vouchers Available Online Maiden,,5f,Standard,AW,7,Insallysfootsteps (IRE),3,7,51,8,Luke McAteer,John James Feane,129,3.5,Slowly away - always behind(op 33/1 tchd 28/1),01:03.3,https://www.rp-assets.com/svg/b/4/1/97714b.svg
+7,Dundalk (AW) (IRE),2025-12-10,3:10,Dundalk Stadium Gift Vouchers Available Online Maiden,,5f,Standard,AW,5,Dark Enigma (GB),4,8,151,5,Seamie Heffernan,J G Murray,129,0.3,In touch with leaders - lost position 2f out - soon struggling(op 80/1),01:03.4,https://www.rp-assets.com/svg/9/0/8/246809.svg
+,Dundalk (AW) (IRE),2025-12-10,3:45,Christmas Party Nights At Dundalk Stadium Claiming Race,,12f,Standard,AW,1,Benavente (GB),7,1,5.5,13,J M Sheridan,Denis Gerard Hogan,132,0,(tchd 4/1),-,https://www.rp-assets.com/svg/2/9/0/254092.svg
+,Dundalk (AW) (IRE),2025-12-10,3:45,Christmas Party Nights At Dundalk Stadium Claiming Race,,12f,Standard,AW,11,Theophilos (IRE),6,2,5,12,Nicola Burns,Gerard Keane,117,0,(op 6/1 tchd 13/2),-,https://www.rp-assets.com/svg/c/2/0/118202c.svg
+,Dundalk (AW) (IRE),2025-12-10,3:45,Christmas Party Nights At Dundalk Stadium Claiming Race,,12f,Standard,AW,6,Porsche Lad (IRE),4,3,2.25,6,Colin Keane,Denis Gerard Hogan,128,0,(op Evens tchd 11/8),-,https://www.rp-assets.com/svg/e/2/9/254092e.svg
+,Dundalk (AW) (IRE),2025-12-10,3:45,Christmas Party Nights At Dundalk Stadium Claiming Race,,12f,Standard,AW,7,Stormie Outlook (IRE),6,4,19,4,Seamie Heffernan,Andrew Slattery,128,0,,-,https://www.rp-assets.com/svg/5/9/9/159995.svg
+,Dundalk (AW) (IRE),2025-12-10,3:45,Christmas Party Nights At Dundalk Stadium Claiming Race,,12f,Standard,AW,4,Money Shuffler (IRE),5,0,151,7,Jack Cleary,W M Roper,123,0,(op 80/1),-,https://www.rp-assets.com/svg/0/6/3/28360.svg
+,Dundalk (AW) (IRE),2025-12-10,3:45,Christmas Party Nights At Dundalk Stadium Claiming Race,,12f,Standard,AW,5,North Winterfell (GB),4,0,8,1,Luke McAteer,C Byrnes,128,0,Took keen hold - held up in rear(op 16/1 tchd 18/1),-,https://www.rp-assets.com/svg/0/1/3/332310.svg
+,Dundalk (AW) (IRE),2025-12-10,3:45,Christmas Party Nights At Dundalk Stadium Claiming Race,,12f,Standard,AW,10,Carslake (GB),6,0,201,10,Jessica O'Gorman,Aengus King,115,0,Ducked right start(op 150/1),-,https://www.rp-assets.com/svg/3/8/0/150083.svg
+,Dundalk (AW) (IRE),2025-12-10,3:45,Christmas Party Nights At Dundalk Stadium Claiming Race,,12f,Standard,AW,12,Timandi (IRE),3,0,41,8,Rory Cleary,James M Barrett,121,0,(op 25/1),-,https://www.rp-assets.com/svg/0/3/9/212930.svg
+,Dundalk (AW) (IRE),2025-12-10,3:45,Christmas Party Nights At Dundalk Stadium Claiming Race,,12f,Standard,AW,9,Run Maggie Run (IRE),3,0,251,11,Killian Leonard,Miss Katy Brown,123,0,(op 100/1 tchd 300/1),-,https://www.rp-assets.com/svg/7/8/5/174587.svg
+,Dundalk (AW) (IRE),2025-12-10,3:45,Christmas Party Nights At Dundalk Stadium Claiming Race,,12f,Standard,AW,3,Tell Me This (IRE),7,0,251,5,Robbie Colgan,Andrew Kinirons,132,0,Dwelt start(op 200/1),-,https://www.rp-assets.com/svg/7/9/9/364997.svg
+,Dundalk (AW) (IRE),2025-12-10,3:45,Christmas Party Nights At Dundalk Stadium Claiming Race,,12f,Standard,AW,13,Joy Pain And Sky (IRE),3,0,51,3,Yudish Geerdharry,John S O'Donoghue,112,0,(op 66/1),-,https://www.rp-assets.com/svg/9/9/4/196499.svg
+,Dundalk (AW) (IRE),2025-12-10,3:45,Christmas Party Nights At Dundalk Stadium Claiming Race,,12f,Standard,AW,8,Fleetfootsoldier (IRE),5,0,10,2,Shane Foley,Denis Gerard Hogan,126,0,(op 6/1),-,https://www.rp-assets.com/svg/c/2/9/254092c.svg
+,Dundalk (AW) (IRE),2025-12-10,3:45,Christmas Party Nights At Dundalk Stadium Claiming Race,,12f,Standard,AW,2,Loyal Touch (IRE),5,0,11,9,Alan Casey,Denis Gerard Hogan,125,0,Ducked right start(op 8/1 tchd 15/2),-,https://www.rp-assets.com/svg/c/7/2/230927c.svg
+,Hereford,2025-12-10,1:05,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div II),Class 4,16f,Good To Soft,Turf,8,Vol Royale (IRE),5,1,4.2,,Harry Cobden,Kayley Woollacott,158,0,Made all - ridden and went clear before last - readily(op 11/4 tchd 10/3),04:05.1,https://www.rp-assets.com/svg/7/6/4/363467.svg
+,Hereford,2025-12-10,1:05,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div II),Class 4,16f,Good To Soft,Turf,2,Gnomon (GB),4,2,1.67,,Kevin Brogan,Toby Lawes,158,6,In touch with leaders - not fluent 2 out - headway and went second after 2 out - no extra run-in(op 4/5 tchd 8/13 and tchd 5/6),04:06.4,https://www.rp-assets.com/svg/5/4/2/365245.svg
+,Hereford,2025-12-10,1:05,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div II),Class 4,16f,Good To Soft,Turf,9,Green Sky (IRE),5,3,5.5,,Jack Tudor,David Pipe,151,16,Prominent - not fluent 3 out - weakened before last(op 4/1 tchd 7/2),04:10.0,https://www.rp-assets.com/svg/7/3/3/354337.svg
+,Hereford,2025-12-10,1:05,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div II),Class 4,16f,Good To Soft,Turf,1,Get In Order (IRE),5,4,9,,James Davies,Henry Oliver,158,0.3,Prominent - weakened before last(op 10/1 tchd 15/2),04:10.0,https://www.rp-assets.com/svg/8/7/5/169578.svg
+,Hereford,2025-12-10,1:05,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div II),Class 4,16f,Good To Soft,Turf,11,Western Ginny (IRE),4,5,301,,James Best,Harriet Dickin,151,4.75,Took keen hold - towards rear - headway before 2 out - bumped 2 out - weakened before last(op 200/1 tchd 400/1),04:11.1,https://www.rp-assets.com/svg/9/6/0/168069.svg
+,Hereford,2025-12-10,1:05,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div II),Class 4,16f,Good To Soft,Turf,6,Peace In The Park (FR),5,6,126,,Finn Lambert,D J Jeffreys,155,2,In touch with leaders - weakened before 2 out(op 50/1),04:11.5,https://www.rp-assets.com/svg/2/1/7/268712.svg
+,Hereford,2025-12-10,1:05,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div II),Class 4,16f,Good To Soft,Turf,4,My Boy Beasty (GB),7,7,51,,Nick Slatter,David Killahena & Graeme McPherson,155,0.5,In rear - headway before 4th - slightly hampered 2 out - soon weakened(op 40/1 tchd 66/1),04:11.7,https://www.rp-assets.com/svg/6/0/6/343606.svg
+,Hereford,2025-12-10,1:05,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div II),Class 4,16f,Good To Soft,Turf,3,Manhattan Valley (FR),5,8,101,,Mr J J Murphy-Knight,Christian Williams,151,0.75,In rear - weakened before 2 out(op 125/1 tchd 150/1),04:11.8,https://www.rp-assets.com/svg/2/7/3/253372.svg
+,Hereford,2025-12-10,1:05,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div II),Class 4,16f,Good To Soft,Turf,7,Valenciaga (IRE),4,9,26,,Callum Pritchard,Sheila Lewis,155,11,Raced in last - headway before 3 out - not fluent 2 out - soon weakened(op 28/1 tchd 22/1),04:14.3,https://www.rp-assets.com/svg/9/1/8/176819.svg
+,Hereford,2025-12-10,1:05,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div II),Class 4,16f,Good To Soft,Turf,10,Night Burlesque (GB),4,PU,41,,Toby Wynne,Mel Rowley,151,-,In touch with leaders - weakened quickly before 2 out - pulled up before last,-,https://www.rp-assets.com/svg/7/3/3/327337.svg
+,Hereford,2025-12-10,1:05,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div II),Class 4,16f,Good To Soft,Turf,5,Pay Dirt (GB),5,PU,301,,Ben Poste,Nikki Evans,158,-,Towards rear - weakened before 4 out - not fluent 4 out - pulled up before 3 out(op 250/1),-,https://www.rp-assets.com/svg/1/2/4/330421.svg
+,Hereford,2025-12-10,1:35,Betwright Bangers N'Cash Maiden Hurdle (GBB Race),Class 4,19.5f,Good To Soft,Turf,7,Laguna Beach (FR),4,1,6.5,,Nico de Boinville,Nicky Henderson,158,0,Took keen hold - prominent - not fluent 2 out - 2 lengths second last - ridden run-in - led towards finish(op 4/1),04:55.6,https://www.rp-assets.com/svg/b/5/5/355855b.svg
+,Hereford,2025-12-10,1:35,Betwright Bangers N'Cash Maiden Hurdle (GBB Race),Class 4,19.5f,Good To Soft,Turf,3,Catchintsavo (IRE),5,2,6,,Rex Dingle,Anthony Honeyball,158,1.25,Led - ridden home turn - 2 lengths ahead last - headed towards finish(op 7/1),04:55.9,https://www.rp-assets.com/svg/0/9/8/350890.svg
+,Hereford,2025-12-10,1:35,Betwright Bangers N'Cash Maiden Hurdle (GBB Race),Class 4,19.5f,Good To Soft,Turf,8,Loaded And Locked (IRE),5,3,1.83,,Harry Cobden,Emma Lavelle,158,10,Prominent - not fluent 4th - lost position 5th - headway on outer 2 out - 2 1/2 lengths down last - weakened run-in(op 6/5 tchd 4/5),04:58.1,https://www.rp-assets.com/svg/0/3/7/237730.svg
+,Hereford,2025-12-10,1:35,Betwright Bangers N'Cash Maiden Hurdle (GBB Race),Class 4,19.5f,Good To Soft,Turf,5,Jukebox King (IRE),5,4,4.5,,Jonathan Burke,Kim Bailey & Mat Nicholls,158,3.75,Prominent - weakened home turn(op 10/3),04:59.0,https://www.rp-assets.com/svg/0/5/3/365350.svg
+,Hereford,2025-12-10,1:35,Betwright Bangers N'Cash Maiden Hurdle (GBB Race),Class 4,19.5f,Good To Soft,Turf,6,King Sacre (FR),5,5,151,,James Davies,Nigel Hawke,158,34,Never better than midfield - mistake 4th - lost touch before 2 out(op 66/1),05:06.5,https://www.rp-assets.com/svg/b/8/5/261258b.svg
+,Hereford,2025-12-10,1:35,Betwright Bangers N'Cash Maiden Hurdle (GBB Race),Class 4,19.5f,Good To Soft,Turf,2,Can You Hear Me (IRE),4,6,17,,Callum Pritchard,Philip Hobbs & Johnson White,155,2.75,Midfield - weakened 2 out(op 17/2),05:07.1,https://www.rp-assets.com/svg/4/8/1/223184.svg
+,Hereford,2025-12-10,1:35,Betwright Bangers N'Cash Maiden Hurdle (GBB Race),Class 4,19.5f,Good To Soft,Turf,12,Passing Diamond (IRE),5,6,23,,Conor O'Farrell,Neil Mulholland,158,0,Prominent - weakened quickly 2 out(op 18/1),05:07.1,https://www.rp-assets.com/svg/5/1/7/17715.svg
+,Hereford,2025-12-10,1:35,Betwright Bangers N'Cash Maiden Hurdle (GBB Race),Class 4,19.5f,Good To Soft,Turf,9,Lovis De Sceaux (FR),4,8,401,,James Best,Sarah-Jayne Davies,158,22,Midfield - headway and in touch with leaders 5th - weakened before 2 out (vet reported gelding lost his left-fore shoe)(op 250/1 tchd 500/1),05:12.0,https://www.rp-assets.com/svg/9/7/8/146879.svg
+,Hereford,2025-12-10,1:35,Betwright Bangers N'Cash Maiden Hurdle (GBB Race),Class 4,19.5f,Good To Soft,Turf,1,Blazing Saint (GB),4,9,151,,Jack Tudor,Christian Williams,158,3,Novicey jumping - always behind(op 80/1),05:12.7,https://www.rp-assets.com/svg/4/3/4/265434.svg
+,Hereford,2025-12-10,1:35,Betwright Bangers N'Cash Maiden Hurdle (GBB Race),Class 4,19.5f,Good To Soft,Turf,4,Crystal Force (IRE),4,10,251,,Joshua Bryan,Tom Weston,158,0.1,Towards rear - not fluent 6th - lost touch before 2 out(op 80/1),05:12.7,https://www.rp-assets.com/svg/9/9/5/238599.svg
+,Hereford,2025-12-10,1:35,Betwright Bangers N'Cash Maiden Hurdle (GBB Race),Class 4,19.5f,Good To Soft,Turf,13,At Sunrise (GB),4,PU,301,,Joe Anderson,David Weston,148,-,Always behind - slow jump 2nd - tailed off 3 out - pulled up before last(op 150/1),-,https://www.rp-assets.com/svg/7/5/1/129157.svg
+,Hereford,2025-12-10,12:35,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div I),Class 4,16f,Good To Soft,Turf,8,Soomaroy (FR),4,1,1.91,,Nico de Boinville,Nicky Henderson,158,0,Prominent - hampered 2nd - pushed along home turn - ridden to lead before last - ran on run-in(op 8/11),04:01.2,https://www.rp-assets.com/svg/b/5/2/355325b.svg
+,Hereford,2025-12-10,12:35,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div I),Class 4,16f,Good To Soft,Turf,9,Wolf Walker (IRE),6,2,29,,Richard Patrick,Clive Boultbee-Brooks,158,2.25,Led - not fluent 3 out - headed before last - kept on(op 22/1 tchd 33/1),04:01.8,https://www.rp-assets.com/svg/1/5/3/365351.svg
+,Hereford,2025-12-10,12:35,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div I),Class 4,16f,Good To Soft,Turf,6,Onlyforfrankie (IRE),5,3,11,,Jonathan Burke,Alastair Ralph,158,3.5,Midfield - headway 3rd - pressed leaders 2 out - outpaced approaching last(op 11/1 tchd 17/2),04:02.5,https://www.rp-assets.com/svg/1/1/5/364511.svg
+,Hereford,2025-12-10,12:35,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div I),Class 4,16f,Good To Soft,Turf,7,Pioneer Pete (GB),5,4,4,,Richie McLernon,Jonjo & A J O'Neill,158,1.75,Raced in second - lost position and outpaced home turn - kept on run-in(op 7/2),04:02.9,https://www.rp-assets.com/svg/6/8/2/351286.svg
+,Hereford,2025-12-10,12:35,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div I),Class 4,16f,Good To Soft,Turf,11,Lyrical Choice (IRE),4,5,23,,Stan Sheppard,Henry Daly,151,15,Held up in rear - hung left after 3 out - weakened from 2 out (vet reported filly lost her right-fore shoe)(op 28/1),04:06.3,https://www.rp-assets.com/svg/5/6/4/223465.svg
+,Hereford,2025-12-10,12:35,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div I),Class 4,16f,Good To Soft,Turf,1,Corner Forward (IRE),4,6,251,,Kevin Brogan,Anthony Honeyball,158,3.5,Towards rear - headway and in touch with leaders 3rd - weakened from 2 out (jockey said gelding hung left-handed)(op 150/1 tchd 300/1),04:07.0,https://www.rp-assets.com/svg/7/8/8/20887.svg
+,Hereford,2025-12-10,12:35,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div I),Class 4,16f,Good To Soft,Turf,3,Harbour Light (GB),4,7,67,,Toby McCain-Mitchell,Nigel & Willy Twiston-Davies,153,3.5,Midfield - jumped right 2nd - towards rear 4th - weakened from 2 out (vet reported gelding lost his left-fore shoe)(op 150/1),04:07.8,https://www.rp-assets.com/svg/b/7/2/49827b.svg
+,Hereford,2025-12-10,12:35,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div I),Class 4,16f,Good To Soft,Turf,5,Necronaut (GB),5,8,41,,Lorcan Williams,Paul Nicholls,158,22,In touch with leaders - lost position then awkward jump 3rd - in rear 5th - weakened 2 out,04:12.7,https://www.rp-assets.com/svg/8/6/8/223868.svg
+,Hereford,2025-12-10,12:35,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div I),Class 4,16f,Good To Soft,Turf,4,Las Canals (FR),4,9,21,,Craig Nichol,Oliver Greenall & Josh Guerriero,158,9,Midfield - weakened 2 out (vet reported gelding bled from the nose)(op 25/1),04:14.7,https://www.rp-assets.com/svg/6/0/6/323606.svg
+,Hereford,2025-12-10,12:35,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div I),Class 4,16f,Good To Soft,Turf,2,Georgey (IRE),4,PU,101,,Callum Pritchard,Philip Hobbs & Johnson White,155,-,In rear - lost touch 3 out - hung badly left before 2 out - pulled up last (jockey said gelding hung badly left-handed; vet reported gelding lost his right-fore shoe)(op 125/1),-,https://www.rp-assets.com/svg/b/1/0/2801b.svg
+,Hereford,2025-12-10,12:35,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div I),Class 4,16f,Good To Soft,Turf,12,Rock Sensation (IRE),5,UR,4.5,,Kielan Woods,Ben Pauling,151,-,Prominent - jumped badly right and unseated 2nd,-,https://www.rp-assets.com/svg/2/3/3/353332.svg
+,Hereford,2025-12-10,12:35,Betwright Bet The Wright Way Maiden Hurdle (GBB Race) (Div I),Class 4,16f,Good To Soft,Turf,10,Freddiemissmolli (IRE),5,UR,251,,Dylan Johnston,Debra Hamer,151,-,Always behind - bad mistake and unseated last(tchd 300/1),-,https://www.rp-assets.com/svg/4/4/4/322444.svg
+,Hereford,2025-12-10,2:05,Beatwright Beat The Wright Way Handicap Chase (GBB Race),Class 4,25f,Good To Soft,Turf,3,Golan Loop (IRE),5,1,2,,James Bowen,Warren Greatrex,163,0,Pressed leaders - disputed lead from 13th - pushed along 2 out - led narrowly home turn - ridden clear run-in(tchd 10/11),06:31.2,https://www.rp-assets.com/svg/b/7/2/351927b.svg
+,Hereford,2025-12-10,2:05,Beatwright Beat The Wright Way Handicap Chase (GBB Race),Class 4,25f,Good To Soft,Turf,5,Captain Boudet (FR),6,2,7.5,,Lorcan Williams,Jeremy Scott,158,4.5,Prominent - led 11th - joined 13th - lost position home turn - weakened run-in(tchd 6/1),06:32.1,https://www.rp-assets.com/svg/8/3/3/175338.svg
+,Hereford,2025-12-10,2:05,Beatwright Beat The Wright Way Handicap Chase (GBB Race),Class 4,25f,Good To Soft,Turf,6,Mahler Moon (IRE),7,3,4.5,,Jonathan Burke,Fergal O'Brien,151,11,In rear - headway 12th - weakened before 2 out - went third home turn(op 10/3),06:34.6,https://www.rp-assets.com/svg/4/3/0/363034.svg
+,Hereford,2025-12-10,2:05,Beatwright Beat The Wright Way Handicap Chase (GBB Race),Class 4,25f,Good To Soft,Turf,2,Masters Legacy (IRE),10,4,10,,Callum Pritchard,Philip Hobbs & Johnson White,162,48,In rear - headway and pressed leaders 3rd - hit 12th - weakened 2 out - soon lost third,06:45.3,https://www.rp-assets.com/svg/2/3/7/172732.svg
+,Hereford,2025-12-10,2:05,Beatwright Beat The Wright Way Handicap Chase (GBB Race),Class 4,25f,Good To Soft,Turf,1,Plan Of Attack (IRE),12,PU,29,,Tom Broughton,Fergal O'Brien,163,-,Prominent - dropped to last 6th - lost touch and pulled up 12th(tchd 33/1),-,https://www.rp-assets.com/svg/9/8/6/357689.svg
+,Hereford,2025-12-10,2:05,Beatwright Beat The Wright Way Handicap Chase (GBB Race),Class 4,25f,Good To Soft,Turf,4,Striking A Pose (IRE),9,PU,7.5,,Freddie Gingell,Joe Tizzard,161,-,Led - headed and reminder 11th - soon dropped to rear - pulled up 14th(op 8/1 tchd 6/1),-,https://www.rp-assets.com/svg/0/3/5/362530.svg
+,Hereford,2025-12-10,2:35,Betwright Safer Gambling Handicap Hurdle,Class 4,25.5f,Good To Soft,Turf,5,Despereaux (FR),6,1,3.75,,Isabelle Ryder,Jane Williams,152,0,Prominent - disputed lead 3rd - lost position and raced in second 5th - led before 2 out - ridden home turn - faced challenge last - stayed on(op 9/4 tchd 3/1),06:36.2,https://www.rp-assets.com/svg/4/8/4/184484.svg
+,Hereford,2025-12-10,2:35,Betwright Safer Gambling Handicap Hurdle,Class 4,25.5f,Good To Soft,Turf,4,Tzarmix (FR),7,2,2.38,,Jonathan Burke,Alastair Ralph,159,0.5,Pressed leaders - not fluent 3rd - hit 2 out - soon went second - challenging last - kept on(op 13/8 tchd 5/4),06:36.3,https://www.rp-assets.com/svg/8/9/8/358898.svg
+,Hereford,2025-12-10,2:35,Betwright Safer Gambling Handicap Hurdle,Class 4,25.5f,Good To Soft,Turf,2,Faded Fantasy (IRE),6,3,26,,Mr J J Murphy-Knight,Christian Williams,159,5,Led - joined 3rd - led clearly 5th - headed 2 out - outpaced home turn - stayed on when bumped last - soon went third(op 28/1),06:37.4,https://www.rp-assets.com/svg/3/5/3/265353.svg
+,Hereford,2025-12-10,2:35,Betwright Safer Gambling Handicap Hurdle,Class 4,25.5f,Good To Soft,Turf,6,Braganza Bay (GB),8,4,13,,Stan Sheppard,Henry Daly,152,2.5,Held up in rear - headway 7th - lost position 9th - not fluent 10th - rallied 2 out - 2 1/2 lengths third when jumped right and bumped rival then stumbled last - soon no extra(op 17/2 tchd 8/1),06:37.9,https://www.rp-assets.com/svg/8/3/0/323038.svg
+,Hereford,2025-12-10,2:35,Betwright Safer Gambling Handicap Hurdle,Class 4,25.5f,Good To Soft,Turf,3,Ri Na Cuirte (IRE),7,5,4.5,,Toby McCain-Mitchell,Ben Clarke,160,20,In touch with leaders - lost position 8th - weakened before 2 out(tchd 3/1),06:42.4,https://www.rp-assets.com/svg/b/9/4/365349b.svg
+,Hereford,2025-12-10,2:35,Betwright Safer Gambling Handicap Hurdle,Class 4,25.5f,Good To Soft,Turf,7,Blue In The West (IRE),8,6,10,,Callum Pritchard,Ben Lund,143,1.25,In rear - headway 9th - weakened 2 out(op 12/1),06:42.7,https://www.rp-assets.com/svg/1/2/3/305321.svg
+,Hereford,2025-12-10,2:35,Betwright Safer Gambling Handicap Hurdle,Class 4,25.5f,Good To Soft,Turf,1,The Jam Man (IRE),12,PU,101,,Ben Poste,Ryan Potter,170,-,Pressed leaders - awkward jump 4th - soon lost position - dropped to last 8th - pulled up before 10th(op 80/1),-,https://www.rp-assets.com/svg/c/5/9/20995c.svg
+,Hereford,2025-12-10,3:05,Green Dragon Hotel Handicap Chase,Class 5,21f,Good To Soft,Turf,6,Kingcormac (IRE),9,1,8.5,,Callum Pritchard,Joe Tickle,149,0,(op 8/1),-,https://www.rp-assets.com/svg/1/1/7/324711.svg
+,Hereford,2025-12-10,3:05,Green Dragon Hotel Handicap Chase,Class 5,21f,Good To Soft,Turf,5,Cornish Comedy (GB),5,2,13,,Charlie Price,Robbie Llewellyn,152,6,(op 16/1),-,https://www.rp-assets.com/svg/1/6/4/353461.svg
+,Hereford,2025-12-10,3:05,Green Dragon Hotel Handicap Chase,Class 5,21f,Good To Soft,Turf,10,Martalmix'jac (FR),8,3,19,,Toby Wynne,Mel Rowley,148,9.5,(op 12/1 tchd 16/1),-,https://www.rp-assets.com/svg/1/0/5/310501.svg
+,Hereford,2025-12-10,3:05,Green Dragon Hotel Handicap Chase,Class 5,21f,Good To Soft,Turf,3,Call Me Arthur (IRE),6,4,8,,Stan Sheppard,Tom Lacey,163,5,(op 9/1),-,https://www.rp-assets.com/svg/0/3/6/120630.svg
+,Hereford,2025-12-10,3:05,Green Dragon Hotel Handicap Chase,Class 5,21f,Good To Soft,Turf,9,Danny's Friend (IRE),6,5,2.88,,Jack Tudor,Christian Williams,149,5,(op 5/2 tchd 2/1),-,https://www.rp-assets.com/svg/2/4/6/34642.svg
+,Hereford,2025-12-10,3:05,Green Dragon Hotel Handicap Chase,Class 5,21f,Good To Soft,Turf,8,Jack Doyen (IRE),9,6,17,,Jack Quinlan,Ben Case,149,10,(tchd 14/1),-,https://www.rp-assets.com/svg/b/8/8/247388b.svg
+,Hereford,2025-12-10,3:05,Green Dragon Hotel Handicap Chase,Class 5,21f,Good To Soft,Turf,4,Steady The Ship (IRE),9,PU,101,,Ben Poste,Steph Cameron,159,-,(op 80/1),-,https://www.rp-assets.com/svg/b/4/8/345384b.svg
+,Hereford,2025-12-10,3:05,Green Dragon Hotel Handicap Chase,Class 5,21f,Good To Soft,Turf,7,Sweet Nightingale (GB),8,PU,13,,Rex Dingle,Polly Gundry,151,-,(op 10/1 tchd 14/1),-,https://www.rp-assets.com/svg/c/7/6/310367c.svg
+,Hereford,2025-12-10,3:05,Green Dragon Hotel Handicap Chase,Class 5,21f,Good To Soft,Turf,1,Great d'Ange (FR),9,PU,51,,Tom Broughton,Alexander Gibbons,163,-,(op 66/1),-,https://www.rp-assets.com/svg/4/4/4/286444.svg
+,Hereford,2025-12-10,3:05,Green Dragon Hotel Handicap Chase,Class 5,21f,Good To Soft,Turf,12,Noah's Light (IRE),8,PU,17,,Harry Kimber,Richenda Ford,146,-,(tchd 14/1 and tchd 18/1),-,https://www.rp-assets.com/svg/0/5/8/165850.svg
+,Hereford,2025-12-10,3:05,Green Dragon Hotel Handicap Chase,Class 5,21f,Good To Soft,Turf,11,Boys Of Wexford (GB),8,PU,9.5,,James Davies,Henry Oliver,147,-,(op 7/1),-,https://www.rp-assets.com/svg/8/7/5/169578.svg
+,Hereford,2025-12-10,3:05,Green Dragon Hotel Handicap Chase,Class 5,21f,Good To Soft,Turf,13,Dark Soldier (IRE),6,PU,67,,Finn Lambert,Sheila Lewis,142,-,(op 50/1),-,https://www.rp-assets.com/svg/b/3/7/229273b.svg
+,Hereford,2025-12-10,3:05,Green Dragon Hotel Handicap Chase,Class 5,21f,Good To Soft,Turf,2,Move With The Beat (IRE),6,RR,4.5,,Joe Anderson,Jamie Snowden,162,-,(op 11/4),-,https://www.rp-assets.com/svg/1/6/6/129661.svg
+,Hereford,2025-12-10,3:37,Accasion Marquees Mares' Novices' Limited Handicap Hurdle,Class 5,19.5f,Good To Soft,Turf,10,Jamaicaine (FR),6,1,1.8,,Richie McLernon,Neil Mulholland,149,0,In touch with leaders - prominent halfway - pressed leader before 2 out - nudged along to lead before last - soon clear - easily(op 11/10 tchd 6/5),-,https://www.rp-assets.com/svg/7/8/8/20887.svg
+,Hereford,2025-12-10,3:37,Accasion Marquees Mares' Novices' Limited Handicap Hurdle,Class 5,19.5f,Good To Soft,Turf,12,Santa Sabina (GB),8,2,34,,Finn Lambert,Richard Phillips,143,7.5,In rear - headway into midfield on outer before 4th - steady headway before 3 out - outpaced before last - rallied inside final 110yds - no match for winner(op 28/1),-,https://www.rp-assets.com/svg/5/0/6/161605.svg
+,Hereford,2025-12-10,3:37,Accasion Marquees Mares' Novices' Limited Handicap Hurdle,Class 5,19.5f,Good To Soft,Turf,7,Conniemak (GB),4,3,21,,James Bowen,Tim Vaughan,156,2,Jumped right 4th(tchd 25/1),-,https://www.rp-assets.com/svg/5/4/2/354245.svg
+,Hereford,2025-12-10,3:37,Accasion Marquees Mares' Novices' Limited Handicap Hurdle,Class 5,19.5f,Good To Soft,Turf,9,Masonbrook Meadow (IRE),4,4,15,,James Best,Seamus Mullins,151,9,(op 16/1),-,https://www.rp-assets.com/svg/9/0/3/316309.svg
+,Hereford,2025-12-10,3:37,Accasion Marquees Mares' Novices' Limited Handicap Hurdle,Class 5,19.5f,Good To Soft,Turf,1,Kupka Vallis (FR),5,5,8,,Richard Patrick,Clive Boultbee-Brooks,166,1,(op 5/1),-,https://www.rp-assets.com/svg/9/7/8/313879.svg
+,Hereford,2025-12-10,3:37,Accasion Marquees Mares' Novices' Limited Handicap Hurdle,Class 5,19.5f,Good To Soft,Turf,5,Crackerjack Queen (IRE),5,6,41,,Jack Andrews,T Ellis,159,17,(op 33/1),-,https://www.rp-assets.com/svg/1/7/7/3771.svg
+,Hereford,2025-12-10,3:37,Accasion Marquees Mares' Novices' Limited Handicap Hurdle,Class 5,19.5f,Good To Soft,Turf,3,Calli Black (IRE),7,7,13,,James Davies,David Weston,166,8,Taken down early - not fluent 6th - not fluent 3 out(tchd 14/1),-,https://www.rp-assets.com/svg/7/5/1/129157.svg
+,Hereford,2025-12-10,3:37,Accasion Marquees Mares' Novices' Limited Handicap Hurdle,Class 5,19.5f,Good To Soft,Turf,6,Jewel Of Windsor (FR),6,8,19,,Conor O'Farrell,Neil Mulholland,161,8.5,(op 11/1 tchd 20/1),-,https://www.rp-assets.com/svg/0/5/0/330050.svg
+,Hereford,2025-12-10,3:37,Accasion Marquees Mares' Novices' Limited Handicap Hurdle,Class 5,19.5f,Good To Soft,Turf,11,Seventeenothree (IRE),5,9,8,,Mr Joshua Newman,Kayley Woollacott,143,1.75,(op 17/2),-,https://www.rp-assets.com/svg/3/2/6/212623.svg
+,Hereford,2025-12-10,3:37,Accasion Marquees Mares' Novices' Limited Handicap Hurdle,Class 5,19.5f,Good To Soft,Turf,8,Imperial Pride (IRE),9,PU,15,,Charlie Todd,David Dennis,155,-,(tchd 20/1),-,https://www.rp-assets.com/svg/3/4/6/238643.svg
+,Hereford,2025-12-10,3:37,Accasion Marquees Mares' Novices' Limited Handicap Hurdle,Class 5,19.5f,Good To Soft,Turf,13,Sawpit Samantha (GB),7,PU,41,,Tabitha Worsley,Jo Davis,142,-,(op 28/1),-,https://www.rp-assets.com/svg/9/0/9/82909.svg
+,Hereford,2025-12-10,3:37,Accasion Marquees Mares' Novices' Limited Handicap Hurdle,Class 5,19.5f,Good To Soft,Turf,2,Wednesday Addams (GB),6,PU,21,,Jack Quinlan,Ben Case,166,-,(op 16/1),-,https://www.rp-assets.com/svg/5/9/5/328595.svg
+,Hereford,2025-12-10,3:37,Accasion Marquees Mares' Novices' Limited Handicap Hurdle,Class 5,19.5f,Good To Soft,Turf,4,Jokers 'n' Clowns (IRE),6,PU,19,,Lorcan Williams,Jeremy Scott,166,-,(op 16/1 tchd 14/1 and tchd 20/1),-,https://www.rp-assets.com/svg/5/4/3/346345.svg
+,Hexham,2025-12-10,1:25,Paxtons Now Stocking Stihl Equipment Maiden Hurdle (GBB Race),Class 4,20f,Heavy,Turf,6,Tashkhan (IRE),7,1,3.25,,Brian Hughes,Brian Ellison,158,0,In touch with leaders - headway and ridden and pressed leader before last - not fluent last - led inside final 110yds - kept on(op 10/3 tchd 85/40),05:54.2,https://www.rp-assets.com/svg/g/4/7/292374g.svg
+,Hexham,2025-12-10,1:25,Paxtons Now Stocking Stihl Equipment Maiden Hurdle (GBB Race),Class 4,20f,Heavy,Turf,3,Cushendun (GB),6,2,13,,Callum Bewley,Ian Duncan,158,0.5,Prominent - not fluent 2nd - not fluent 4 out - led 2 out - headed and no extra inside final 110yds(op 17/2 tchd 15/2),05:54.3,https://www.rp-assets.com/svg/0/9/9/275990.svg
+,Hexham,2025-12-10,1:25,Paxtons Now Stocking Stihl Equipment Maiden Hurdle (GBB Race),Class 4,20f,Heavy,Turf,5,Kool Raoul (FR),5,3,6,,Derek Fox,Lucinda Russell & Michael Scudamore,158,8.5,Prominent - not fluent 3 out - weakened before last(op 7/2 tchd 11/2),05:56.4,https://www.rp-assets.com/svg/7/0/7/56707.svg
+,Hexham,2025-12-10,1:25,Paxtons Now Stocking Stihl Equipment Maiden Hurdle (GBB Race),Class 4,20f,Heavy,Turf,2,Cold Henry (GB),6,4,81,,Aaron Anderson,Sara Ender,153,8,In rear - not fluent 3 out - headway after 2 out - weakened before last(op 66/1),05:58.4,https://www.rp-assets.com/svg/2/5/4/308452.svg
+,Hexham,2025-12-10,1:25,Paxtons Now Stocking Stihl Equipment Maiden Hurdle (GBB Race),Class 4,20f,Heavy,Turf,8,Whiskey On Ice (IRE),5,5,17,,Bruce Lynn,N W Alexander,158,6.5,Towards rear - not fluent 2nd - weakened before last(op 9/1),06:00.0,https://www.rp-assets.com/svg/0/8/3/53380.svg
+,Hexham,2025-12-10,1:25,Paxtons Now Stocking Stihl Equipment Maiden Hurdle (GBB Race),Class 4,20f,Heavy,Turf,4,Knockeranna Rose (IRE),5,6,17,,Conor Rabbitt,Susan Corbett,153,4.25,Towards rear - not fluent 3rd - weakened before last(op 22/1),06:01.1,https://www.rp-assets.com/svg/9/3/0/357039.svg
+,Hexham,2025-12-10,1:25,Paxtons Now Stocking Stihl Equipment Maiden Hurdle (GBB Race),Class 4,20f,Heavy,Turf,7,Union Avenue (IRE),6,PU,2,,Charlotte Jones,James Moffatt,158,-,Led - not fluent 5th - headed 2 out - weakened and pulled up before last(op 6/5 tchd 10/11 and tchd 5/4),-,https://www.rp-assets.com/svg/b/5/0/327105b.svg
+,Hexham,2025-12-10,1:25,Paxtons Now Stocking Stihl Equipment Maiden Hurdle (GBB Race),Class 4,20f,Heavy,Turf,1,Blue Indigo (GB),5,PU,251,,Edward Austin,Gary Rutherford,153,-,In touch with leaders - weakened after 2 out - pulled up before last(op 200/1 tchd 150/1),-,https://www.rp-assets.com/svg/3/0/1/50103.svg
+,Hexham,2025-12-10,1:55,Buttermere Handicap Hurdle (Go North Cab On Target Series Qualifier),Class 4,20f,Heavy,Turf,5,King Gris (FR),5,1,1.36,,Charlie Maggs,Gordon Elliott,137,0,Raced in last - ridden and led before last - not fluent last - headed after last - rallied and led again inside final 110yds - kept on(op 30/100 tchd 2/7),05:58.2,https://www.rp-assets.com/svg/4/5/2/335254.svg
+,Hexham,2025-12-10,1:55,Buttermere Handicap Hurdle (Go North Cab On Target Series Qualifier),Class 4,20f,Heavy,Turf,3,Getaway Master (IRE),8,2,3.25,,Joshua Thompson,Micky Hammond,141,1.5,Raced in second - slow jump 2nd - pressed winner before last - briefly led after last - headed and no extra inside final 110yds(op 3/1 tchd 10/3),05:58.6,https://www.rp-assets.com/svg/5/6/3/255365.svg
+,Hexham,2025-12-10,1:55,Buttermere Handicap Hurdle (Go North Cab On Target Series Qualifier),Class 4,20f,Heavy,Turf,4,Pure Sirloin (IRE),7,3,19,,Patrick Wadge,Sandy Forster,148,7.5,Didn't always jump with fluency - led - not fluent 3 out - headed and weakened before last - not fluent last(op 20/1),06:00.4,https://www.rp-assets.com/svg/3/9/1/179193.svg
+,Hexham,2025-12-10,12:55,Seasons Greetings From Hexham Bookmakers Mares' Novices' Hurdle (Herring Queen Series Qual') (GBB),Class 4,16f,Heavy,Turf,1,Azahara Palace (GB),5,1,3.12,,Brian Hughes,Adrian Paul Keatley,154,0,Prominent - not fluent 4 out - led before last - wandered on approach last - ridden run-in - kept on(op 2/1 tchd 5/2),04:43.4,https://www.rp-assets.com/svg/0/3/5/151530.svg
+,Hexham,2025-12-10,12:55,Seasons Greetings From Hexham Bookmakers Mares' Novices' Hurdle (Herring Queen Series Qual') (GBB),Class 4,16f,Heavy,Turf,3,Mad Mag (IRE),7,2,10,,Peter Kavanagh,Joel Parkinson & Sue Smith,154,2.75,Led - not fluent 2 out - headed before last - no extra run-in(op 16/1 tchd 17/2),04:44.1,https://www.rp-assets.com/svg/7/3/8/286837.svg
+,Hexham,2025-12-10,12:55,Seasons Greetings From Hexham Bookmakers Mares' Novices' Hurdle (Herring Queen Series Qual') (GBB),Class 4,16f,Heavy,Turf,6,Trinity Street (IRE),4,3,1.62,,David Bass,Henry Daly,154,4.5,Prominent - not fluent 1st - dropped to last before 2 out - not fluent 2 out - headway and pressed leaders before last - weakened run-in(op 8/15 tchd 4/9),04:45.2,https://www.rp-assets.com/svg/9/2/4/237429.svg
+,Hexham,2025-12-10,12:55,Seasons Greetings From Hexham Bookmakers Mares' Novices' Hurdle (Herring Queen Series Qual') (GBB),Class 4,16f,Heavy,Turf,4,Moira My Love (GB),4,4,251,,Alan Doyle,Ian Duncan,151,5,Raced in last - headway before 2 out - pressed leaders after 2 out - weakened before last(tchd 200/1 and tchd 300/1),04:46.5,https://www.rp-assets.com/svg/b/9/3/52639b.svg
+,Hexham,2025-12-10,12:55,Seasons Greetings From Hexham Bookmakers Mares' Novices' Hurdle (Herring Queen Series Qual') (GBB),Class 4,16f,Heavy,Turf,5,Mystical Martika (IRE),4,5,13,,Derek Fox,Lucinda Russell & Michael Scudamore,154,2.5,Pressed leader - not fluent 4th - weakened before last(op 14/1 tchd 10/1 and tchd 16/1),04:47.1,https://www.rp-assets.com/svg/7/5/3/351357.svg
+,Hexham,2025-12-10,2:25,Robert & Helen Carr-Smith Wedding Anniversary Handicap Hurdle,Class 5,23.5f,Heavy,Turf,3,Adveram (GB),6,1,5,,Callum Bewley,Ian Duncan,166,0,In touch with leaders - headway before 4 out - ridden before 2 out - pressed leader before last - led inside final 110yds - kept on,06:58.7,https://www.rp-assets.com/svg/6/4/9/194946.svg
+,Hexham,2025-12-10,2:25,Robert & Helen Carr-Smith Wedding Anniversary Handicap Hurdle,Class 5,23.5f,Heavy,Turf,1,Guernesey (FR),9,2,6,,Joshua Thompson,Jackie Stephen,161,0.3,In touch with leaders - not fluent 3 out - headway before 2 out - pressed leader before last - pressed winner inside final 110yds - just held(op 6/1),06:58.8,https://www.rp-assets.com/svg/8/7/3/203378.svg
+,Hexham,2025-12-10,2:25,Robert & Helen Carr-Smith Wedding Anniversary Handicap Hurdle,Class 5,23.5f,Heavy,Turf,4,Superior Glance (GB),10,3,12,,Jack Hogan,Gary Hanmer,160,1.75,Led - ridden and went clear after 2 out - much reduced lead before last - not fluent last - headed and no extra inside final 110yds(op 16/1),06:59.2,https://www.rp-assets.com/svg/4/7/3/278374.svg
+,Hexham,2025-12-10,2:25,Robert & Helen Carr-Smith Wedding Anniversary Handicap Hurdle,Class 5,23.5f,Heavy,Turf,6,Moveonbuy (GB),5,4,17,,Joe Williamson,Andrew Crook,150,14,Towards rear - headway before 2 out - weakened before last(op 14/1),07:02.7,https://www.rp-assets.com/svg/1/2/6/359621.svg
+,Hexham,2025-12-10,2:25,Robert & Helen Carr-Smith Wedding Anniversary Handicap Hurdle,Class 5,23.5f,Heavy,Turf,7,West Lawn (GB),9,5,12,,Harry Reed,James Walton,145,12,Midfield - headway before 7th - went second before 2 out - weakened before last(op 18/1 tchd 10/1),07:05.7,https://www.rp-assets.com/svg/7/4/8/91847.svg
+,Hexham,2025-12-10,2:25,Robert & Helen Carr-Smith Wedding Anniversary Handicap Hurdle,Class 5,23.5f,Heavy,Turf,5,Coventry (IRE),8,6,5,,Peter Kavanagh,Lisa Harrison,153,1,Towards rear - not fluent 5th - weakened before last(op 3/1),07:05.9,https://www.rp-assets.com/svg/6/0/8/350806.svg
+,Hexham,2025-12-10,2:25,Robert & Helen Carr-Smith Wedding Anniversary Handicap Hurdle,Class 5,23.5f,Heavy,Turf,8,Solway Primrose (GB),11,PU,34,,Charlie Maggs,Lisa Harrison,139,-,In rear - weakened and pulled up before last(tchd 40/1),-,https://www.rp-assets.com/svg/b/6/7/249876b.svg
+,Hexham,2025-12-10,2:25,Robert & Helen Carr-Smith Wedding Anniversary Handicap Hurdle,Class 5,23.5f,Heavy,Turf,9,Walk My Way (IRE),7,PU,29,,Alice Stevens,Micky Hammond,139,-,In rear - weakened and pulled up before last,-,https://www.rp-assets.com/svg/2/0/2/364202.svg
+,Hexham,2025-12-10,2:25,Robert & Helen Carr-Smith Wedding Anniversary Handicap Hurdle,Class 5,23.5f,Heavy,Turf,2,Wee Alki (IRE),6,PU,3.25,,Conor Rabbitt,Susan Corbett,163,-,Midfield - dropped to last before 4 out - weakened before 3 out - pulled up before last(op 2/1),-,https://www.rp-assets.com/svg/4/0/8/356804.svg
+,Hexham,2025-12-10,2:55,Ursa Major Event Of Sivola Memorial Handicap Chase (Go North Monet's Garden Series Qualifier) (GBB),Class 4,20f,Heavy,Turf,5,Heeztheboy (IRE),8,1,2.75,,Jack Hogan,Gary Hanmer,158,0,(op 9/4 tchd 13/8 and tchd 5/2),05:52.4,https://www.rp-assets.com/svg/5/2/2/250225.svg
+,Hexham,2025-12-10,2:55,Ursa Major Event Of Sivola Memorial Handicap Chase (Go North Monet's Garden Series Qualifier) (GBB),Class 4,20f,Heavy,Turf,1,Walking On A Dream (IRE),6,2,9,,Derek Fox,Lucinda Russell & Michael Scudamore,169,3.25,(tchd 9/1),05:53.2,https://www.rp-assets.com/svg/b/9/2/350829b.svg
+,Hexham,2025-12-10,2:55,Ursa Major Event Of Sivola Memorial Handicap Chase (Go North Monet's Garden Series Qualifier) (GBB),Class 4,20f,Heavy,Turf,8,King Of Cong (IRE),7,3,17,,Tom Midgley,Sam England,150,21,(op 15/2),05:58.5,https://www.rp-assets.com/svg/5/1/3/334315.svg
+,Hexham,2025-12-10,2:55,Ursa Major Event Of Sivola Memorial Handicap Chase (Go North Monet's Garden Series Qualifier) (GBB),Class 4,20f,Heavy,Turf,7,The Jeweller's Pet (IRE),6,4,23,,Alan Doyle,Ian Duncan,152,1.25,(op 16/1 tchd 25/1),05:58.8,https://www.rp-assets.com/svg/b/9/3/52639b.svg
+,Hexham,2025-12-10,2:55,Ursa Major Event Of Sivola Memorial Handicap Chase (Go North Monet's Garden Series Qualifier) (GBB),Class 4,20f,Heavy,Turf,4,Halpha Soleil (FR),8,5,21,,Brian Hughes,Micky Hammond,163,5,(op 11/1),06:00.0,https://www.rp-assets.com/svg/8/7/4/327478.svg
+,Hexham,2025-12-10,2:55,Ursa Major Event Of Sivola Memorial Handicap Chase (Go North Monet's Garden Series Qualifier) (GBB),Class 4,20f,Heavy,Turf,6,Zumbi (GER),8,PU,101,,Charlotte Jones,James Moffatt,156,-,(op 66/1 tchd 50/1),-,https://www.rp-assets.com/svg/2/0/9/316902.svg
+,Hexham,2025-12-10,2:55,Ursa Major Event Of Sivola Memorial Handicap Chase (Go North Monet's Garden Series Qualifier) (GBB),Class 4,20f,Heavy,Turf,3,Orkney Blue (GB),7,PU,7,,Bruce Lynn,N W Alexander,163,-,(op 7/1),-,https://www.rp-assets.com/svg/7/8/9/214987.svg
+,Hexham,2025-12-10,2:55,Ursa Major Event Of Sivola Memorial Handicap Chase (Go North Monet's Garden Series Qualifier) (GBB),Class 4,20f,Heavy,Turf,2,Truckers Cruising (IRE),7,UR,2.62,,Carl Millar,Gordon Elliott,160,-,(op 2/1 tchd 5/4),-,https://www.rp-assets.com/svg/b/7/3/362737b.svg
+,Hexham,2025-12-10,3:25,Tant Pis Handicap Chase (Go North One Man Series Qualifier),Class 5,15.5f,Heavy,Turf,4,Stick With Me Sam (FR),6,1,4.2,,Brian Hughes,Tom Gretton,157,0,(op 5/2 tchd 9/4),04:43.3,https://www.rp-assets.com/svg/3/1/3/338313.svg
+,Hexham,2025-12-10,3:25,Tant Pis Handicap Chase (Go North One Man Series Qualifier),Class 5,15.5f,Heavy,Turf,2,Dixie Cowboy (IRE),6,2,3.5,,Callum Bewley,Sam England,165,8,(op 15/8),04:45.3,https://www.rp-assets.com/svg/5/7/2/316275.svg
+,Hexham,2025-12-10,3:25,Tant Pis Handicap Chase (Go North One Man Series Qualifier),Class 5,15.5f,Heavy,Turf,9,Cudgel (GB),12,3,4,,Danny McMenamin,James Walton,142,1.75,(op 6/1),04:45.7,https://www.rp-assets.com/svg/7/4/8/91847.svg
+,Hexham,2025-12-10,3:25,Tant Pis Handicap Chase (Go North One Man Series Qualifier),Class 5,15.5f,Heavy,Turf,1,Treaty Boy (IRE),8,4,9,,Ross Chapman,Stuart Coltherd,168,15,(op 9/1 tchd 7/1),04:49.5,https://www.rp-assets.com/svg/4/8/5/364584.svg
+,Hexham,2025-12-10,3:25,Tant Pis Handicap Chase (Go North One Man Series Qualifier),Class 5,15.5f,Heavy,Turf,8,Blended Stealth (GB),8,5,11,,Peter Kavanagh,Lizzie Quinlan,147,8,(op 8/1 tchd 11/1),04:51.5,https://www.rp-assets.com/svg/0/3/0/333030.svg
+,Hexham,2025-12-10,3:25,Tant Pis Handicap Chase (Go North One Man Series Qualifier),Class 5,15.5f,Heavy,Turf,7,Kingston Rock (IRE),7,PU,13,,Edward Austin,Gary Rutherford,147,-,(tchd 17/2),-,https://www.rp-assets.com/svg/1/4/2/274241.svg
+,Hexham,2025-12-10,3:25,Tant Pis Handicap Chase (Go North One Man Series Qualifier),Class 5,15.5f,Heavy,Turf,6,Stowaway John (IRE),11,UR,15,,Stephen Mulqueen,Sandy Forster,152,-,(op 22/1),-,https://www.rp-assets.com/svg/0/8/2/50280.svg
+,Hexham,2025-12-10,3:25,Tant Pis Handicap Chase (Go North One Man Series Qualifier),Class 5,15.5f,Heavy,Turf,3,Aill Dubh (IRE),8,UR,26,,Alice Stevens,Micky Hammond,155,-,(op 20/1 tchd 18/1),-,https://www.rp-assets.com/svg/5/6/3/255365.svg
+,Leicester,2025-12-10,1:15,Weatherbys nhstallions.co.uk Maiden Hurdle (GBB Race),Class 3,15.5f,Heavy,Turf,5,The Cistercian (IRE),5,1,6,,Charlie Hammond,Stuart Edmunds,158,0,Jumped left on occasions - took keen hold - held up in rear - headway before 3 out (usual 4 out) - led before 2 out - shaken up and went clear approaching last - ran on well run-in - easily(op 5/2 tchd 2/1),04:03.8,https://www.rp-assets.com/svg/4/5/3/365354.svg
+,Leicester,2025-12-10,1:15,Weatherbys nhstallions.co.uk Maiden Hurdle (GBB Race),Class 3,15.5f,Heavy,Turf,7,Onefournine (IRE),5,2,8.5,,Jonjo O'Neill Jr,Jonjo & A J O'Neill,151,12,Held up in rear - headway after 3 out (usual 4 out) - jumped left and bumped rival 2 out - chased clear leader approaching last - weakened run-in - no match for winner(op 9/2),04:06.8,https://www.rp-assets.com/svg/0/6/6/308660.svg
+,Leicester,2025-12-10,1:15,Weatherbys nhstallions.co.uk Maiden Hurdle (GBB Race),Class 3,15.5f,Heavy,Turf,2,Catch On Me (FR),5,3,3.25,,Charlie Deutsch,Venetia Williams,158,4.25,Led - went clear 3rd - reduced lead 3 out (usual 4 out) - headed before 2 out - soon lost position - rallied approaching last - went third again run-in(op 7/1),04:07.9,https://www.rp-assets.com/svg/2/0/2/352202.svg
+,Leicester,2025-12-10,1:15,Weatherbys nhstallions.co.uk Maiden Hurdle (GBB Race),Class 3,15.5f,Heavy,Turf,4,Northanger Abbey (IRE),5,4,9,,Mr Ben Sutton,Philip Hobbs & Johnson White,153,5.5,Prominent - weakened quickly approaching last(op 11/2),04:09.3,https://www.rp-assets.com/svg/9/1/9/39919.svg
+,Leicester,2025-12-10,1:15,Weatherbys nhstallions.co.uk Maiden Hurdle (GBB Race),Class 3,15.5f,Heavy,Turf,1,Caballero Cliff (GB),4,5,3,,Ciaran Gethings,Robert Stephens,158,6,Raced wide - in touch with leaders - not fluent 4th - bumped 2 out - weakened quickly approaching last(op 5/2 tchd 7/4),04:10.8,https://www.rp-assets.com/svg/6/1/9/351916.svg
+,Leicester,2025-12-10,1:15,Weatherbys nhstallions.co.uk Maiden Hurdle (GBB Race),Class 3,15.5f,Heavy,Turf,6,Lady Dapple Rose (IRE),4,6,11,,Sam Twiston-Davies,Harriet Dickin,151,1.5,Prominent - lost position 4th - weakened approaching last(op 12/1 tchd 14/1),04:11.1,https://www.rp-assets.com/svg/4/3/2/355234.svg
+,Leicester,2025-12-10,1:15,Weatherbys nhstallions.co.uk Maiden Hurdle (GBB Race),Class 3,15.5f,Heavy,Turf,3,Joe Masseria (IRE),6,PU,51,,Tom Bellamy,Ryan Potter,158,-,Towards rear - lost ground quickly and pulled up before 2 out(op 40/1),-,https://www.rp-assets.com/svg/b/7/0/305907b.svg
+,Leicester,2025-12-10,1:45,Weatherbys Global Stallions App Mares' Handicap Chase (Queen Boudicca Mares' Chase Qualifier) (GBB),Class 4,16f,Good,Turf,2,Irish Chorus (GB),6,1,3.5,,Tom Bellamy,Alan King,164,0,Jumped left on occasions - held up in last - went second 3 out - led 2 out - pushed along when jumped badly left last - ridden and kept on well run-in(op 11/4),04:09.4,https://www.rp-assets.com/svg/6/8/0/2086.svg
+,Leicester,2025-12-10,1:45,Weatherbys Global Stallions App Mares' Handicap Chase (Queen Boudicca Mares' Chase Qualifier) (GBB),Class 4,16f,Good,Turf,1,Settle Down Jill (IRE),5,2,1.57,,Harry Skelton,Dan Skelton,168,1.75,Led - briefly headed before 3rd - headed 2 out - soon outpaced - kept on run-in(tchd 8/15 and tchd 8/13),04:09.7,https://www.rp-assets.com/svg/3/2/1/362123.svg
+,Leicester,2025-12-10,1:45,Weatherbys Global Stallions App Mares' Handicap Chase (Queen Boudicca Mares' Chase Qualifier) (GBB),Class 4,16f,Good,Turf,4,Lynsey Larue (IRE),6,3,7,,Sean Bowen,Evan Williams,142,9.5,Prominent - briefly led before 3rd - outpaced 3 out - soon lost position - slow jump and lost touch last(op 11/2),04:11.6,https://www.rp-assets.com/svg/3/2/0/25023.svg
+,Leicester,2025-12-10,12:15,Racing Excellence Conditional Jockeys' Training Series Handicap Hurdle (Part Of The RE Series),Class 5,15.5f,Heavy,Turf,6,Thankyouandplease (FR),5,1,3.5,,Chad Bament,Syd Hosie,159,0,Held up in rear - smooth headway to lead before 2 out - nudged along and went clear last - eased and reduced lead final 110yds - readily(tchd 9/4),04:12.0,https://www.rp-assets.com/svg/1/3/1/326131.svg
+,Leicester,2025-12-10,12:15,Racing Excellence Conditional Jockeys' Training Series Handicap Hurdle (Part Of The RE Series),Class 5,15.5f,Heavy,Turf,1,Aggagio (FR),7,2,3.5,,Ben Pollard,Gary & Josh Moore,160,2.25,Prominent - outpaced approaching last - kept on run-in - no match for winner,04:12.6,https://www.rp-assets.com/svg/7/7/1/308177.svg
+,Leicester,2025-12-10,12:15,Racing Excellence Conditional Jockeys' Training Series Handicap Hurdle (Part Of The RE Series),Class 5,15.5f,Heavy,Turf,5,Lupus Regem (GB),9,3,41,,Benjamin Macey,Harriet Dickin,162,11,In touch with leaders - headway to lead 3 out (usual 4 out) - headed before 2 out - weakened quickly run-in(tchd 50/1),04:15.3,https://www.rp-assets.com/svg/7/9/9/268997.svg
+,Leicester,2025-12-10,12:15,Racing Excellence Conditional Jockeys' Training Series Handicap Hurdle (Part Of The RE Series),Class 5,15.5f,Heavy,Turf,4,Raffles Nobu (FR),5,4,3.75,,Rian Corcoran,Nick Scholfield,160,3.5,Led - briefly headed 4th - headed 3 out (usual 4 out) - outpaced 2 out - weakened run-in(op 10/3),04:16.2,https://www.rp-assets.com/svg/7/9/8/119897.svg
+,Leicester,2025-12-10,12:15,Racing Excellence Conditional Jockeys' Training Series Handicap Hurdle (Part Of The RE Series),Class 5,15.5f,Heavy,Turf,2,Snapius (IRE),6,5,5,,Freddie Keighley,James Owen,167,10,Held up in rear - slow jump 3rd - outpaced 2 out - not fluent and weakened last(op 7/2),04:18.7,https://www.rp-assets.com/svg/2/4/7/348742.svg
+,Leicester,2025-12-10,12:15,Racing Excellence Conditional Jockeys' Training Series Handicap Hurdle (Part Of The RE Series),Class 5,15.5f,Heavy,Turf,7,Port Or Starboard (IRE),8,6,15,,Lewis Saunders,Bernard Llewellyn,155,5,In touch with leaders - outpaced and dropped to rear 2 out - soon lost touch(op 16/1 tchd 12/1),04:19.9,https://www.rp-assets.com/svg/3/3/2/310233.svg
+,Leicester,2025-12-10,12:15,Racing Excellence Conditional Jockeys' Training Series Handicap Hurdle (Part Of The RE Series),Class 5,15.5f,Heavy,Turf,3,Almeirinda (FR),6,7,29,,Murray Dodd,Venetia Williams,163,38,Pressed leader - briefly led 4th - weakened quickly before 2 out - tailed off(op 25/1),04:29.4,https://www.rp-assets.com/svg/3/7/9/272973.svg
+,Leicester,2025-12-10,12:45,Weatherbys Stallion Book 'National Hunt' Handicap Chase,Class 5,22.5f,Good,Turf,8,Amazing Cleni (FR),5,1,13,,Tom Bellamy,Kim Bailey & Mat Nicholls,151,0,Towards rear - headway 11th - pushed along 3 out - ridden and went third approaching last - kept on well run-in - led final 110yds - stayed on(tchd 14/1),06:00.8,https://www.rp-assets.com/svg/7/5/8/222857.svg
+,Leicester,2025-12-10,12:45,Weatherbys Stallion Book 'National Hunt' Handicap Chase,Class 5,22.5f,Good,Turf,9,Nine Nine Nine (GB),8,2,6.5,,Shane Fenelon,Sarah-Jayne Davies,146,1.5,Prominent - pressed leaders 13th - led 14th - hung left after 3 out - headed and outpaced final 110yds(op 6/1),06:01.1,https://www.rp-assets.com/svg/4/2/6/197624.svg
+,Leicester,2025-12-10,12:45,Weatherbys Stallion Book 'National Hunt' Handicap Chase,Class 5,22.5f,Good,Turf,1,Kingston Gent (IRE),5,3,6.5,,Jonjo O'Neill Jr,Philip Hobbs & Johnson White,168,2,Led - headed 4th - briefly led 7th - led again 9th - headed 14th - carried left after 3 out - weakened final 110yds(op 6/1),06:01.5,https://www.rp-assets.com/svg/3/3/0/351033.svg
+,Leicester,2025-12-10,12:45,Weatherbys Stallion Book 'National Hunt' Handicap Chase,Class 5,22.5f,Good,Turf,5,Everyonesacritic (IRE),6,4,5,,Sean Bowen,Evan Williams,156,4,Held up in rear - outpaced 3 out - rallied and kept on run-in - never dangerous(op 9/2 tchd 5/1),06:02.3,https://www.rp-assets.com/svg/5/4/7/169745.svg
+,Leicester,2025-12-10,12:45,Weatherbys Stallion Book 'National Hunt' Handicap Chase,Class 5,22.5f,Good,Turf,6,Ronnies Reflection (GB),7,5,6.5,,Lewis Saunders,Ben Case,150,1,Prominent - lost position gradually approaching last - weakened run-in(op 4/1),06:02.5,https://www.rp-assets.com/svg/3/7/6/98673.svg
+,Leicester,2025-12-10,12:45,Weatherbys Stallion Book 'National Hunt' Handicap Chase,Class 5,22.5f,Good,Turf,4,Mary's Fortune (FR),7,6,26,,Mr Edward Vaughan,Tim Vaughan,157,3.5,In touch with leaders - dropped to rear 8th - headway 14th - outpaced 2 out - not fluent and weakened last,06:03.2,https://www.rp-assets.com/svg/4/7/3/143374.svg
+,Leicester,2025-12-10,12:45,Weatherbys Stallion Book 'National Hunt' Handicap Chase,Class 5,22.5f,Good,Turf,11,Steal The Moves (IRE),5,7,5.5,,Lilly Pinchin,Emma-Jane Bishop,149,2.25,Held up in rear - in touch with leaders 8th - outpaced before 4 out - weakened approaching last(op 5/1),06:03.6,https://www.rp-assets.com/svg/2/6/4/353462.svg
+,Leicester,2025-12-10,12:45,Weatherbys Stallion Book 'National Hunt' Handicap Chase,Class 5,22.5f,Good,Turf,2,Butchers Bill (GB),5,F,23,,Harriet Tucker,Anthony Day,159,-,In touch with leaders - prominent 9th - pressed leader 12th - lost position 4 out - weakening when fell 2 out(op 25/1 tchd 28/1),-,https://www.rp-assets.com/svg/7/3/1/194137.svg
+,Leicester,2025-12-10,12:45,Weatherbys Stallion Book 'National Hunt' Handicap Chase,Class 5,22.5f,Good,Turf,7,Wonder Of The Seas (IRE),7,PU,5.5,,Sam Twiston-Davies,Nigel & Willy Twiston-Davies,152,-,Pressed leader - led 4th - briefly headed 7th - headed 9th - lost position 12th - dropped to rear before 4 out - tailed off when pulled up before 2 out(op 4/1),-,https://www.rp-assets.com/svg/5/2/4/316425.svg
+,Leicester,2025-12-10,2:15,weatherbysshop.co.uk Novices' Hurdle (GBB Race),Class 4,20.5f,Heavy,Turf,2,Kicour La (FR),5,1,1.57,,Ben Jones,Ben Pauling,161,0,Prominent - led after 3 out (usual 4 out) - pushed along when mistake 2 out - ridden and went clear approaching last - kept on well run-in - readily(op 4/9 tchd 8/13),05:30.4,https://www.rp-assets.com/svg/9/6/0/364069.svg
+,Leicester,2025-12-10,2:15,weatherbysshop.co.uk Novices' Hurdle (GBB Race),Class 4,20.5f,Heavy,Turf,3,Arcadian Star (IRE),4,2,10,,Charlie Hammond,Stuart Edmunds,154,13,Prominent - weakened approaching last - no match for winner(op 14/1 tchd 17/2),05:33.6,https://www.rp-assets.com/svg/1/1/5/354511.svg
+,Leicester,2025-12-10,2:15,weatherbysshop.co.uk Novices' Hurdle (GBB Race),Class 4,20.5f,Heavy,Turf,6,Our Bobby Dazzler (GB),5,3,19,,Shane Quinlan,Mel Rowley,151,19,Jumped left on occasions - held up in rear - outpaced 3 out (usual 4 out) - lost touch 2 out - went remote third approaching last(tchd 16/1 and tchd 20/1),05:38.4,https://www.rp-assets.com/svg/7/1/3/217317.svg
+,Leicester,2025-12-10,2:15,weatherbysshop.co.uk Novices' Hurdle (GBB Race),Class 4,20.5f,Heavy,Turf,7,Holetown (FR),5,4,15,,Charlie Deutsch,Venetia Williams,147,3.5,Led - headed after 3 out (usual 4 out) - lost position and weakened before 2 out(op 11/1 tchd 10/1),05:39.2,https://www.rp-assets.com/svg/4/4/6/98644.svg
+,Leicester,2025-12-10,2:15,weatherbysshop.co.uk Novices' Hurdle (GBB Race),Class 4,20.5f,Heavy,Turf,5,Livingit Du Large (FR),4,PU,4,,Gavin Sheehan,Jamie Snowden,154,-,Held up in rear - pushed along briefly 5th - outpaced 3 out (usual 4 out) - weakened and pulled up before 2 out(op 4/1),-,https://www.rp-assets.com/svg/6/1/8/351816.svg
+,Leicester,2025-12-10,2:45,Weatherbys Racing Bank Handicap Chase (GBB Race),Class 3,20f,Good,Turf,2,Jet Plane (IRE),9,1,5.5,,Harry Skelton,Dan Skelton,168,0,Led - not fluent 1st - headed 4th - disputed lead with one circuit to go - led again 7th - pushed along and went clear before 2 out - ridden approaching last - kept on well run-in - comfortably(op 7/2),05:10.6,https://www.rp-assets.com/svg/b/4/6/234264b.svg
+,Leicester,2025-12-10,2:45,Weatherbys Racing Bank Handicap Chase (GBB Race),Class 3,20f,Good,Turf,6,Moonshine Man (IRE),6,2,4.33,,Brendan Powell,Henrietta C Knight,147,9.5,Pressed leader - led 4th - joined with one circuit to go - headed 7th - outpaced 2 out - no match for winner(op 4/1),05:12.5,https://www.rp-assets.com/svg/5/2/8/349825.svg
+,Leicester,2025-12-10,2:45,Weatherbys Racing Bank Handicap Chase (GBB Race),Class 3,20f,Good,Turf,5,William Cody (GB),8,3,4.5,,Paul O'Brien,Pam Sly,150,7,In touch with leaders - raced in third but outpaced 3 out - kept on approaching last - no impression run-in(tchd 10/3),05:13.9,https://www.rp-assets.com/svg/4/6/7/309764.svg
+,Leicester,2025-12-10,2:45,Weatherbys Racing Bank Handicap Chase (GBB Race),Class 3,20f,Good,Turf,3,The Good Doctor (FR),6,4,4.5,,Ben Jones,Ben Pauling,158,27,Prominent - slow jump and lost position 6th - dropped to rear and reminders 7th - rallied 4 out - weakened 2 out(op 5/1 tchd 18/5),05:19.3,https://www.rp-assets.com/svg/1/6/1/237161.svg
+,Leicester,2025-12-10,2:45,Weatherbys Racing Bank Handicap Chase (GBB Race),Class 3,20f,Good,Turf,1,Authorized Art (FR),10,5,15,,Freddie Mitchell,Gary & Josh Moore,165,9,Held up in rear - jumped left and bumped rival 1st - not fluent 3rd - bad mistake 9th - soon outpaced - lost touch 3 out(op 11/1 tchd 18/1),05:21.1,https://www.rp-assets.com/svg/5/5/3/365355.svg
+,Leicester,2025-12-10,2:45,Weatherbys Racing Bank Handicap Chase (GBB Race),Class 3,20f,Good,Turf,4,Chief Sunday (FR),5,PU,4.5,,Sam Twiston-Davies,Nigel & Willy Twiston-Davies,152,-,Held up in rear - bumped 1st - in touch with leaders with one circuit to go - weakened quickly 4 out - pulled up before 2 out(tchd 11/4),-,https://www.rp-assets.com/svg/7/4/0/181047.svg
+,Leicester,2025-12-10,3:17,Weatherbys & Birdie Calendars Handicap Hurdle,Class 5,20.5f,Heavy,Turf,6,Lady Henrietta (GB),5,1,5,,Elliott England,Ben Pauling,144,0,Made all - slowed tempo 4th - increased tempo home turn - pushed along approaching last - reduced lead run-in - kept on well final 110yds - edged right towards finish(op 11/2 tchd 6/1),05:47.1,https://www.rp-assets.com/svg/4/0/8/328804.svg
+,Leicester,2025-12-10,3:17,Weatherbys & Birdie Calendars Handicap Hurdle,Class 5,20.5f,Heavy,Turf,7,Dance Rules (IRE),6,2,2.62,,Sean Bowen,Tim Vaughan,149,1,Prominent - pressed leader run-in - weakening when bit short of room towards finish(op 11/10 tchd Evens and tchd 9/4),05:47.3,https://www.rp-assets.com/svg/b/1/9/271391b.svg
+,Leicester,2025-12-10,3:17,Weatherbys & Birdie Calendars Handicap Hurdle,Class 5,20.5f,Heavy,Turf,1,Klic Boum (FR),5,3,3,,Miss Eleanor Williams,Evan Williams,161,2.75,Took keen hold - in touch with leaders - weakened last(op 11/4 tchd 13/8),05:48.0,https://www.rp-assets.com/svg/3/2/4/250423.svg
+,Leicester,2025-12-10,3:17,Weatherbys & Birdie Calendars Handicap Hurdle,Class 5,20.5f,Heavy,Turf,5,Jewel Eyed Judy (GB),5,4,9,,James Turner,Nigel & Willy Twiston-Davies,150,9,Towards rear - in touch with leaders 3 out (usual 4 out) - not fluent 2 out - weakened last(op 11/2 tchd 5/1),05:50.3,https://www.rp-assets.com/svg/7/0/3/130307.svg
+,Leicester,2025-12-10,3:17,Weatherbys & Birdie Calendars Handicap Hurdle,Class 5,20.5f,Heavy,Turf,4,Richardson (GB),10,5,13,,Lee Edwards,Belinda Clarke,158,0.75,Held up in rear - carried head awkwardly but some headway before 2 out - weakened last(op 16/1 tchd 11/1),05:50.4,https://www.rp-assets.com/svg/5/4/3/143345.svg
 ,,,,,,,,,,,,,,,,,,,,,
